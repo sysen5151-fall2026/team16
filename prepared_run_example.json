@@ -1,0 +1,1210 @@
+{
+  "project": "PANTRI",
+  "useCase": "UC.1",
+  "scope": "Milestone 1 baseline walking skeleton",
+  "dataMode": "Synthetic fixtures and in-process supplier stub",
+  "scenario": {
+    "scenarioDate": "2026-10-06",
+    "horizonDays": 2,
+    "restaurant": "Demo Buffet Hot Pot Restaurant",
+    "manager": "Demo Restaurant Manager",
+    "supplier": "Demo Ingredient Supplier",
+    "deliveryWindow": "2026-10-07, 09:00–11:00 America/New_York (simulated)",
+    "ingredients": [
+      {
+        "id": "beef",
+        "name": "Sliced beef",
+        "unit": "kg",
+        "usage": [
+          5,
+          6,
+          7
+        ],
+        "batches": [
+          {
+            "id": "B-01",
+            "quantity": 8,
+            "expires": "2026-10-08"
+          },
+          {
+            "id": "B-02",
+            "quantity": 2,
+            "expires": "2026-10-05"
+          }
+        ]
+      },
+      {
+        "id": "tofu",
+        "name": "Tofu",
+        "unit": "kg",
+        "usage": [
+          4,
+          5,
+          6
+        ],
+        "batches": [
+          {
+            "id": "T-01",
+            "quantity": 4,
+            "expires": "2026-10-07"
+          },
+          {
+            "id": "T-02",
+            "quantity": 1.5,
+            "expires": null
+          }
+        ]
+      },
+      {
+        "id": "mushrooms",
+        "name": "Mushrooms",
+        "unit": "kg",
+        "usage": [
+          3,
+          3,
+          3
+        ],
+        "batches": [
+          {
+            "id": "M-01",
+            "quantity": 5,
+            "expires": "2026-10-10"
+          }
+        ]
+      }
+    ]
+  },
+  "requirements": {
+    "SR.02": {
+      "need": "N.02",
+      "needName": "Explainable purchasing advice",
+      "needText": "I need purchasing advice that I can judge against demand, usable inventory, and expiration information.",
+      "text": "PANTRI shall present the expected demand, usable recorded inventory, expiration horizon, and material data limitations used to generate each purchasing recommendation."
+    },
+    "SR.03": {
+      "need": "N.03",
+      "needName": "Purchasing authority",
+      "needText": "I need to review and change proposed purchase quantities and approve the final order before it commits my restaurant.",
+      "text": "Upon explicit Restaurant Manager approval, PANTRI shall transmit the final approved purchase order to the Ingredient Supplier without changing its approved quantities."
+    },
+    "SR.03A": {
+      "need": "N.03",
+      "needName": "Purchasing authority",
+      "needText": "I need to review and change proposed purchase quantities and approve the final order before it commits my restaurant.",
+      "text": "PANTRI shall allow the Restaurant Manager to revise proposed purchase-order quantities before approval."
+    },
+    "SR.04": {
+      "need": "N.04",
+      "needName": "Order and exception visibility",
+      "needText": "I need to know whether my approved order is confirmed and what requires follow-up when delivery changes.",
+      "text": "PANTRI shall present the current recorded confirmation, delivery, or exception status associated with each approved purchase order."
+    }
+  },
+  "state": {
+    "step": 22,
+    "status": "CONFIRMED",
+    "events": [
+      {
+        "id": "UC.1.1",
+        "actor": "Restaurant Manager",
+        "name": "Initiate Purchasing Session",
+        "needs": [],
+        "requirements": [],
+        "outputs": [
+          "Session"
+        ],
+        "timestamp": "2026-10-06T19:39:08.941Z",
+        "payload": {
+          "id": "DEMO-SESSION-001",
+          "restaurant": "Demo Buffet Hot Pot Restaurant",
+          "manager": "Demo Restaurant Manager"
+        }
+      },
+      {
+        "id": "UC.1.2",
+        "actor": "Restaurant Manager",
+        "name": "Request Purchasing Recommendation",
+        "needs": [
+          "N.02"
+        ],
+        "requirements": [
+          "SR.02"
+        ],
+        "outputs": [
+          "Purchasing Recommendation Request"
+        ],
+        "timestamp": "2026-10-06T19:39:08.942Z",
+        "payload": {
+          "restaurant": "Demo Buffet Hot Pot Restaurant",
+          "horizonDays": 2,
+          "scenarioDate": "2026-10-06"
+        }
+      },
+      {
+        "id": "UC.1.3",
+        "actor": "PANTRI",
+        "name": "Retrieve Inventory Data",
+        "needs": [
+          "N.02"
+        ],
+        "requirements": [
+          "SR.02"
+        ],
+        "outputs": [
+          "Current Inventory"
+        ],
+        "timestamp": "2026-10-06T19:39:08.942Z",
+        "payload": {
+          "source": "Prepared restaurant-data fixture (stub)",
+          "inventory": [
+            {
+              "id": "beef",
+              "name": "Sliced beef",
+              "unit": "kg",
+              "batches": [
+                {
+                  "id": "B-01",
+                  "quantity": 8
+                },
+                {
+                  "id": "B-02",
+                  "quantity": 2
+                }
+              ]
+            },
+            {
+              "id": "tofu",
+              "name": "Tofu",
+              "unit": "kg",
+              "batches": [
+                {
+                  "id": "T-01",
+                  "quantity": 4
+                },
+                {
+                  "id": "T-02",
+                  "quantity": 1.5
+                }
+              ]
+            },
+            {
+              "id": "mushrooms",
+              "name": "Mushrooms",
+              "unit": "kg",
+              "batches": [
+                {
+                  "id": "M-01",
+                  "quantity": 5
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "UC.1.4",
+        "actor": "PANTRI",
+        "name": "Retrieve Historical Usage Data",
+        "needs": [
+          "N.02"
+        ],
+        "requirements": [
+          "SR.02"
+        ],
+        "outputs": [
+          "Historical Usage Data"
+        ],
+        "timestamp": "2026-10-06T19:39:08.942Z",
+        "payload": {
+          "source": "Prepared historical-usage fixture (stub)",
+          "usage": [
+            {
+              "id": "beef",
+              "dailyUsageKg": [
+                5,
+                6,
+                7
+              ]
+            },
+            {
+              "id": "tofu",
+              "dailyUsageKg": [
+                4,
+                5,
+                6
+              ]
+            },
+            {
+              "id": "mushrooms",
+              "dailyUsageKg": [
+                3,
+                3,
+                3
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "UC.1.5",
+        "actor": "PANTRI",
+        "name": "Retrieve Expiration Data",
+        "needs": [
+          "N.02"
+        ],
+        "requirements": [
+          "SR.02"
+        ],
+        "outputs": [
+          "Expiration Data"
+        ],
+        "timestamp": "2026-10-06T19:39:08.942Z",
+        "payload": {
+          "source": "Prepared expiration fixture (stub)",
+          "expiration": [
+            {
+              "id": "beef",
+              "batches": [
+                {
+                  "id": "B-01",
+                  "expires": "2026-10-08"
+                },
+                {
+                  "id": "B-02",
+                  "expires": "2026-10-05"
+                }
+              ]
+            },
+            {
+              "id": "tofu",
+              "batches": [
+                {
+                  "id": "T-01",
+                  "expires": "2026-10-07"
+                },
+                {
+                  "id": "T-02",
+                  "expires": null
+                }
+              ]
+            },
+            {
+              "id": "mushrooms",
+              "batches": [
+                {
+                  "id": "M-01",
+                  "expires": "2026-10-10"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "UC.1.6",
+        "actor": "PANTRI",
+        "name": "Generate Demand Forecast",
+        "needs": [
+          "N.02"
+        ],
+        "requirements": [
+          "SR.02"
+        ],
+        "outputs": [
+          "Demand Forecast"
+        ],
+        "timestamp": "2026-10-06T19:39:08.942Z",
+        "payload": {
+          "method": "Deterministic average × horizon; forecasting stand-in, not trained AI",
+          "forecast": [
+            {
+              "id": "beef",
+              "averageDailyKg": 6,
+              "demandKg": 12
+            },
+            {
+              "id": "tofu",
+              "averageDailyKg": 5,
+              "demandKg": 10
+            },
+            {
+              "id": "mushrooms",
+              "averageDailyKg": 3,
+              "demandKg": 6
+            }
+          ]
+        }
+      },
+      {
+        "id": "UC.1.7",
+        "actor": "PANTRI",
+        "name": "Generate Purchasing Recommendation",
+        "needs": [
+          "N.02"
+        ],
+        "requirements": [
+          "SR.02"
+        ],
+        "outputs": [
+          "Purchasing Recommendation"
+        ],
+        "timestamp": "2026-10-06T19:39:08.942Z",
+        "payload": {
+          "recommendation": [
+            {
+              "id": "beef",
+              "name": "Sliced beef",
+              "unit": "kg",
+              "recordedKg": 10,
+              "usableKg": 8,
+              "expectedDemandKg": 12,
+              "horizonDays": 2,
+              "batches": [
+                {
+                  "id": "B-01",
+                  "quantity": 8,
+                  "expires": "2026-10-08"
+                },
+                {
+                  "id": "B-02",
+                  "quantity": 2,
+                  "expires": "2026-10-05"
+                }
+              ],
+              "warnings": [
+                "B-02: recorded expired; excluded from demo usable stock"
+              ],
+              "recommendedKg": 4
+            },
+            {
+              "id": "tofu",
+              "name": "Tofu",
+              "unit": "kg",
+              "recordedKg": 5.5,
+              "usableKg": 4,
+              "expectedDemandKg": 10,
+              "horizonDays": 2,
+              "batches": [
+                {
+                  "id": "T-01",
+                  "quantity": 4,
+                  "expires": "2026-10-07"
+                },
+                {
+                  "id": "T-02",
+                  "quantity": 1.5,
+                  "expires": null
+                }
+              ],
+              "warnings": [
+                "T-02: expiration unknown; excluded from demo usable stock"
+              ],
+              "recommendedKg": 6
+            },
+            {
+              "id": "mushrooms",
+              "name": "Mushrooms",
+              "unit": "kg",
+              "recordedKg": 5,
+              "usableKg": 5,
+              "expectedDemandKg": 6,
+              "horizonDays": 2,
+              "batches": [
+                {
+                  "id": "M-01",
+                  "quantity": 5,
+                  "expires": "2026-10-10"
+                }
+              ],
+              "warnings": [],
+              "recommendedKg": 1
+            }
+          ],
+          "limitations": [
+            "All records are synthetic.",
+            "Two-day horizon is a demo assumption.",
+            "Date filtering is a planning stand-in, not a physical food-suitability assessment.",
+            "No forecast-accuracy or waste-reduction validation."
+          ]
+        }
+      },
+      {
+        "id": "UC.1.8",
+        "actor": "PANTRI",
+        "name": "Provide Purchasing Recommendation",
+        "needs": [
+          "N.02"
+        ],
+        "requirements": [
+          "SR.02"
+        ],
+        "outputs": [
+          "Purchasing Recommendation"
+        ],
+        "timestamp": "2026-10-06T19:39:08.942Z",
+        "payload": {
+          "recommendation": [
+            {
+              "id": "beef",
+              "name": "Sliced beef",
+              "unit": "kg",
+              "recordedKg": 10,
+              "usableKg": 8,
+              "expectedDemandKg": 12,
+              "horizonDays": 2,
+              "batches": [
+                {
+                  "id": "B-01",
+                  "quantity": 8,
+                  "expires": "2026-10-08"
+                },
+                {
+                  "id": "B-02",
+                  "quantity": 2,
+                  "expires": "2026-10-05"
+                }
+              ],
+              "warnings": [
+                "B-02: recorded expired; excluded from demo usable stock"
+              ],
+              "recommendedKg": 4
+            },
+            {
+              "id": "tofu",
+              "name": "Tofu",
+              "unit": "kg",
+              "recordedKg": 5.5,
+              "usableKg": 4,
+              "expectedDemandKg": 10,
+              "horizonDays": 2,
+              "batches": [
+                {
+                  "id": "T-01",
+                  "quantity": 4,
+                  "expires": "2026-10-07"
+                },
+                {
+                  "id": "T-02",
+                  "quantity": 1.5,
+                  "expires": null
+                }
+              ],
+              "warnings": [
+                "T-02: expiration unknown; excluded from demo usable stock"
+              ],
+              "recommendedKg": 6
+            },
+            {
+              "id": "mushrooms",
+              "name": "Mushrooms",
+              "unit": "kg",
+              "recordedKg": 5,
+              "usableKg": 5,
+              "expectedDemandKg": 6,
+              "horizonDays": 2,
+              "batches": [
+                {
+                  "id": "M-01",
+                  "quantity": 5,
+                  "expires": "2026-10-10"
+                }
+              ],
+              "warnings": [],
+              "recommendedKg": 1
+            }
+          ],
+          "draft": {
+            "beef": 4,
+            "tofu": 6,
+            "mushrooms": 1
+          }
+        }
+      },
+      {
+        "id": "UC.1.9",
+        "actor": "Restaurant Manager",
+        "name": "Review Purchasing Recommendation",
+        "needs": [
+          "N.02"
+        ],
+        "requirements": [
+          "SR.02"
+        ],
+        "outputs": [
+          "Reviewed Purchasing Recommendation"
+        ],
+        "timestamp": "2026-10-06T19:39:08.943Z",
+        "payload": {
+          "reviewedBy": "Demo Restaurant Manager",
+          "reviewed": true
+        }
+      },
+      {
+        "id": "UC.1.10",
+        "actor": "Restaurant Manager",
+        "name": "Adjust Purchase Quantities",
+        "needs": [
+          "N.03"
+        ],
+        "requirements": [
+          "SR.03A"
+        ],
+        "outputs": [
+          "Adjusted Purchase Quantities"
+        ],
+        "timestamp": "2026-10-06T19:39:08.943Z",
+        "payload": {
+          "previous": {
+            "beef": 4,
+            "tofu": 6,
+            "mushrooms": 1
+          },
+          "adjusted": {
+            "beef": 5,
+            "tofu": 6,
+            "mushrooms": 1
+          }
+        }
+      },
+      {
+        "id": "UC.1.11",
+        "actor": "PANTRI",
+        "name": "Update Proposed Purchase",
+        "needs": [
+          "N.03"
+        ],
+        "requirements": [
+          "SR.03A"
+        ],
+        "outputs": [
+          "Updated Proposed Purchase"
+        ],
+        "timestamp": "2026-10-06T19:39:08.943Z",
+        "payload": {
+          "draft": {
+            "beef": 5,
+            "tofu": 6,
+            "mushrooms": 1
+          }
+        }
+      },
+      {
+        "id": "UC.1.12",
+        "actor": "Restaurant Manager",
+        "name": "Approve Purchase Order",
+        "needs": [
+          "N.03"
+        ],
+        "requirements": [
+          "SR.03"
+        ],
+        "outputs": [
+          "Order Approval"
+        ],
+        "timestamp": "2026-10-06T19:39:08.943Z",
+        "payload": {
+          "approved": true,
+          "manager": "Demo Restaurant Manager",
+          "restaurant": "Demo Buffet Hot Pot Restaurant",
+          "quantities": {
+            "beef": 5,
+            "tofu": 6,
+            "mushrooms": 1
+          },
+          "approvedAt": "2026-10-06T19:39:08.943Z"
+        }
+      },
+      {
+        "id": "UC.1.13",
+        "actor": "PANTRI",
+        "name": "Record Order Approval",
+        "needs": [
+          "N.03"
+        ],
+        "requirements": [
+          "SR.03"
+        ],
+        "outputs": [
+          "Approved Order Data"
+        ],
+        "timestamp": "2026-10-06T19:39:08.943Z",
+        "payload": {
+          "approved": true,
+          "manager": "Demo Restaurant Manager",
+          "restaurant": "Demo Buffet Hot Pot Restaurant",
+          "quantities": {
+            "beef": 5,
+            "tofu": 6,
+            "mushrooms": 1
+          },
+          "approvedAt": "2026-10-06T19:39:08.943Z"
+        }
+      },
+      {
+        "id": "UC.1.14",
+        "actor": "PANTRI",
+        "name": "Generate Official Purchase",
+        "needs": [
+          "N.03"
+        ],
+        "requirements": [
+          "SR.03"
+        ],
+        "outputs": [
+          "Official Purchase Order"
+        ],
+        "timestamp": "2026-10-06T19:39:08.944Z",
+        "payload": {
+          "id": "DEMO-PO-001",
+          "restaurant": "Demo Buffet Hot Pot Restaurant",
+          "supplier": "Demo Ingredient Supplier",
+          "quantities": {
+            "beef": 5,
+            "tofu": 6,
+            "mushrooms": 1
+          },
+          "approvalReference": "2026-10-06T19:39:08.943Z"
+        }
+      },
+      {
+        "id": "UC.1.15",
+        "actor": "PANTRI",
+        "name": "Send Purchase Order",
+        "needs": [
+          "N.03"
+        ],
+        "requirements": [
+          "SR.03"
+        ],
+        "outputs": [
+          "Purchase Order"
+        ],
+        "timestamp": "2026-10-06T19:39:08.944Z",
+        "payload": {
+          "destination": "In-process supplier adapter (stub)",
+          "order": {
+            "id": "DEMO-PO-001",
+            "restaurant": "Demo Buffet Hot Pot Restaurant",
+            "supplier": "Demo Ingredient Supplier",
+            "quantities": {
+              "beef": 5,
+              "tofu": 6,
+              "mushrooms": 1
+            },
+            "approvalReference": "2026-10-06T19:39:08.943Z"
+          }
+        }
+      },
+      {
+        "id": "UC.1.16",
+        "actor": "Ingredient Supplier",
+        "name": "Receive Purchase Order",
+        "needs": [
+          "N.03",
+          "N.04"
+        ],
+        "requirements": [
+          "SR.03",
+          "SR.04"
+        ],
+        "outputs": [
+          "Received Purchase Order"
+        ],
+        "timestamp": "2026-10-06T19:39:08.944Z",
+        "payload": {
+          "stub": true,
+          "received": {
+            "id": "DEMO-PO-001",
+            "restaurant": "Demo Buffet Hot Pot Restaurant",
+            "supplier": "Demo Ingredient Supplier",
+            "quantities": {
+              "beef": 5,
+              "tofu": 6,
+              "mushrooms": 1
+            },
+            "approvalReference": "2026-10-06T19:39:08.943Z"
+          }
+        }
+      },
+      {
+        "id": "UC.1.17",
+        "actor": "Ingredient Supplier",
+        "name": "Confirm Purchase Order",
+        "needs": [
+          "N.04"
+        ],
+        "requirements": [
+          "SR.04"
+        ],
+        "outputs": [
+          "Order Confirmation"
+        ],
+        "timestamp": "2026-10-06T19:39:08.944Z",
+        "payload": {
+          "stub": true,
+          "confirmation": {
+            "orderId": "DEMO-PO-001",
+            "confirmationId": "DEMO-CONF-001",
+            "confirmed": true,
+            "quantities": {
+              "beef": 5,
+              "tofu": 6,
+              "mushrooms": 1
+            }
+          }
+        }
+      },
+      {
+        "id": "UC.1.18",
+        "actor": "Ingredient Supplier",
+        "name": "Provide Confirmation and Delivery Information",
+        "needs": [
+          "N.04"
+        ],
+        "requirements": [
+          "SR.04"
+        ],
+        "outputs": [
+          "Order Confirmation",
+          "Delivery Information"
+        ],
+        "timestamp": "2026-10-06T19:39:08.945Z",
+        "payload": {
+          "stub": true,
+          "response": {
+            "orderId": "DEMO-PO-001",
+            "confirmationId": "DEMO-CONF-001",
+            "confirmed": true,
+            "quantities": {
+              "beef": 5,
+              "tofu": 6,
+              "mushrooms": 1
+            },
+            "deliveryWindow": "2026-10-07, 09:00–11:00 America/New_York (simulated)",
+            "supplier": "Demo Ingredient Supplier"
+          }
+        }
+      },
+      {
+        "id": "UC.1.19",
+        "actor": "PANTRI",
+        "name": "Record Supplier Confirmation",
+        "needs": [
+          "N.04"
+        ],
+        "requirements": [
+          "SR.04"
+        ],
+        "outputs": [
+          "Supplier Confirmation Report"
+        ],
+        "timestamp": "2026-10-06T19:39:08.945Z",
+        "payload": {
+          "orderId": "DEMO-PO-001",
+          "confirmationId": "DEMO-CONF-001",
+          "confirmed": true,
+          "quantities": {
+            "beef": 5,
+            "tofu": 6,
+            "mushrooms": 1
+          },
+          "deliveryWindow": "2026-10-07, 09:00–11:00 America/New_York (simulated)",
+          "supplier": "Demo Ingredient Supplier"
+        }
+      },
+      {
+        "id": "UC.1.20",
+        "actor": "PANTRI",
+        "name": "Update Order Status",
+        "needs": [
+          "N.04"
+        ],
+        "requirements": [
+          "SR.04"
+        ],
+        "outputs": [
+          "Updated Order Status"
+        ],
+        "timestamp": "2026-10-06T19:39:08.945Z",
+        "payload": {
+          "orderId": "DEMO-PO-001",
+          "status": "CONFIRMED"
+        }
+      },
+      {
+        "id": "UC.1.21",
+        "actor": "PANTRI",
+        "name": "Provide Order Status",
+        "needs": [
+          "N.04"
+        ],
+        "requirements": [
+          "SR.04"
+        ],
+        "outputs": [
+          "Order Status Information"
+        ],
+        "timestamp": "2026-10-06T19:39:08.947Z",
+        "payload": {
+          "orderId": "DEMO-PO-001",
+          "status": "CONFIRMED",
+          "confirmationId": "DEMO-CONF-001",
+          "deliveryWindow": "2026-10-07, 09:00–11:00 America/New_York (simulated)",
+          "quantities": {
+            "beef": 5,
+            "tofu": 6,
+            "mushrooms": 1
+          }
+        }
+      },
+      {
+        "id": "UC.1.22",
+        "actor": "Restaurant Manager",
+        "name": "Review Order Status",
+        "needs": [
+          "N.04"
+        ],
+        "requirements": [
+          "SR.04"
+        ],
+        "outputs": [
+          "Reviewed Order Status"
+        ],
+        "timestamp": "2026-10-06T19:39:08.947Z",
+        "payload": {
+          "reviewedBy": "Demo Restaurant Manager",
+          "reviewedStatus": {
+            "orderId": "DEMO-PO-001",
+            "status": "CONFIRMED",
+            "confirmationId": "DEMO-CONF-001",
+            "deliveryWindow": "2026-10-07, 09:00–11:00 America/New_York (simulated)",
+            "quantities": {
+              "beef": 5,
+              "tofu": 6,
+              "mushrooms": 1
+            }
+          }
+        }
+      }
+    ],
+    "inventory": [
+      {
+        "id": "beef",
+        "name": "Sliced beef",
+        "unit": "kg",
+        "batches": [
+          {
+            "id": "B-01",
+            "quantity": 8
+          },
+          {
+            "id": "B-02",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "id": "tofu",
+        "name": "Tofu",
+        "unit": "kg",
+        "batches": [
+          {
+            "id": "T-01",
+            "quantity": 4
+          },
+          {
+            "id": "T-02",
+            "quantity": 1.5
+          }
+        ]
+      },
+      {
+        "id": "mushrooms",
+        "name": "Mushrooms",
+        "unit": "kg",
+        "batches": [
+          {
+            "id": "M-01",
+            "quantity": 5
+          }
+        ]
+      }
+    ],
+    "usage": [
+      {
+        "id": "beef",
+        "dailyUsageKg": [
+          5,
+          6,
+          7
+        ]
+      },
+      {
+        "id": "tofu",
+        "dailyUsageKg": [
+          4,
+          5,
+          6
+        ]
+      },
+      {
+        "id": "mushrooms",
+        "dailyUsageKg": [
+          3,
+          3,
+          3
+        ]
+      }
+    ],
+    "expiration": [
+      {
+        "id": "beef",
+        "batches": [
+          {
+            "id": "B-01",
+            "expires": "2026-10-08"
+          },
+          {
+            "id": "B-02",
+            "expires": "2026-10-05"
+          }
+        ]
+      },
+      {
+        "id": "tofu",
+        "batches": [
+          {
+            "id": "T-01",
+            "expires": "2026-10-07"
+          },
+          {
+            "id": "T-02",
+            "expires": null
+          }
+        ]
+      },
+      {
+        "id": "mushrooms",
+        "batches": [
+          {
+            "id": "M-01",
+            "expires": "2026-10-10"
+          }
+        ]
+      }
+    ],
+    "forecast": [
+      {
+        "id": "beef",
+        "averageDailyKg": 6,
+        "demandKg": 12
+      },
+      {
+        "id": "tofu",
+        "averageDailyKg": 5,
+        "demandKg": 10
+      },
+      {
+        "id": "mushrooms",
+        "averageDailyKg": 3,
+        "demandKg": 6
+      }
+    ],
+    "recommendation": [
+      {
+        "id": "beef",
+        "name": "Sliced beef",
+        "unit": "kg",
+        "recordedKg": 10,
+        "usableKg": 8,
+        "expectedDemandKg": 12,
+        "horizonDays": 2,
+        "batches": [
+          {
+            "id": "B-01",
+            "quantity": 8,
+            "expires": "2026-10-08"
+          },
+          {
+            "id": "B-02",
+            "quantity": 2,
+            "expires": "2026-10-05"
+          }
+        ],
+        "warnings": [
+          "B-02: recorded expired; excluded from demo usable stock"
+        ],
+        "recommendedKg": 4
+      },
+      {
+        "id": "tofu",
+        "name": "Tofu",
+        "unit": "kg",
+        "recordedKg": 5.5,
+        "usableKg": 4,
+        "expectedDemandKg": 10,
+        "horizonDays": 2,
+        "batches": [
+          {
+            "id": "T-01",
+            "quantity": 4,
+            "expires": "2026-10-07"
+          },
+          {
+            "id": "T-02",
+            "quantity": 1.5,
+            "expires": null
+          }
+        ],
+        "warnings": [
+          "T-02: expiration unknown; excluded from demo usable stock"
+        ],
+        "recommendedKg": 6
+      },
+      {
+        "id": "mushrooms",
+        "name": "Mushrooms",
+        "unit": "kg",
+        "recordedKg": 5,
+        "usableKg": 5,
+        "expectedDemandKg": 6,
+        "horizonDays": 2,
+        "batches": [
+          {
+            "id": "M-01",
+            "quantity": 5,
+            "expires": "2026-10-10"
+          }
+        ],
+        "warnings": [],
+        "recommendedKg": 1
+      }
+    ],
+    "draft": {
+      "beef": 5,
+      "tofu": 6,
+      "mushrooms": 1
+    },
+    "revised": {
+      "beef": 5,
+      "tofu": 6,
+      "mushrooms": 1
+    },
+    "managerDecision": {
+      "approved": true,
+      "manager": "Demo Restaurant Manager",
+      "restaurant": "Demo Buffet Hot Pot Restaurant",
+      "quantities": {
+        "beef": 5,
+        "tofu": 6,
+        "mushrooms": 1
+      },
+      "approvedAt": "2026-10-06T19:39:08.943Z"
+    },
+    "approval": {
+      "approved": true,
+      "manager": "Demo Restaurant Manager",
+      "restaurant": "Demo Buffet Hot Pot Restaurant",
+      "quantities": {
+        "beef": 5,
+        "tofu": 6,
+        "mushrooms": 1
+      },
+      "approvedAt": "2026-10-06T19:39:08.943Z"
+    },
+    "officialOrder": {
+      "id": "DEMO-PO-001",
+      "restaurant": "Demo Buffet Hot Pot Restaurant",
+      "supplier": "Demo Ingredient Supplier",
+      "quantities": {
+        "beef": 5,
+        "tofu": 6,
+        "mushrooms": 1
+      },
+      "approvalReference": "2026-10-06T19:39:08.943Z"
+    },
+    "sentOrder": {
+      "id": "DEMO-PO-001",
+      "restaurant": "Demo Buffet Hot Pot Restaurant",
+      "supplier": "Demo Ingredient Supplier",
+      "quantities": {
+        "beef": 5,
+        "tofu": 6,
+        "mushrooms": 1
+      },
+      "approvalReference": "2026-10-06T19:39:08.943Z"
+    },
+    "supplierReceived": {
+      "id": "DEMO-PO-001",
+      "restaurant": "Demo Buffet Hot Pot Restaurant",
+      "supplier": "Demo Ingredient Supplier",
+      "quantities": {
+        "beef": 5,
+        "tofu": 6,
+        "mushrooms": 1
+      },
+      "approvalReference": "2026-10-06T19:39:08.943Z"
+    },
+    "supplierConfirmation": {
+      "orderId": "DEMO-PO-001",
+      "confirmationId": "DEMO-CONF-001",
+      "confirmed": true,
+      "quantities": {
+        "beef": 5,
+        "tofu": 6,
+        "mushrooms": 1
+      }
+    },
+    "supplierResponse": {
+      "orderId": "DEMO-PO-001",
+      "confirmationId": "DEMO-CONF-001",
+      "confirmed": true,
+      "quantities": {
+        "beef": 5,
+        "tofu": 6,
+        "mushrooms": 1
+      },
+      "deliveryWindow": "2026-10-07, 09:00–11:00 America/New_York (simulated)",
+      "supplier": "Demo Ingredient Supplier"
+    },
+    "recordedConfirmation": {
+      "orderId": "DEMO-PO-001",
+      "confirmationId": "DEMO-CONF-001",
+      "confirmed": true,
+      "quantities": {
+        "beef": 5,
+        "tofu": 6,
+        "mushrooms": 1
+      },
+      "deliveryWindow": "2026-10-07, 09:00–11:00 America/New_York (simulated)",
+      "supplier": "Demo Ingredient Supplier"
+    },
+    "presentedStatus": {
+      "orderId": "DEMO-PO-001",
+      "status": "CONFIRMED",
+      "confirmationId": "DEMO-CONF-001",
+      "deliveryWindow": "2026-10-07, 09:00–11:00 America/New_York (simulated)",
+      "quantities": {
+        "beef": 5,
+        "tofu": 6,
+        "mushrooms": 1
+      }
+    },
+    "session": {
+      "id": "DEMO-SESSION-001",
+      "restaurant": "Demo Buffet Hot Pot Restaurant",
+      "manager": "Demo Restaurant Manager"
+    },
+    "request": {
+      "restaurant": "Demo Buffet Hot Pot Restaurant",
+      "horizonDays": 2,
+      "scenarioDate": "2026-10-06"
+    }
+  },
+  "limitations": [
+    "No external order is placed.",
+    "In-memory run; use Export run evidence before reset or closing.",
+    "No authentication, real database, API, trained AI, or pilot outcome validation."
+  ],
+  "evidenceType": "Prepared automated synthetic example; replace with a live exported run for classroom evidence."
+}

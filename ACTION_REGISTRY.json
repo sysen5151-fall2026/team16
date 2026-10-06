@@ -1,0 +1,313 @@
+{
+  "useCase": "UC.1",
+  "source": "Existing UC.1 Action Diagram, Stakeholder report Figure 10 / Business report Figure 4",
+  "actions": [
+    {
+      "id": "UC.1.1",
+      "actor": "Restaurant Manager",
+      "name": "Initiate Purchasing Session",
+      "needs": [],
+      "requirements": [],
+      "outputs": [
+        "Session"
+      ]
+    },
+    {
+      "id": "UC.1.2",
+      "actor": "Restaurant Manager",
+      "name": "Request Purchasing Recommendation",
+      "needs": [
+        "N.02"
+      ],
+      "requirements": [
+        "SR.02"
+      ],
+      "outputs": [
+        "Purchasing Recommendation Request"
+      ]
+    },
+    {
+      "id": "UC.1.3",
+      "actor": "PANTRI",
+      "name": "Retrieve Inventory Data",
+      "needs": [
+        "N.02"
+      ],
+      "requirements": [
+        "SR.02"
+      ],
+      "outputs": [
+        "Current Inventory"
+      ]
+    },
+    {
+      "id": "UC.1.4",
+      "actor": "PANTRI",
+      "name": "Retrieve Historical Usage Data",
+      "needs": [
+        "N.02"
+      ],
+      "requirements": [
+        "SR.02"
+      ],
+      "outputs": [
+        "Historical Usage Data"
+      ]
+    },
+    {
+      "id": "UC.1.5",
+      "actor": "PANTRI",
+      "name": "Retrieve Expiration Data",
+      "needs": [
+        "N.02"
+      ],
+      "requirements": [
+        "SR.02"
+      ],
+      "outputs": [
+        "Expiration Data"
+      ]
+    },
+    {
+      "id": "UC.1.6",
+      "actor": "PANTRI",
+      "name": "Generate Demand Forecast",
+      "needs": [
+        "N.02"
+      ],
+      "requirements": [
+        "SR.02"
+      ],
+      "outputs": [
+        "Demand Forecast"
+      ]
+    },
+    {
+      "id": "UC.1.7",
+      "actor": "PANTRI",
+      "name": "Generate Purchasing Recommendation",
+      "needs": [
+        "N.02"
+      ],
+      "requirements": [
+        "SR.02"
+      ],
+      "outputs": [
+        "Purchasing Recommendation"
+      ]
+    },
+    {
+      "id": "UC.1.8",
+      "actor": "PANTRI",
+      "name": "Provide Purchasing Recommendation",
+      "needs": [
+        "N.02"
+      ],
+      "requirements": [
+        "SR.02"
+      ],
+      "outputs": [
+        "Purchasing Recommendation"
+      ]
+    },
+    {
+      "id": "UC.1.9",
+      "actor": "Restaurant Manager",
+      "name": "Review Purchasing Recommendation",
+      "needs": [
+        "N.02"
+      ],
+      "requirements": [
+        "SR.02"
+      ],
+      "outputs": [
+        "Reviewed Purchasing Recommendation"
+      ]
+    },
+    {
+      "id": "UC.1.10",
+      "actor": "Restaurant Manager",
+      "name": "Adjust Purchase Quantities",
+      "needs": [
+        "N.03"
+      ],
+      "requirements": [
+        "SR.03A"
+      ],
+      "outputs": [
+        "Adjusted Purchase Quantities"
+      ]
+    },
+    {
+      "id": "UC.1.11",
+      "actor": "PANTRI",
+      "name": "Update Proposed Purchase",
+      "needs": [
+        "N.03"
+      ],
+      "requirements": [
+        "SR.03A"
+      ],
+      "outputs": [
+        "Updated Proposed Purchase"
+      ]
+    },
+    {
+      "id": "UC.1.12",
+      "actor": "Restaurant Manager",
+      "name": "Approve Purchase Order",
+      "needs": [
+        "N.03"
+      ],
+      "requirements": [
+        "SR.03"
+      ],
+      "outputs": [
+        "Order Approval"
+      ]
+    },
+    {
+      "id": "UC.1.13",
+      "actor": "PANTRI",
+      "name": "Record Order Approval",
+      "needs": [
+        "N.03"
+      ],
+      "requirements": [
+        "SR.03"
+      ],
+      "outputs": [
+        "Approved Order Data"
+      ]
+    },
+    {
+      "id": "UC.1.14",
+      "actor": "PANTRI",
+      "name": "Generate Official Purchase",
+      "needs": [
+        "N.03"
+      ],
+      "requirements": [
+        "SR.03"
+      ],
+      "outputs": [
+        "Official Purchase Order"
+      ]
+    },
+    {
+      "id": "UC.1.15",
+      "actor": "PANTRI",
+      "name": "Send Purchase Order",
+      "needs": [
+        "N.03"
+      ],
+      "requirements": [
+        "SR.03"
+      ],
+      "outputs": [
+        "Purchase Order"
+      ]
+    },
+    {
+      "id": "UC.1.16",
+      "actor": "Ingredient Supplier",
+      "name": "Receive Purchase Order",
+      "needs": [
+        "N.03",
+        "N.04"
+      ],
+      "requirements": [
+        "SR.03",
+        "SR.04"
+      ],
+      "outputs": [
+        "Received Purchase Order"
+      ]
+    },
+    {
+      "id": "UC.1.17",
+      "actor": "Ingredient Supplier",
+      "name": "Confirm Purchase Order",
+      "needs": [
+        "N.04"
+      ],
+      "requirements": [
+        "SR.04"
+      ],
+      "outputs": [
+        "Order Confirmation"
+      ]
+    },
+    {
+      "id": "UC.1.18",
+      "actor": "Ingredient Supplier",
+      "name": "Provide Confirmation and Delivery Information",
+      "needs": [
+        "N.04"
+      ],
+      "requirements": [
+        "SR.04"
+      ],
+      "outputs": [
+        "Order Confirmation",
+        "Delivery Information"
+      ]
+    },
+    {
+      "id": "UC.1.19",
+      "actor": "PANTRI",
+      "name": "Record Supplier Confirmation",
+      "needs": [
+        "N.04"
+      ],
+      "requirements": [
+        "SR.04"
+      ],
+      "outputs": [
+        "Supplier Confirmation Report"
+      ]
+    },
+    {
+      "id": "UC.1.20",
+      "actor": "PANTRI",
+      "name": "Update Order Status",
+      "needs": [
+        "N.04"
+      ],
+      "requirements": [
+        "SR.04"
+      ],
+      "outputs": [
+        "Updated Order Status"
+      ]
+    },
+    {
+      "id": "UC.1.21",
+      "actor": "PANTRI",
+      "name": "Provide Order Status",
+      "needs": [
+        "N.04"
+      ],
+      "requirements": [
+        "SR.04"
+      ],
+      "outputs": [
+        "Order Status Information"
+      ]
+    },
+    {
+      "id": "UC.1.22",
+      "actor": "Restaurant Manager",
+      "name": "Review Order Status",
+      "needs": [
+        "N.04"
+      ],
+      "requirements": [
+        "SR.04"
+      ],
+      "outputs": [
+        "Reviewed Order Status"
+      ]
+    }
+  ]
+}
