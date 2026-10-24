@@ -1,0 +1,1835 @@
+{
+  "contract_version": "1.0.0",
+  "authority": "Innoslate first-level flow register and native XML readback; not reverse engineered from code",
+  "transport": "in-process typed messages",
+  "units": "Ingredient and waste quantities carry explicit unit kg in this bounded prototype. Durations use ms. Percent rates are 0 to 100. Null is explicit unknown or not calculable where declared.",
+  "error_schema": {
+    "type": "object",
+    "required": [
+      "code",
+      "message",
+      "flow",
+      "restaurant_id"
+    ],
+    "properties": {
+      "code": {
+        "enum": [
+          "INVALID_PACKET",
+          "WRONG_ENDPOINT",
+          "OUT_OF_SCOPE",
+          "UNAUTHORIZED",
+          "DOMAIN_STATE",
+          "NOT_RETAINED"
+        ]
+      },
+      "message": {
+        "type": "string"
+      },
+      "flow": {
+        "type": "string"
+      },
+      "restaurant_id": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    }
+  },
+  "operations": [
+    {
+      "operationId": "P_IF_01",
+      "flow": "P-IF.01",
+      "name": "Inventory View Query",
+      "sources": [
+        "P-F.0.5"
+      ],
+      "destinations": [
+        "P-F.0.1"
+      ],
+      "receiving_role": "I",
+      "request": {
+        "type": "object",
+        "required": [
+          "restaurant_id",
+          "ingredient_scope",
+          "period",
+          "query_id"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "restaurant_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "ingredient_scope": {
+            "type": "array"
+          },
+          "period": {
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "query_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "response": {
+        "type": "object",
+        "required": [
+          "accepted",
+          "flow",
+          "recipient"
+        ],
+        "properties": {
+          "accepted": {
+            "type": "boolean"
+          },
+          "flow": {
+            "type": "string"
+          },
+          "recipient": {
+            "type": "string"
+          }
+        }
+      },
+      "errors": [
+        "INVALID_PACKET",
+        "WRONG_ENDPOINT",
+        "OUT_OF_SCOPE",
+        "UNAUTHORIZED",
+        "DOMAIN_STATE",
+        "NOT_RETAINED"
+      ]
+    },
+    {
+      "operationId": "P_IF_02",
+      "flow": "P-IF.02",
+      "name": "Planning Record Query",
+      "sources": [
+        "P-F.0.2"
+      ],
+      "destinations": [
+        "P-F.0.1"
+      ],
+      "receiving_role": "I",
+      "request": {
+        "type": "object",
+        "required": [
+          "restaurant_id",
+          "ingredient_scope",
+          "period",
+          "query_id"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "restaurant_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "ingredient_scope": {
+            "type": "array"
+          },
+          "period": {
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "query_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "response": {
+        "type": "object",
+        "required": [
+          "accepted",
+          "flow",
+          "recipient"
+        ],
+        "properties": {
+          "accepted": {
+            "type": "boolean"
+          },
+          "flow": {
+            "type": "string"
+          },
+          "recipient": {
+            "type": "string"
+          }
+        }
+      },
+      "errors": [
+        "INVALID_PACKET",
+        "WRONG_ENDPOINT",
+        "OUT_OF_SCOPE",
+        "UNAUTHORIZED",
+        "DOMAIN_STATE",
+        "NOT_RETAINED"
+      ]
+    },
+    {
+      "operationId": "P_IF_03",
+      "flow": "P-IF.03",
+      "name": "Scoped Planning Records",
+      "sources": [
+        "P-F.0.1"
+      ],
+      "destinations": [
+        "P-F.0.2"
+      ],
+      "receiving_role": "I",
+      "request": {
+        "type": "object",
+        "required": [
+          "restaurant_id",
+          "inventory",
+          "usage_history",
+          "expiration_dates",
+          "missing_fields",
+          "query_id"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "restaurant_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "inventory": {
+            "type": "array"
+          },
+          "usage_history": {
+            "type": "array"
+          },
+          "expiration_dates": {
+            "type": "array"
+          },
+          "missing_fields": {
+            "type": "array"
+          },
+          "query_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "response": {
+        "type": "object",
+        "required": [
+          "accepted",
+          "flow",
+          "recipient"
+        ],
+        "properties": {
+          "accepted": {
+            "type": "boolean"
+          },
+          "flow": {
+            "type": "string"
+          },
+          "recipient": {
+            "type": "string"
+          }
+        }
+      },
+      "errors": [
+        "INVALID_PACKET",
+        "WRONG_ENDPOINT",
+        "OUT_OF_SCOPE",
+        "UNAUTHORIZED",
+        "DOMAIN_STATE",
+        "NOT_RETAINED"
+      ]
+    },
+    {
+      "operationId": "P_IF_04",
+      "flow": "P-IF.04",
+      "name": "Planning Analysis Request",
+      "sources": [
+        "P-F.0.5"
+      ],
+      "destinations": [
+        "P-F.0.2"
+      ],
+      "receiving_role": "I",
+      "request": {
+        "type": "object",
+        "required": [
+          "restaurant_id",
+          "ingredient_scope",
+          "period",
+          "task_id",
+          "requested_analysis"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "restaurant_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "ingredient_scope": {
+            "type": "array"
+          },
+          "period": {
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "task_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "requested_analysis": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "response": {
+        "type": "object",
+        "required": [
+          "accepted",
+          "flow",
+          "recipient"
+        ],
+        "properties": {
+          "accepted": {
+            "type": "boolean"
+          },
+          "flow": {
+            "type": "string"
+          },
+          "recipient": {
+            "type": "string"
+          }
+        }
+      },
+      "errors": [
+        "INVALID_PACKET",
+        "WRONG_ENDPOINT",
+        "OUT_OF_SCOPE",
+        "UNAUTHORIZED",
+        "DOMAIN_STATE",
+        "NOT_RETAINED"
+      ]
+    },
+    {
+      "operationId": "P_IF_05",
+      "flow": "P-IF.05",
+      "name": "Proposed Purchasing Advice",
+      "sources": [
+        "P-F.0.2"
+      ],
+      "destinations": [
+        "P-F.0.3"
+      ],
+      "receiving_role": "I",
+      "request": {
+        "type": "object",
+        "required": [
+          "restaurant_id",
+          "demand",
+          "usable_stock",
+          "horizon",
+          "limitations",
+          "proposed_quantities"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "restaurant_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "demand": {
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "usable_stock": {
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "horizon": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "limitations": {
+            "type": "array"
+          },
+          "proposed_quantities": {
+            "type": [
+              "object",
+              "null"
+            ]
+          }
+        }
+      },
+      "response": {
+        "type": "object",
+        "required": [
+          "accepted",
+          "flow",
+          "recipient"
+        ],
+        "properties": {
+          "accepted": {
+            "type": "boolean"
+          },
+          "flow": {
+            "type": "string"
+          },
+          "recipient": {
+            "type": "string"
+          }
+        }
+      },
+      "errors": [
+        "INVALID_PACKET",
+        "WRONG_ENDPOINT",
+        "OUT_OF_SCOPE",
+        "UNAUTHORIZED",
+        "DOMAIN_STATE",
+        "NOT_RETAINED"
+      ]
+    },
+    {
+      "operationId": "P_IF_06",
+      "flow": "P-IF.06",
+      "name": "Reviewable Purchase Draft",
+      "sources": [
+        "P-F.0.3"
+      ],
+      "destinations": [
+        "P-F.0.5"
+      ],
+      "receiving_role": "I",
+      "request": {
+        "type": "object",
+        "required": [
+          "restaurant_id",
+          "draft_id",
+          "version",
+          "lines",
+          "limitations",
+          "approval_state"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "restaurant_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "draft_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "version": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "lines": {
+            "type": "array"
+          },
+          "limitations": {
+            "type": "array"
+          },
+          "approval_state": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "response": {
+        "type": "object",
+        "required": [
+          "accepted",
+          "flow",
+          "recipient"
+        ],
+        "properties": {
+          "accepted": {
+            "type": "boolean"
+          },
+          "flow": {
+            "type": "string"
+          },
+          "recipient": {
+            "type": "string"
+          }
+        }
+      },
+      "errors": [
+        "INVALID_PACKET",
+        "WRONG_ENDPOINT",
+        "OUT_OF_SCOPE",
+        "UNAUTHORIZED",
+        "DOMAIN_STATE",
+        "NOT_RETAINED"
+      ]
+    },
+    {
+      "operationId": "P_IF_07",
+      "flow": "P-IF.07",
+      "name": "Recorded Supplier Order State",
+      "sources": [
+        "P-F.0.3"
+      ],
+      "destinations": [
+        "P-F.0.5"
+      ],
+      "receiving_role": "I",
+      "request": {
+        "type": "object",
+        "required": [
+          "restaurant_id",
+          "order_id",
+          "state",
+          "confirmation_reference",
+          "delivery_information",
+          "exceptions"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "restaurant_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "order_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "state": {
+            "type": "string",
+            "minLength": 1
+          },
+          "confirmation_reference": {
+            "type": "string",
+            "minLength": 1
+          },
+          "delivery_information": {
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "exceptions": {
+            "type": "array"
+          }
+        }
+      },
+      "response": {
+        "type": "object",
+        "required": [
+          "accepted",
+          "flow",
+          "recipient"
+        ],
+        "properties": {
+          "accepted": {
+            "type": "boolean"
+          },
+          "flow": {
+            "type": "string"
+          },
+          "recipient": {
+            "type": "string"
+          }
+        }
+      },
+      "errors": [
+        "INVALID_PACKET",
+        "WRONG_ENDPOINT",
+        "OUT_OF_SCOPE",
+        "UNAUTHORIZED",
+        "DOMAIN_STATE",
+        "NOT_RETAINED"
+      ]
+    },
+    {
+      "operationId": "P_IF_08",
+      "flow": "P-IF.08",
+      "name": "Scoped Inventory View Data",
+      "sources": [
+        "P-F.0.1"
+      ],
+      "destinations": [
+        "P-F.0.5"
+      ],
+      "receiving_role": "I",
+      "request": {
+        "type": "object",
+        "required": [
+          "restaurant_id",
+          "inventory",
+          "recorded_dates",
+          "limitations"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "restaurant_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "inventory": {
+            "type": "array"
+          },
+          "recorded_dates": {
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "limitations": {
+            "type": "array"
+          }
+        }
+      },
+      "response": {
+        "type": "object",
+        "required": [
+          "accepted",
+          "flow",
+          "recipient"
+        ],
+        "properties": {
+          "accepted": {
+            "type": "boolean"
+          },
+          "flow": {
+            "type": "string"
+          },
+          "recipient": {
+            "type": "string"
+          }
+        }
+      },
+      "errors": [
+        "INVALID_PACKET",
+        "WRONG_ENDPOINT",
+        "OUT_OF_SCOPE",
+        "UNAUTHORIZED",
+        "DOMAIN_STATE",
+        "NOT_RETAINED"
+      ]
+    },
+    {
+      "operationId": "P_IF_09",
+      "flow": "P-IF.09",
+      "name": "Expiration and Performance Results",
+      "sources": [
+        "P-F.0.2"
+      ],
+      "destinations": [
+        "P-F.0.5"
+      ],
+      "receiving_role": "I",
+      "request": {
+        "type": "object",
+        "required": [
+          "restaurant_id",
+          "result_type",
+          "period",
+          "expiration_classes",
+          "waste_per_100_covers",
+          "stockout_rate",
+          "limitations"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "restaurant_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "result_type": {
+            "type": "string",
+            "minLength": 1
+          },
+          "period": {
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "expiration_classes": {
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "waste_per_100_covers": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "stockout_rate": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "limitations": {
+            "type": "array"
+          }
+        }
+      },
+      "response": {
+        "type": "object",
+        "required": [
+          "accepted",
+          "flow",
+          "recipient"
+        ],
+        "properties": {
+          "accepted": {
+            "type": "boolean"
+          },
+          "flow": {
+            "type": "string"
+          },
+          "recipient": {
+            "type": "string"
+          }
+        }
+      },
+      "errors": [
+        "INVALID_PACKET",
+        "WRONG_ENDPOINT",
+        "OUT_OF_SCOPE",
+        "UNAUTHORIZED",
+        "DOMAIN_STATE",
+        "NOT_RETAINED"
+      ]
+    },
+    {
+      "operationId": "P_IF_10",
+      "flow": "P-IF.10",
+      "name": "Recorded Recovery Context",
+      "sources": [
+        "P-F.0.1"
+      ],
+      "destinations": [
+        "P-F.0.4"
+      ],
+      "receiving_role": "I",
+      "request": {
+        "type": "object",
+        "required": [
+          "restaurant_id",
+          "context_id",
+          "recorded_surplus_or_waste",
+          "quantities",
+          "units",
+          "limitations"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "restaurant_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "context_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "recorded_surplus_or_waste": {
+            "type": "array"
+          },
+          "quantities": {
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "units": {
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "limitations": {
+            "type": "array"
+          }
+        }
+      },
+      "response": {
+        "type": "object",
+        "required": [
+          "accepted",
+          "flow",
+          "recipient"
+        ],
+        "properties": {
+          "accepted": {
+            "type": "boolean"
+          },
+          "flow": {
+            "type": "string"
+          },
+          "recipient": {
+            "type": "string"
+          }
+        }
+      },
+      "errors": [
+        "INVALID_PACKET",
+        "WRONG_ENDPOINT",
+        "OUT_OF_SCOPE",
+        "UNAUTHORIZED",
+        "DOMAIN_STATE",
+        "NOT_RETAINED"
+      ]
+    },
+    {
+      "operationId": "P_IF_11",
+      "flow": "P-IF.11",
+      "name": "Recorded Recovery State",
+      "sources": [
+        "P-F.0.4"
+      ],
+      "destinations": [
+        "P-F.0.5"
+      ],
+      "receiving_role": "I",
+      "request": {
+        "type": "object",
+        "required": [
+          "restaurant_id",
+          "request_id",
+          "state",
+          "response_reference",
+          "exceptions"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "restaurant_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "request_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "state": {
+            "type": "string",
+            "minLength": 1
+          },
+          "response_reference": {
+            "type": "string",
+            "minLength": 1
+          },
+          "exceptions": {
+            "type": "array"
+          }
+        }
+      },
+      "response": {
+        "type": "object",
+        "required": [
+          "accepted",
+          "flow",
+          "recipient"
+        ],
+        "properties": {
+          "accepted": {
+            "type": "boolean"
+          },
+          "flow": {
+            "type": "string"
+          },
+          "recipient": {
+            "type": "string"
+          }
+        }
+      },
+      "errors": [
+        "INVALID_PACKET",
+        "WRONG_ENDPOINT",
+        "OUT_OF_SCOPE",
+        "UNAUTHORIZED",
+        "DOMAIN_STATE",
+        "NOT_RETAINED"
+      ]
+    },
+    {
+      "operationId": "P_IF_12",
+      "flow": "P-IF.12",
+      "name": "Supply Exception Context",
+      "sources": [
+        "P-F.0.3"
+      ],
+      "destinations": [
+        "P-F.0.6"
+      ],
+      "receiving_role": "I",
+      "request": {
+        "type": "object",
+        "required": [
+          "restaurant_id",
+          "order_id",
+          "state",
+          "exception",
+          "responsible_party",
+          "follow_up"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "restaurant_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "order_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "state": {
+            "type": "string",
+            "minLength": 1
+          },
+          "exception": {
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "responsible_party": {
+            "type": "string",
+            "minLength": 1
+          },
+          "follow_up": {
+            "type": [
+              "object",
+              "null"
+            ]
+          }
+        }
+      },
+      "response": {
+        "type": "object",
+        "required": [
+          "accepted",
+          "flow",
+          "recipient"
+        ],
+        "properties": {
+          "accepted": {
+            "type": "boolean"
+          },
+          "flow": {
+            "type": "string"
+          },
+          "recipient": {
+            "type": "string"
+          }
+        }
+      },
+      "errors": [
+        "INVALID_PACKET",
+        "WRONG_ENDPOINT",
+        "OUT_OF_SCOPE",
+        "UNAUTHORIZED",
+        "DOMAIN_STATE",
+        "NOT_RETAINED"
+      ]
+    },
+    {
+      "operationId": "P_IF_13",
+      "flow": "P-IF.13",
+      "name": "Recovery Exception Context",
+      "sources": [
+        "P-F.0.4"
+      ],
+      "destinations": [
+        "P-F.0.6"
+      ],
+      "receiving_role": "I",
+      "request": {
+        "type": "object",
+        "required": [
+          "restaurant_id",
+          "request_id",
+          "state",
+          "exception",
+          "responsible_party",
+          "follow_up"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "restaurant_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "request_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "state": {
+            "type": "string",
+            "minLength": 1
+          },
+          "exception": {
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "responsible_party": {
+            "type": "string",
+            "minLength": 1
+          },
+          "follow_up": {
+            "type": [
+              "object",
+              "null"
+            ]
+          }
+        }
+      },
+      "response": {
+        "type": "object",
+        "required": [
+          "accepted",
+          "flow",
+          "recipient"
+        ],
+        "properties": {
+          "accepted": {
+            "type": "boolean"
+          },
+          "flow": {
+            "type": "string"
+          },
+          "recipient": {
+            "type": "string"
+          }
+        }
+      },
+      "errors": [
+        "INVALID_PACKET",
+        "WRONG_ENDPOINT",
+        "OUT_OF_SCOPE",
+        "UNAUTHORIZED",
+        "DOMAIN_STATE",
+        "NOT_RETAINED"
+      ]
+    },
+    {
+      "operationId": "P_IF_14",
+      "flow": "P-IF.14",
+      "name": "Authorized Supply Disposition",
+      "sources": [
+        "P-F.0.6"
+      ],
+      "destinations": [
+        "P-F.0.3"
+      ],
+      "receiving_role": "I",
+      "request": {
+        "type": "object",
+        "required": [
+          "restaurant_id",
+          "order_id",
+          "command_id",
+          "authorized_disposition"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "restaurant_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "order_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "command_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "authorized_disposition": {
+            "type": [
+              "object",
+              "null"
+            ]
+          }
+        }
+      },
+      "response": {
+        "type": "object",
+        "required": [
+          "accepted",
+          "flow",
+          "recipient"
+        ],
+        "properties": {
+          "accepted": {
+            "type": "boolean"
+          },
+          "flow": {
+            "type": "string"
+          },
+          "recipient": {
+            "type": "string"
+          }
+        }
+      },
+      "errors": [
+        "INVALID_PACKET",
+        "WRONG_ENDPOINT",
+        "OUT_OF_SCOPE",
+        "UNAUTHORIZED",
+        "DOMAIN_STATE",
+        "NOT_RETAINED"
+      ]
+    },
+    {
+      "operationId": "P_IF_15",
+      "flow": "P-IF.15",
+      "name": "Authorized Recovery Disposition",
+      "sources": [
+        "P-F.0.6"
+      ],
+      "destinations": [
+        "P-F.0.4"
+      ],
+      "receiving_role": "I",
+      "request": {
+        "type": "object",
+        "required": [
+          "restaurant_id",
+          "request_id",
+          "command_id",
+          "authorized_disposition"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "restaurant_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "request_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "command_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "authorized_disposition": {
+            "type": [
+              "object",
+              "null"
+            ]
+          }
+        }
+      },
+      "response": {
+        "type": "object",
+        "required": [
+          "accepted",
+          "flow",
+          "recipient"
+        ],
+        "properties": {
+          "accepted": {
+            "type": "boolean"
+          },
+          "flow": {
+            "type": "string"
+          },
+          "recipient": {
+            "type": "string"
+          }
+        }
+      },
+      "errors": [
+        "INVALID_PACKET",
+        "WRONG_ENDPOINT",
+        "OUT_OF_SCOPE",
+        "UNAUTHORIZED",
+        "DOMAIN_STATE",
+        "NOT_RETAINED"
+      ]
+    },
+    {
+      "operationId": "P_IF_16",
+      "flow": "P-IF.16",
+      "name": "Authorized Task Constraints",
+      "sources": [
+        "P-F.0.6"
+      ],
+      "destinations": [
+        "P-F.0.1",
+        "P-F.0.2",
+        "P-F.0.3",
+        "P-F.0.4",
+        "P-F.0.5"
+      ],
+      "receiving_role": "C",
+      "request": {
+        "type": "object",
+        "required": [
+          "restaurant_id",
+          "role",
+          "allowed_tasks",
+          "policy_version",
+          "command_reference"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "restaurant_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "role": {
+            "type": "string",
+            "minLength": 1
+          },
+          "allowed_tasks": {
+            "type": "array"
+          },
+          "policy_version": {
+            "type": "string",
+            "minLength": 1
+          },
+          "command_reference": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "response": {
+        "type": "object",
+        "required": [
+          "accepted",
+          "flow",
+          "recipient"
+        ],
+        "properties": {
+          "accepted": {
+            "type": "boolean"
+          },
+          "flow": {
+            "type": "string"
+          },
+          "recipient": {
+            "type": "string"
+          }
+        }
+      },
+      "errors": [
+        "INVALID_PACKET",
+        "WRONG_ENDPOINT",
+        "OUT_OF_SCOPE",
+        "UNAUTHORIZED",
+        "DOMAIN_STATE",
+        "NOT_RETAINED"
+      ]
+    },
+    {
+      "operationId": "P_IF_17",
+      "flow": "P-IF.17",
+      "name": "Recoverable Operational Snapshot",
+      "sources": [
+        "P-F.0.1"
+      ],
+      "destinations": [
+        "P-F.0.6"
+      ],
+      "receiving_role": "I",
+      "request": {
+        "type": "object",
+        "required": [
+          "restaurant_id",
+          "snapshot_id",
+          "confirmed_records",
+          "relationships",
+          "selected_scope"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "restaurant_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "snapshot_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "confirmed_records": {
+            "type": "array"
+          },
+          "relationships": {
+            "type": "array"
+          },
+          "selected_scope": {
+            "type": "array"
+          }
+        }
+      },
+      "response": {
+        "type": "object",
+        "required": [
+          "accepted",
+          "flow",
+          "recipient"
+        ],
+        "properties": {
+          "accepted": {
+            "type": "boolean"
+          },
+          "flow": {
+            "type": "string"
+          },
+          "recipient": {
+            "type": "string"
+          }
+        }
+      },
+      "errors": [
+        "INVALID_PACKET",
+        "WRONG_ENDPOINT",
+        "OUT_OF_SCOPE",
+        "UNAUTHORIZED",
+        "DOMAIN_STATE",
+        "NOT_RETAINED"
+      ]
+    },
+    {
+      "operationId": "P_IF_18",
+      "flow": "P-IF.18",
+      "name": "Restored Operational State",
+      "sources": [
+        "P-F.0.6"
+      ],
+      "destinations": [
+        "P-F.0.1"
+      ],
+      "receiving_role": "I",
+      "request": {
+        "type": "object",
+        "required": [
+          "restaurant_id",
+          "snapshot_id",
+          "records",
+          "relationships",
+          "reconciliation_result"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "restaurant_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "snapshot_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "records": {
+            "type": "array"
+          },
+          "relationships": {
+            "type": "array"
+          },
+          "reconciliation_result": {
+            "type": [
+              "object",
+              "null"
+            ]
+          }
+        }
+      },
+      "response": {
+        "type": "object",
+        "required": [
+          "accepted",
+          "flow",
+          "recipient"
+        ],
+        "properties": {
+          "accepted": {
+            "type": "boolean"
+          },
+          "flow": {
+            "type": "string"
+          },
+          "recipient": {
+            "type": "string"
+          }
+        }
+      },
+      "errors": [
+        "INVALID_PACKET",
+        "WRONG_ENDPOINT",
+        "OUT_OF_SCOPE",
+        "UNAUTHORIZED",
+        "DOMAIN_STATE",
+        "NOT_RETAINED"
+      ]
+    },
+    {
+      "operationId": "P_IF_19",
+      "flow": "P-IF.19",
+      "name": "Purchase Transaction Record",
+      "sources": [
+        "P-F.0.3"
+      ],
+      "destinations": [
+        "P-F.0.1"
+      ],
+      "receiving_role": "I",
+      "request": {
+        "type": "object",
+        "required": [
+          "restaurant_id",
+          "order_id",
+          "version",
+          "event_id",
+          "event_type",
+          "payload",
+          "approval_reference"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "restaurant_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "order_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "version": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "event_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "event_type": {
+            "type": "string",
+            "minLength": 1
+          },
+          "payload": {
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "approval_reference": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "response": {
+        "type": "object",
+        "required": [
+          "accepted",
+          "flow",
+          "recipient"
+        ],
+        "properties": {
+          "accepted": {
+            "type": "boolean"
+          },
+          "flow": {
+            "type": "string"
+          },
+          "recipient": {
+            "type": "string"
+          }
+        }
+      },
+      "errors": [
+        "INVALID_PACKET",
+        "WRONG_ENDPOINT",
+        "OUT_OF_SCOPE",
+        "UNAUTHORIZED",
+        "DOMAIN_STATE",
+        "NOT_RETAINED"
+      ]
+    },
+    {
+      "operationId": "P_IF_20",
+      "flow": "P-IF.20",
+      "name": "Recovery Transaction Record",
+      "sources": [
+        "P-F.0.4"
+      ],
+      "destinations": [
+        "P-F.0.1"
+      ],
+      "receiving_role": "I",
+      "request": {
+        "type": "object",
+        "required": [
+          "restaurant_id",
+          "request_id",
+          "event_id",
+          "event_type",
+          "payload"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "restaurant_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "request_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "event_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "event_type": {
+            "type": "string",
+            "minLength": 1
+          },
+          "payload": {
+            "type": [
+              "object",
+              "null"
+            ]
+          }
+        }
+      },
+      "response": {
+        "type": "object",
+        "required": [
+          "accepted",
+          "flow",
+          "recipient"
+        ],
+        "properties": {
+          "accepted": {
+            "type": "boolean"
+          },
+          "flow": {
+            "type": "string"
+          },
+          "recipient": {
+            "type": "string"
+          }
+        }
+      },
+      "errors": [
+        "INVALID_PACKET",
+        "WRONG_ENDPOINT",
+        "OUT_OF_SCOPE",
+        "UNAUTHORIZED",
+        "DOMAIN_STATE",
+        "NOT_RETAINED"
+      ]
+    },
+    {
+      "operationId": "P_IF_21",
+      "flow": "P-IF.21",
+      "name": "Purchase Record Retention Result",
+      "sources": [
+        "P-F.0.1"
+      ],
+      "destinations": [
+        "P-F.0.3"
+      ],
+      "receiving_role": "I",
+      "request": {
+        "type": "object",
+        "required": [
+          "restaurant_id",
+          "order_id",
+          "event_id",
+          "retained",
+          "errors"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "restaurant_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "order_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "event_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "retained": {
+            "type": "boolean"
+          },
+          "errors": {
+            "type": "array"
+          }
+        }
+      },
+      "response": {
+        "type": "object",
+        "required": [
+          "accepted",
+          "flow",
+          "recipient"
+        ],
+        "properties": {
+          "accepted": {
+            "type": "boolean"
+          },
+          "flow": {
+            "type": "string"
+          },
+          "recipient": {
+            "type": "string"
+          }
+        }
+      },
+      "errors": [
+        "INVALID_PACKET",
+        "WRONG_ENDPOINT",
+        "OUT_OF_SCOPE",
+        "UNAUTHORIZED",
+        "DOMAIN_STATE",
+        "NOT_RETAINED"
+      ]
+    },
+    {
+      "operationId": "P_IF_22",
+      "flow": "P-IF.22",
+      "name": "Recovery Record Retention Result",
+      "sources": [
+        "P-F.0.1"
+      ],
+      "destinations": [
+        "P-F.0.4"
+      ],
+      "receiving_role": "I",
+      "request": {
+        "type": "object",
+        "required": [
+          "restaurant_id",
+          "request_id",
+          "event_id",
+          "retained",
+          "errors"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "restaurant_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "request_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "event_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "retained": {
+            "type": "boolean"
+          },
+          "errors": {
+            "type": "array"
+          }
+        }
+      },
+      "response": {
+        "type": "object",
+        "required": [
+          "accepted",
+          "flow",
+          "recipient"
+        ],
+        "properties": {
+          "accepted": {
+            "type": "boolean"
+          },
+          "flow": {
+            "type": "string"
+          },
+          "recipient": {
+            "type": "string"
+          }
+        }
+      },
+      "errors": [
+        "INVALID_PACKET",
+        "WRONG_ENDPOINT",
+        "OUT_OF_SCOPE",
+        "UNAUTHORIZED",
+        "DOMAIN_STATE",
+        "NOT_RETAINED"
+      ]
+    },
+    {
+      "operationId": "P_IF_23",
+      "flow": "P-IF.23",
+      "name": "Order State Query",
+      "sources": [
+        "P-F.0.5"
+      ],
+      "destinations": [
+        "P-F.0.3"
+      ],
+      "receiving_role": "I",
+      "request": {
+        "type": "object",
+        "required": [
+          "restaurant_id",
+          "order_id",
+          "query_id"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "restaurant_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "order_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "query_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "response": {
+        "type": "object",
+        "required": [
+          "accepted",
+          "flow",
+          "recipient"
+        ],
+        "properties": {
+          "accepted": {
+            "type": "boolean"
+          },
+          "flow": {
+            "type": "string"
+          },
+          "recipient": {
+            "type": "string"
+          }
+        }
+      },
+      "errors": [
+        "INVALID_PACKET",
+        "WRONG_ENDPOINT",
+        "OUT_OF_SCOPE",
+        "UNAUTHORIZED",
+        "DOMAIN_STATE",
+        "NOT_RETAINED"
+      ]
+    },
+    {
+      "operationId": "P_IF_24",
+      "flow": "P-IF.24",
+      "name": "Operating Task Observations",
+      "sources": [
+        "P-F.0.1",
+        "P-F.0.2",
+        "P-F.0.3",
+        "P-F.0.4",
+        "P-F.0.5"
+      ],
+      "destinations": [
+        "P-F.0.6"
+      ],
+      "receiving_role": "I",
+      "request": {
+        "type": "object",
+        "required": [
+          "restaurant_id",
+          "source_function",
+          "task_id",
+          "timestamp",
+          "outcome",
+          "elapsed_ms"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "restaurant_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_function": {
+            "type": "string",
+            "minLength": 1
+          },
+          "task_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "timestamp": {
+            "type": "string",
+            "minLength": 1
+          },
+          "outcome": {
+            "type": "string",
+            "minLength": 1
+          },
+          "elapsed_ms": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0
+          }
+        }
+      },
+      "response": {
+        "type": "object",
+        "required": [
+          "accepted",
+          "flow",
+          "recipient"
+        ],
+        "properties": {
+          "accepted": {
+            "type": "boolean"
+          },
+          "flow": {
+            "type": "string"
+          },
+          "recipient": {
+            "type": "string"
+          }
+        }
+      },
+      "errors": [
+        "INVALID_PACKET",
+        "WRONG_ENDPOINT",
+        "OUT_OF_SCOPE",
+        "UNAUTHORIZED",
+        "DOMAIN_STATE",
+        "NOT_RETAINED"
+      ]
+    }
+  ]
+}
