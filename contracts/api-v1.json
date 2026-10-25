@@ -676,14 +676,16 @@
               "number",
               "null"
             ],
-            "minimum": 0
+            "minimum": 0,
+            "description": "100 * waste_mass_kg / diner_covers, in kg per 100 diner covers; null if the denominator is missing or zero."
           },
           "stockout_rate": {
             "type": [
               "number",
               "null"
             ],
-            "minimum": 0
+            "minimum": 0,
+            "description": "100 * unavailable_valid_opportunities / all_valid_opportunities, in percent (0 to 100); null if the denominator is missing or zero."
           },
           "limitations": {
             "type": "array"

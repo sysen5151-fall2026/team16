@@ -1,0 +1,22 @@
+﻿global_id,name,producers,consumers,architecture,interpretation
+I_3MK8GQBS78J2Q_ADCJ8S0CRZ06T,Purchasing Recommendation Request,UC.1.2,UC.1.3,P-IO.01,Scoped planning control entering P-F.0.5.
+I_EBPMBEA93RJ5V_81WA8GJH6AK0H,Current Inventory Data,UC.1.3,UC.1.6,P-IO.04 / P-IF.03,Preloaded operational record subset; retrieved within P-F.0.1.
+I_60TECDFYT0HKS_AAJJT262Y36HR,Historical Usage Data,UC.1.4,UC.1.6,P-IO.04 / P-IF.03,Preloaded historical usage subset; no new external data source.
+I_AKZKH7TBKJH98_9Q0Z0CBS7FHK9,Expiration Data,UC.1.5,UC.1.6,P-IO.04 / P-IF.03,"Recorded batch dates, including explicit unknowns."
+I_1WEADPJBY6HXJ_8A1D1DE4NFZ3Y,Demand Forecast,UC.1.6,UC.1.7,P-IF.05 / P-IO.09,Internal planning result; forecast is a field of the reviewable recommendation basis.
+I_ADZ5TRXHF8GX6_BTMJ7NV8SEE1F,Purchasing Recommendation,UC.1.7,UC.1.8,P-IF.05 / P-IF.06 / P-IO.09,Distinguish internal advice from the manager-facing reviewable draft using producer/consumer IDs.
+I_2PGPD4AS0EKRH_9AHK23D95BF3S,Purchasing Recommendation,UC.1.8,UC.1.9,P-IF.05 / P-IF.06 / P-IO.09,Distinguish internal advice from the manager-facing reviewable draft using producer/consumer IDs.
+I_2X5GVX8X7PJ5W_989PY93Z66YF3,Reviewed Purchasing Recommendation,UC.1.9,UC.1.10; UC.1.9A,P-F.1 / P-IO.09,Local manager review state; no additional cross-boundary I/O is asserted.
+I_2QAXWPMMP0GFJ_B6M0HGFF39HM8,Adjusted Purchase Quantities,UC.1.10,UC.1.11,P-IO.02,Manager revision input to P-F.0.3.
+I_B30928AF99F65_925A7B86834C0,Checked Ingredient Information,UC.1.9A,UC.1.10,P-F.1 / P-IO.09,Added manager-local completeness review; deferral produces no approval and does not add an architectural crossing.
+I_2Y1DQQMN2PHYX_8N9CDENXN3GB2,Updated Proposed Purchase Order,UC.1.11,UC.1.12,P-IF.06 / P-IO.09,Revised unapproved reviewable draft; added feedback message 4 makes approval basis explicit.
+I_16HH8G0YYYG3A_97ESQ7YVECAHX,Order Approval,UC.1.12,UC.1.13,P-IO.03,"Explicit approval control, separate from revision."
+I_62P4F23TSRHXR_BHFW4FF8R3HE1,Approved Order Data,UC.1.13,UC.1.14,P-IF.19 / P-F.0.3,"Internal retained approval state, version and quantities."
+I_18EQGJZVA6HER_A4F0S4GXR1EPG,Official Purchase Order,UC.1.14,UC.1.15,P-F.0.3 / P-IO.11,Internal official-order object becomes the unchanged approved outgoing order.
+I_CAK4PAY58YJ9W_89KPE2WRCZST5,Purchase Order,UC.1.15,UC.1.16,P-IO.11,Cross-boundary supplier handoff.
+I_6QQJQRC6V0GQF_A1S18HAWEQDGA,Received Purchase Order,UC.1.16,UC.1.17,P-F.3 / P-IO.11,"Supplier-local received copy, not a second PANTRI transmission."
+I_BWZF7A1GE0K2J_BGED018H95NA6,Order Confirmation,UC.1.17,UC.1.18,P-F.3 / P-IO.05,Supplier-local confirmation before the response crosses to PANTRI.
+I_F3C401HM52HGV_9W956S5ZVN95R,Delivery Information,UC.1.18,UC.1.19,P-IO.05,"Aggregate response includes order association, confirmation and delivery context."
+I_5A5MQRWRTRG3E_BFPCA04Y3N45D,Supplier Confirmation Record,UC.1.19,UC.1.20,P-IF.19 / P-IF.07,Retained supplier-response event and associated recorded state.
+I_DAA6WKYETMGFF_81RK1EEMEN60M,Updated Order Status,UC.1.20,UC.1.21,P-IF.07 / P-IO.13,Internal state to presentation then external status.
+I_B273ASYMTWJWH_9PQMCQRAHZ2DX,Order Status Information,UC.1.21,UC.1.22,P-IO.13,Recorded status delivered to the manager.
