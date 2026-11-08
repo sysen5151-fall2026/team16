@@ -65,3 +65,11 @@ Open the original Needs and Requirements documents in Innoslate. Point to N.03 a
 Source green I/O entities are represented by JSON payloads in the event log. Restaurant fixtures provide retrieval inputs at UC.1.3鈥揢C.1.5. The deterministic forecast provides UC.1.6 output. The supplier adapter consumes the actual sent-order payload at UC.1.16 and returns confirmation and delivery information at UC.1.17鈥揢C.1.18. Those outputs are then recorded inside PANTRI at UC.1.19鈥揢C.1.21. The event log exposes this handoff without omitting the supporting actor.
 
 Workflow progress, reset and export are demonstration/evidence controls, not additional restaurant business capabilities. Data persistence, authentication, production integrations, all other use cases and pilot acceptance tests are not claimed implemented.
+
+## 2026-11-08 completion of direct product witness
+
+`PANTRI_PMC2.html` now runs `src/pmc2-ui.js` against the same `orders.js` and public role/scope gate used by the Python tests. `src/architecture/pmc2-session.js` fixes the independent prepared data to 4/6/1 kg. `tests/pmc2-ui.test.js` exercises the delivered bundle, rejects blank revisions and stale approval, and checks the exported result. This is a DOM-adapter test, complemented by actual in-app browser evidence under evidence/pmc2.
+
+Additional requirement cases: `test_P_AFR_11_absent_response_is_not_confirmed`, `test_P_AFR_11_partial_delayed_and_exception_remain_distinct`, and `test_P_PCR_IO_01_sent_version_edit_is_rejected`. The latter addresses the live component IO.01 criterion that already-sent edits be rejected without changing the session.
+
+The November 8 live model check confirms P-DFR.03 -> P-F.0.3 / PA.3, four one-to-one mechanism mappings, component functional/I-O/interface examples and P-NFR.02 -> P-PCR.SW.02 Equivalence. See live-model-audit-20261108.json for the exact observed text. No model verification status was promoted.

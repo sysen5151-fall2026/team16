@@ -78,3 +78,8 @@ Sources and observed revision dates are in `model/SOURCES.md`; the selected use 
 ## Function architecture increment October 23 2026
 
 The first-level architecture implementation is in src/architecture. Its 24 internal interfaces come from the Innoslate flow register, with a machine-readable contract in contracts/api-v1.json and generated signatures in contracts/generated. Run npm test and npm run demo:architecture. See docs/route-table.md, docs/FUNCTION_ARCHITECTURE_TRACEABILITY.md and docs/FUNCTION_ARCHITECTURE_TEST_REPORT.md. The original offline walking skeleton remains available; it is not described as already migrated to the new module library.
+
+
+## PMC2 purchase product
+
+Open `PANTRI_PMC2.html` for the direct P-F.0.3 architecture-module interface. Rebuild with `python tools/build_pmc2.py`. See [recording-readiness evidence](docs/PMC2_READINESS_ZH.md), [traceability](docs/traceability.md) and [entry points](docs/route-table.md). This is an in-memory prepared prototype with simulated supplier input, not a production procurement service.

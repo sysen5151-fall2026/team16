@@ -1,20 +1,29 @@
-# PMC2 非视频交付状态
+# PMC2 录制前交付与验收
 
-本分支基于 function-architecture；main 尚未包含这些架构改动。未经合并前，请勿从 main 演示。
+日期：2026-11-08。工作分支 pmc2-evidence-20261108；Draft PR #1，未合并。
 
-## 运行
+## 已完成
 
-1. 安装已有受信任的 Node.js 与 Python。
-2. `npm test` 运行原型回归。
-3. `python -m unittest discover -s tests -p test_functional_requirements.py -v` 运行按需求命名的 Python 测试；Python 通过子进程调用真实 JS，不复制业务逻辑。
-4. `node tools/pmc2_scenario.js` 生成完整实际运行记录：草稿、修订、审批、发送、确认以及拒绝场景。
-5. 对照 docs/traceability.md、orders.js 顶部 ICOM 说明、contracts/api-v1.yaml 和 docs/route-table.md。
+- 在线复核 P-DFR.03、P-AFR.08-11、四个资产一对一映射、组件三类需求示例和授权 Equivalence 下分；完整现场读回保存在 evidence/pmc2/live-model-audit-20261108.json。
+- 增加 PANTRI_PMC2.html；它直接运行 orders.js，不再用旧界面冒充架构模块。双击 HTML 即可离线使用，无需服务或账号。
+- 统一准备数据为 4/6/1 kg，测试修订到 5/6/1 kg、明确审批、保持一致发送及模拟回复。
+- 根据在线 P-PCR.IO.01 判据修复已发送订单仍可修改草稿的问题，并加入原子拒绝测试。
+- 补齐 docs/traceability.md、ICOM 模块说明、Python 需求测试、CI、OpenAPI YAML 和入口用例表。
+- 13 项 Python 需求测试、2 项 Python 契约检查（安装 PyYAML==6.0.3）；40 项 Node 回归（包括 2 项新界面测试）；浏览器真实点击运行并保留 JSON 和截图。
 
-## 未能据此完成的部分
+## 使用与复核
 
-- Innoslate 当前浏览器显示登录页；须重新登录后复核模型。没有改为 Passed。
-- 本地成功不等于远端 CI 成功；以该分支 GitHub Actions 实际运行及 commit 为准。
-- 课堂实际选定功能仍需团队确认；本包沿用此前准备的 P-F.0.3，不擅自认证课堂选择。
-- 组件规格 PC-IF.01-03 中的持久化／传输引用与当前共享内存原型存在实现差距，YAML明确标为设计契约。
-- 既有离线 UI 使用 core.js，新增需求测试调用 architecture/orders.js；演示这个模块时使用 CLI，不能声称原 UI 已接入它。
-- 视频、同伴互评及正式 Canvas 提交不在本次执行范围。
+1. 打开 PANTRI_PMC2.html；先试未审批发送，确认拒绝。
+2. Beef 从 4 改为 5，Save revised draft；确认未审批 v2 和 5/6/1 kg。
+3. 勾选明确审批并 Record approval，再 Transmit approved order。
+4. Record supplier response；确认 CONFIRMED，查看实际状态或导出 JSON。模拟确认不表示配送。
+5. 本地检查：`python tools/build_pmc2.py --check`、`node --test tests/*.test.js`、`python -m unittest discover -s tests -p test_functional_requirements.py -v`。
+6. GitHub Actions 必须对应本次提交并显示成功；参见 PR #1 checks。
+
+## 验收边界
+
+- 当前已具备该分支在 PMC2 要求下的模型、产品、仓库与验证证据。若课堂实际选择不是 P-F.0.3，应由团队确认适用范围；本包沿用既定采购分支。
+- P-PCR.SW.02 的完整授权百分比验证、持久数据库、生产身份认证与真实供应商集成不在原型结果内；保留真实 Draft/Planned 状态。
+- PC-IF.01-03 是组件内部设计契约，当前运行通过共享内存状态衔接。YAML 不代表已部署 HTTP 服务。
+- 新 PMC2 界面与旧 Milestone1 界面并存；录制所选架构模块应使用新界面。
+- 视频脚本、录制、剪辑、上传与 Canvas 提交尚未执行，按用户要求留在后续阶段。
