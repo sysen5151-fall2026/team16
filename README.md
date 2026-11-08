@@ -1,3 +1,13 @@
+# Primary PMC2 product: PANTRI_App.html
+
+Use **PANTRI_App.html** for the team video. This is the original classroom Drive app, reviewed directly on 2026-11-08. Its UI and business logic are unchanged; four function/ICOM comments were added for traceability. Open the HTML in a browser, with synthetic localStorage data and explicitly simulated supplier responses.
+
+See [original App audit](docs/ORIGINAL_APP_AUDIT_ZH.md), [primary traceability](docs/traceability.md), and [primary entry points](docs/route-table.md). PANTRI_PMC2.html is retained as an alternative/reference and is not the primary demo.
+
+---
+
+## Earlier repository README (historical/reference)
+
 # PANTRI — Milestone 1 Walking Skeleton
 
 SYSEN 5151 · Team 16 · UC.1: Restaurant Manager Places Ingredient Order.

@@ -19,9 +19,12 @@ jobs:
       - run: npm test
       - run: python -m unittest discover -s tests -p 'test*.py' -v
       - run: node tools/pmc2_scenario.js > pmc2-run.json
+      - run: node tools/original_app_scenario.js > original-app-run.json
       - uses: actions/upload-artifact@v4
         with:
           name: pmc2-prepared-run
           path: |
             pmc2-run.json
             PANTRI_PMC2.html
+            PANTRI_App.html
+            original-app-run.json

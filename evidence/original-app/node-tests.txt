@@ -1,0 +1,22 @@
+✔ Original seed matches classroom inventory and purchasing data (6.8711ms)
+✔ P-AFR.08 original revision is v2 and unapproved, no order created (1.5075ms)
+✔ P-AFR.08 invalid negative quantity is rejected atomically (3.571ms)
+✔ P-AFR.09 original stale approval is rejected (1.8282ms)
+✔ P-AFR.09 original approval retains v2, 5 kg and $72.50 estimate (2.2814ms)
+✔ P-AFR.10 no unapproved order can be sent (1.0682ms)
+✔ P-AFR.10 original send preserves the approved snapshot and pending state (2.9478ms)
+✔ P-AFR.10 duplicate sends do not create a second order or sent event (3.1493ms)
+✔ P-PCR.IO.01 approved/sent source draft cannot be edited (2.7274ms)
+✔ P-AFR.11 original supplier events preserve quantities, receiving and stock (10.7649ms)
+✔ P-AFR.11 wrong restaurant/order and invalid time are rejected (7.9892ms)
+✔ P-AFR.11 late older event does not overwrite latest supplier state (3.1543ms)
+✔ Original service saves approvals and rehydrates actual local-storage state (10.8938ms)
+✔ Original storage failure does not publish an unpersisted approval (4.8239ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 145.4716

@@ -36,4 +36,32 @@ class PurchaseRequirements(unittest.TestCase):
   for k in ['wrong-order-response','overwrite-lines','missing-confirmation']:self.denied(k)
  def test_P_NFR_02_prepared_unauthorized_cases_preserve_state(self):
   self.denied('staff-approval');self.denied('wrong-restaurant')
+# Test discovery loads both the original App and reference architecture cases.
+
+
+class OriginalAppRequirements(unittest.TestCase):
+ """Primary classroom product: calls the actual embedded PANTRI_App core."""
+ @classmethod
+ def setUpClass(cls):
+  p=subprocess.run([os.environ.get('NODE_BINARY','node'),'tools/original_app_scenario.js'],cwd=ROOT,capture_output=True,text=True,check=True)
+  cls.r=json.loads(p.stdout);cls.c=cls.r['checkpoints'];cls.bad={x['name']:x for x in cls.r['rejections']}
+ def denied(self,key):
+  self.assertFalse(self.bad[key]['ok']);self.assertTrue(self.bad[key]['unchanged'])
+ def test_P_AFR_08_original_revision(self):
+  self.assertEqual(self.c['initial']['draft']['lines'][0]['managerQty'],4);s=self.c['revised'];self.assertEqual(s['draft']['version'],2);self.assertEqual(s['draft']['lines'][0]['managerQty'],5);self.assertEqual(s['draft']['status'],'draft');self.assertEqual(s['orders'],[])
+ def test_P_AFR_08_original_invalid_quantity(self): self.denied('negative-quantity')
+ def test_P_AFR_09_original_version_bound_snapshot(self):
+  self.denied('stale-approval');o=self.c['approved']['orders'][0];self.assertEqual(o['approvedVersion'],2);self.assertEqual(o['approvedLines'][0]['managerQty'],5);self.assertEqual(o['approvedLines'][0]['unit'],'kg');self.assertIsNone(o['sentAt'])
+ def test_P_AFR_10_original_unchanged_send_and_one_commitment(self):
+  self.denied('unapproved-send');a=self.c['approved']['orders'][0];s=self.c['sent']['orders'][0];self.assertEqual(a['approvedLines'],s['approvedLines']);self.assertEqual(s['supplierStatus'],'awaiting_confirmation');self.assertEqual(sum(e['kind']=='sent' for e in s['events']),1)
+ def test_P_PCR_IO_01_original_sent_edit_rejected(self): self.denied('sent-edit')
+ def test_P_AFR_11_original_confirmation_is_not_receipt(self):
+  s=self.c['confirmed'];self.assertEqual(s['orders'][0]['supplierStatus'],'confirmed');self.assertEqual(s['orders'][0]['fulfillmentStatus'],'not_received');self.assertEqual(s['stock'],8);self.assertTrue(s['partnerEvents'][0]['simulated'])
+ def test_P_AFR_11_original_alternate_states_and_scope(self):
+  self.denied('wrong-restaurant')
+  for k in ['partial','delayed','exception']:
+   s=self.c[k];self.assertEqual(s['orders'][0]['supplierStatus'],k);self.assertEqual(s['orders'][0]['approvedLines'][0]['managerQty'],5);self.assertEqual(s['stock'],8)
+ def test_P_AFR_09_original_approval_survives_reload(self):
+  self.assertEqual(self.r['rehydrated']['approvedVersion'],2);self.assertEqual(self.r['rehydrated']['approvedLines'][0]['managerQty'],5)
+
 if __name__=='__main__': unittest.main(verbosity=2)

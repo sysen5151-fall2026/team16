@@ -22,4 +22,16 @@ class ContractMapping(unittest.TestCase):
    self.assertEqual(op['x-function-id'],f'P-F.0.3.{i}')
    self.assertEqual(op['x-consumer'],f'P-F.0.3.{i+1}')
    self.assertIn('Design only',op['x-status'])
+class OriginalProductMapping(unittest.TestCase):
+ def test_original_product_operations_reference_actual_functions(self):
+  d=yaml.safe_load((ROOT/'contracts/api-v1.yaml').read_text(encoding='utf-8'))
+  s=(ROOT/'PANTRI_App.html').read_text(encoding='utf-8')
+  for i,name in enumerate(['editDraft','approveDraft','sendApprovedOrder','recordSupplierEvent'],1):
+   op=d['paths']['/product/'+name]['post'];self.assertEqual(op['x-function-id'],'P-F.0.3.'+str(i));self.assertIn('function '+name+'(',s);self.assertIn('NOT an HTTP endpoint',op['x-transport'])
+ def test_original_app_only_adds_model_annotations(self):
+  import hashlib,re
+  p=json.loads((ROOT/'evidence/original-app/drive-provenance.json').read_text(encoding='utf-8'))
+  s=(ROOT/'PANTRI_App.html').read_text(encoding='utf-8')
+  clean,n=re.subn(r'/\*\* PMC2_MODEL: [^\n]* \*/\n','',s)
+  self.assertEqual(n,4);self.assertEqual(hashlib.sha256(clean.encode('utf-8')).hexdigest(),p['original_normalized_sha256'])
 if __name__=='__main__':unittest.main(verbosity=2)

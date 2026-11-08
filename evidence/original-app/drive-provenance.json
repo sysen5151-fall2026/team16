@@ -1,0 +1,10 @@
+{
+  "drive_id": "1SrqhizVi4SRNGfkZ9Xod9E2k0jVsW0tc",
+  "drive_url": "https://drive.google.com/file/d/1SrqhizVi4SRNGfkZ9Xod9E2k0jVsW0tc/view",
+  "drive_modified": "2026-10-21T15:37:05Z",
+  "size": 121507,
+  "original_sha256": "cb340efe9760b3423066fa1d7fcf11fe490e3bc5cd08b1d8a0b37905409c6977",
+  "adopted_sha256": "0cccd5261200413246588bc9b772a0da1c012d29b786272fab68c6db71e6098b",
+  "changes": "Only four PMC2_MODEL JSDoc annotations; all other UTF-8 bytes restored exactly after removing annotations. Drive original unchanged.",
+  "original_normalized_sha256": "cb340efe9760b3423066fa1d7fcf11fe490e3bc5cd08b1d8a0b37905409c6977"
+}
