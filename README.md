@@ -43,7 +43,7 @@ src/core.js                 State machine, restaurant-data fixture, forecasting 
 src/app.js                  Minimal UI and run-evidence export
 src/template.html           UI source and original-model placeholders
 model/                      Original Asset and UC.1 Action figures; source/action registry
-docs/TRACEABILITY.md         Need → requirement → action → implementation → demo evidence
+docs/traceability.md         Need → requirement → action → implementation → demo evidence
 docs/AI_PROVENANCE.md        Actual user request, source use, constraints and assistant contribution
 docs/DEMO_SCRIPT.md          Short classroom pitch and demo steps
 docs/TEST_REPORT.md          Actual test results and limits
@@ -72,7 +72,7 @@ Upload this extracted folder's contents to your team's GitHub repository. No ext
 
 The two original figures support the live presentation. The complete requirements baseline, stakeholder analysis and remaining rubric areas should point to the team's existing reports/model in the Canvas template. Those documents have not been edited and their draft status has not been changed.
 
-Sources and observed revision dates are in `model/SOURCES.md`; the selected use case and all 22 diagram actions are mapped in `docs/TRACEABILITY.md`.
+Sources and observed revision dates are in `model/SOURCES.md`; the selected use case and all 22 diagram actions are mapped in `docs/traceability.md`.
 
 
 ## Function architecture increment October 23 2026
