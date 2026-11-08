@@ -2,7 +2,7 @@
 from pathlib import Path
 import json, sys
 R=Path(__file__).resolve().parents[1]
-paths=list((R/'src/architecture').glob('*.js'))+[R/'src/pmc2-ui.js',R/'contracts/generated/server.js',R/'contracts/api-v1.json']
+paths=sorted((R/'src/architecture').glob('*.js'))+[R/'src/pmc2-ui.js',R/'contracts/generated/server.js',R/'contracts/api-v1.json']
 modules=[]
 for p in paths:
  code=p.read_text(encoding='utf-8')
