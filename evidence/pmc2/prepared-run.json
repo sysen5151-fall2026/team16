@@ -1,0 +1,1139 @@
+{
+  "checkpoints": {
+    "initial": {
+      "restaurant_id": "R1",
+      "today": "2026-10-06",
+      "records": [
+        {
+          "id": "B1",
+          "restaurant_id": "R1",
+          "ingredient": "beef",
+          "quantity": 8,
+          "unit": "kg",
+          "expires": "2026-10-08"
+        }
+      ],
+      "usage": [
+        {
+          "ingredient": "beef",
+          "quantity": 6
+        }
+      ],
+      "corrections": [],
+      "transactions": [],
+      "retention": {},
+      "policies": {},
+      "views": {
+        "P-IF.06": {
+          "restaurant_id": "R1",
+          "draft_id": "PO-DEMO-1",
+          "version": 1,
+          "lines": [
+            {
+              "ingredient_id": "beef",
+              "quantity": 4,
+              "unit": "kg"
+            }
+          ],
+          "limitations": [
+            "Synthetic prepared records; deterministic mean usage forecast; unknown dates excluded from usable stock."
+          ],
+          "approval_state": "UNAPPROVED"
+        }
+      },
+      "observations": [],
+      "task": {
+        "restaurant_id": "R1",
+        "ingredient_scope": [
+          "beef"
+        ],
+        "period": {
+          "days": 2
+        },
+        "task_id": "PMC2",
+        "requested_analysis": "purchase"
+      },
+      "advice": {
+        "restaurant_id": "R1",
+        "demand": {
+          "beef": 12
+        },
+        "usable_stock": {
+          "beef": 8
+        },
+        "horizon": 2,
+        "limitations": [
+          "Synthetic prepared records; deterministic mean usage forecast; unknown dates excluded from usable stock."
+        ],
+        "proposed_quantities": {
+          "beef": 4
+        }
+      },
+      "draft": {
+        "id": "PO-DEMO-1",
+        "version": 1,
+        "quantities": {
+          "beef": 4
+        }
+      },
+      "approval": null
+    },
+    "oldApproval": {
+      "restaurant_id": "R1",
+      "today": "2026-10-06",
+      "records": [
+        {
+          "id": "B1",
+          "restaurant_id": "R1",
+          "ingredient": "beef",
+          "quantity": 8,
+          "unit": "kg",
+          "expires": "2026-10-08"
+        }
+      ],
+      "usage": [
+        {
+          "ingredient": "beef",
+          "quantity": 6
+        }
+      ],
+      "corrections": [],
+      "transactions": [
+        {
+          "restaurant_id": "R1",
+          "order_id": "PO-DEMO-1",
+          "version": 1,
+          "event_id": "PO-DEMO-1:1:APPROVAL",
+          "event_type": "APPROVAL",
+          "payload": {
+            "id": "APP-1",
+            "restaurant_id": "R1",
+            "version": 1,
+            "actor": "demo-manager",
+            "quantities": {
+              "beef": 4
+            }
+          },
+          "approval_reference": "APP-1"
+        }
+      ],
+      "retention": {
+        "PO-DEMO-1:1:APPROVAL": true
+      },
+      "policies": {},
+      "views": {
+        "P-IF.06": {
+          "restaurant_id": "R1",
+          "draft_id": "PO-DEMO-1",
+          "version": 1,
+          "lines": [
+            {
+              "ingredient_id": "beef",
+              "quantity": 4,
+              "unit": "kg"
+            }
+          ],
+          "limitations": [
+            "Synthetic prepared records; deterministic mean usage forecast; unknown dates excluded from usable stock."
+          ],
+          "approval_state": "UNAPPROVED"
+        }
+      },
+      "observations": [],
+      "task": {
+        "restaurant_id": "R1",
+        "ingredient_scope": [
+          "beef"
+        ],
+        "period": {
+          "days": 2
+        },
+        "task_id": "PMC2",
+        "requested_analysis": "purchase"
+      },
+      "advice": {
+        "restaurant_id": "R1",
+        "demand": {
+          "beef": 12
+        },
+        "usable_stock": {
+          "beef": 8
+        },
+        "horizon": 2,
+        "limitations": [
+          "Synthetic prepared records; deterministic mean usage forecast; unknown dates excluded from usable stock."
+        ],
+        "proposed_quantities": {
+          "beef": 4
+        }
+      },
+      "draft": {
+        "id": "PO-DEMO-1",
+        "version": 1,
+        "quantities": {
+          "beef": 4
+        }
+      },
+      "approval": {
+        "id": "APP-1",
+        "restaurant_id": "R1",
+        "version": 1,
+        "actor": "demo-manager",
+        "quantities": {
+          "beef": 4
+        }
+      }
+    },
+    "revised": {
+      "restaurant_id": "R1",
+      "today": "2026-10-06",
+      "records": [
+        {
+          "id": "B1",
+          "restaurant_id": "R1",
+          "ingredient": "beef",
+          "quantity": 8,
+          "unit": "kg",
+          "expires": "2026-10-08"
+        }
+      ],
+      "usage": [
+        {
+          "ingredient": "beef",
+          "quantity": 6
+        }
+      ],
+      "corrections": [],
+      "transactions": [
+        {
+          "restaurant_id": "R1",
+          "order_id": "PO-DEMO-1",
+          "version": 1,
+          "event_id": "PO-DEMO-1:1:APPROVAL",
+          "event_type": "APPROVAL",
+          "payload": {
+            "id": "APP-1",
+            "restaurant_id": "R1",
+            "version": 1,
+            "actor": "demo-manager",
+            "quantities": {
+              "beef": 4
+            }
+          },
+          "approval_reference": "APP-1"
+        }
+      ],
+      "retention": {
+        "PO-DEMO-1:1:APPROVAL": true
+      },
+      "policies": {},
+      "views": {
+        "P-IF.06": {
+          "restaurant_id": "R1",
+          "draft_id": "PO-DEMO-1",
+          "version": 2,
+          "lines": [
+            {
+              "ingredient_id": "beef",
+              "quantity": 5,
+              "unit": "kg"
+            }
+          ],
+          "limitations": [
+            "Synthetic prepared records; deterministic mean usage forecast; unknown dates excluded from usable stock."
+          ],
+          "approval_state": "UNAPPROVED"
+        }
+      },
+      "observations": [],
+      "task": {
+        "restaurant_id": "R1",
+        "ingredient_scope": [
+          "beef"
+        ],
+        "period": {
+          "days": 2
+        },
+        "task_id": "PMC2",
+        "requested_analysis": "purchase"
+      },
+      "advice": {
+        "restaurant_id": "R1",
+        "demand": {
+          "beef": 12
+        },
+        "usable_stock": {
+          "beef": 8
+        },
+        "horizon": 2,
+        "limitations": [
+          "Synthetic prepared records; deterministic mean usage forecast; unknown dates excluded from usable stock."
+        ],
+        "proposed_quantities": {
+          "beef": 4
+        }
+      },
+      "draft": {
+        "id": "PO-DEMO-1",
+        "version": 2,
+        "quantities": {
+          "beef": 5
+        }
+      },
+      "approval": null
+    },
+    "approved": {
+      "restaurant_id": "R1",
+      "today": "2026-10-06",
+      "records": [
+        {
+          "id": "B1",
+          "restaurant_id": "R1",
+          "ingredient": "beef",
+          "quantity": 8,
+          "unit": "kg",
+          "expires": "2026-10-08"
+        }
+      ],
+      "usage": [
+        {
+          "ingredient": "beef",
+          "quantity": 6
+        }
+      ],
+      "corrections": [],
+      "transactions": [
+        {
+          "restaurant_id": "R1",
+          "order_id": "PO-DEMO-1",
+          "version": 1,
+          "event_id": "PO-DEMO-1:1:APPROVAL",
+          "event_type": "APPROVAL",
+          "payload": {
+            "id": "APP-1",
+            "restaurant_id": "R1",
+            "version": 1,
+            "actor": "demo-manager",
+            "quantities": {
+              "beef": 4
+            }
+          },
+          "approval_reference": "APP-1"
+        },
+        {
+          "restaurant_id": "R1",
+          "order_id": "PO-DEMO-1",
+          "version": 2,
+          "event_id": "PO-DEMO-1:2:APPROVAL",
+          "event_type": "APPROVAL",
+          "payload": {
+            "id": "APP-2",
+            "restaurant_id": "R1",
+            "version": 2,
+            "actor": "demo-manager",
+            "quantities": {
+              "beef": 5
+            }
+          },
+          "approval_reference": "APP-2"
+        }
+      ],
+      "retention": {
+        "PO-DEMO-1:1:APPROVAL": true,
+        "PO-DEMO-1:2:APPROVAL": true
+      },
+      "policies": {},
+      "views": {
+        "P-IF.06": {
+          "restaurant_id": "R1",
+          "draft_id": "PO-DEMO-1",
+          "version": 2,
+          "lines": [
+            {
+              "ingredient_id": "beef",
+              "quantity": 5,
+              "unit": "kg"
+            }
+          ],
+          "limitations": [
+            "Synthetic prepared records; deterministic mean usage forecast; unknown dates excluded from usable stock."
+          ],
+          "approval_state": "UNAPPROVED"
+        }
+      },
+      "observations": [],
+      "task": {
+        "restaurant_id": "R1",
+        "ingredient_scope": [
+          "beef"
+        ],
+        "period": {
+          "days": 2
+        },
+        "task_id": "PMC2",
+        "requested_analysis": "purchase"
+      },
+      "advice": {
+        "restaurant_id": "R1",
+        "demand": {
+          "beef": 12
+        },
+        "usable_stock": {
+          "beef": 8
+        },
+        "horizon": 2,
+        "limitations": [
+          "Synthetic prepared records; deterministic mean usage forecast; unknown dates excluded from usable stock."
+        ],
+        "proposed_quantities": {
+          "beef": 4
+        }
+      },
+      "draft": {
+        "id": "PO-DEMO-1",
+        "version": 2,
+        "quantities": {
+          "beef": 5
+        }
+      },
+      "approval": {
+        "id": "APP-2",
+        "restaurant_id": "R1",
+        "version": 2,
+        "actor": "demo-manager",
+        "quantities": {
+          "beef": 5
+        }
+      }
+    },
+    "sent": {
+      "restaurant_id": "R1",
+      "today": "2026-10-06",
+      "records": [
+        {
+          "id": "B1",
+          "restaurant_id": "R1",
+          "ingredient": "beef",
+          "quantity": 8,
+          "unit": "kg",
+          "expires": "2026-10-08"
+        }
+      ],
+      "usage": [
+        {
+          "ingredient": "beef",
+          "quantity": 6
+        }
+      ],
+      "corrections": [],
+      "transactions": [
+        {
+          "restaurant_id": "R1",
+          "order_id": "PO-DEMO-1",
+          "version": 1,
+          "event_id": "PO-DEMO-1:1:APPROVAL",
+          "event_type": "APPROVAL",
+          "payload": {
+            "id": "APP-1",
+            "restaurant_id": "R1",
+            "version": 1,
+            "actor": "demo-manager",
+            "quantities": {
+              "beef": 4
+            }
+          },
+          "approval_reference": "APP-1"
+        },
+        {
+          "restaurant_id": "R1",
+          "order_id": "PO-DEMO-1",
+          "version": 2,
+          "event_id": "PO-DEMO-1:2:APPROVAL",
+          "event_type": "APPROVAL",
+          "payload": {
+            "id": "APP-2",
+            "restaurant_id": "R1",
+            "version": 2,
+            "actor": "demo-manager",
+            "quantities": {
+              "beef": 5
+            }
+          },
+          "approval_reference": "APP-2"
+        },
+        {
+          "restaurant_id": "R1",
+          "order_id": "PO-DEMO-1",
+          "version": 2,
+          "event_id": "PO-DEMO-1:2:TRANSMISSION",
+          "event_type": "TRANSMISSION",
+          "payload": {
+            "id": "PO-DEMO-1",
+            "restaurant_id": "R1",
+            "version": 2,
+            "lines": [
+              {
+                "ingredient_id": "beef",
+                "quantity": 5,
+                "unit": "kg"
+              }
+            ],
+            "approval_reference": "APP-2",
+            "state": "SENT_AWAITING_CONFIRMATION"
+          },
+          "approval_reference": "APP-2"
+        }
+      ],
+      "retention": {
+        "PO-DEMO-1:1:APPROVAL": true,
+        "PO-DEMO-1:2:APPROVAL": true,
+        "PO-DEMO-1:2:TRANSMISSION": true
+      },
+      "policies": {},
+      "views": {
+        "P-IF.06": {
+          "restaurant_id": "R1",
+          "draft_id": "PO-DEMO-1",
+          "version": 2,
+          "lines": [
+            {
+              "ingredient_id": "beef",
+              "quantity": 5,
+              "unit": "kg"
+            }
+          ],
+          "limitations": [
+            "Synthetic prepared records; deterministic mean usage forecast; unknown dates excluded from usable stock."
+          ],
+          "approval_state": "UNAPPROVED"
+        }
+      },
+      "observations": [],
+      "task": {
+        "restaurant_id": "R1",
+        "ingredient_scope": [
+          "beef"
+        ],
+        "period": {
+          "days": 2
+        },
+        "task_id": "PMC2",
+        "requested_analysis": "purchase"
+      },
+      "advice": {
+        "restaurant_id": "R1",
+        "demand": {
+          "beef": 12
+        },
+        "usable_stock": {
+          "beef": 8
+        },
+        "horizon": 2,
+        "limitations": [
+          "Synthetic prepared records; deterministic mean usage forecast; unknown dates excluded from usable stock."
+        ],
+        "proposed_quantities": {
+          "beef": 4
+        }
+      },
+      "draft": {
+        "id": "PO-DEMO-1",
+        "version": 2,
+        "quantities": {
+          "beef": 5
+        }
+      },
+      "approval": {
+        "id": "APP-2",
+        "restaurant_id": "R1",
+        "version": 2,
+        "actor": "demo-manager",
+        "quantities": {
+          "beef": 5
+        }
+      },
+      "order": {
+        "id": "PO-DEMO-1",
+        "restaurant_id": "R1",
+        "version": 2,
+        "lines": [
+          {
+            "ingredient_id": "beef",
+            "quantity": 5,
+            "unit": "kg"
+          }
+        ],
+        "approval_reference": "APP-2",
+        "state": "SENT_AWAITING_CONFIRMATION"
+      }
+    },
+    "confirmed": {
+      "restaurant_id": "R1",
+      "today": "2026-10-06",
+      "records": [
+        {
+          "id": "B1",
+          "restaurant_id": "R1",
+          "ingredient": "beef",
+          "quantity": 8,
+          "unit": "kg",
+          "expires": "2026-10-08"
+        }
+      ],
+      "usage": [
+        {
+          "ingredient": "beef",
+          "quantity": 6
+        }
+      ],
+      "corrections": [],
+      "transactions": [
+        {
+          "restaurant_id": "R1",
+          "order_id": "PO-DEMO-1",
+          "version": 1,
+          "event_id": "PO-DEMO-1:1:APPROVAL",
+          "event_type": "APPROVAL",
+          "payload": {
+            "id": "APP-1",
+            "restaurant_id": "R1",
+            "version": 1,
+            "actor": "demo-manager",
+            "quantities": {
+              "beef": 4
+            }
+          },
+          "approval_reference": "APP-1"
+        },
+        {
+          "restaurant_id": "R1",
+          "order_id": "PO-DEMO-1",
+          "version": 2,
+          "event_id": "PO-DEMO-1:2:APPROVAL",
+          "event_type": "APPROVAL",
+          "payload": {
+            "id": "APP-2",
+            "restaurant_id": "R1",
+            "version": 2,
+            "actor": "demo-manager",
+            "quantities": {
+              "beef": 5
+            }
+          },
+          "approval_reference": "APP-2"
+        },
+        {
+          "restaurant_id": "R1",
+          "order_id": "PO-DEMO-1",
+          "version": 2,
+          "event_id": "PO-DEMO-1:2:TRANSMISSION",
+          "event_type": "TRANSMISSION",
+          "payload": {
+            "id": "PO-DEMO-1",
+            "restaurant_id": "R1",
+            "version": 2,
+            "lines": [
+              {
+                "ingredient_id": "beef",
+                "quantity": 5,
+                "unit": "kg"
+              }
+            ],
+            "approval_reference": "APP-2",
+            "state": "SENT_AWAITING_CONFIRMATION"
+          },
+          "approval_reference": "APP-2"
+        },
+        {
+          "restaurant_id": "R1",
+          "order_id": "PO-DEMO-1",
+          "version": 2,
+          "event_id": "PO-DEMO-1:2:SUPPLIER_CONFIRMED",
+          "event_type": "SUPPLIER_CONFIRMED",
+          "payload": {
+            "restaurant_id": "R1",
+            "order_id": "PO-DEMO-1",
+            "state": "CONFIRMED",
+            "confirmation_reference": "C1",
+            "delivery_information": {
+              "note": "simulated confirmation; no physical delivery"
+            }
+          },
+          "approval_reference": "APP-2"
+        }
+      ],
+      "retention": {
+        "PO-DEMO-1:1:APPROVAL": true,
+        "PO-DEMO-1:2:APPROVAL": true,
+        "PO-DEMO-1:2:TRANSMISSION": true,
+        "PO-DEMO-1:2:SUPPLIER_CONFIRMED": true
+      },
+      "policies": {},
+      "views": {
+        "P-IF.06": {
+          "restaurant_id": "R1",
+          "draft_id": "PO-DEMO-1",
+          "version": 2,
+          "lines": [
+            {
+              "ingredient_id": "beef",
+              "quantity": 5,
+              "unit": "kg"
+            }
+          ],
+          "limitations": [
+            "Synthetic prepared records; deterministic mean usage forecast; unknown dates excluded from usable stock."
+          ],
+          "approval_state": "UNAPPROVED"
+        },
+        "P-IF.07": {
+          "restaurant_id": "R1",
+          "order_id": "PO-DEMO-1",
+          "state": "CONFIRMED",
+          "confirmation_reference": "C1",
+          "delivery_information": {
+            "note": "simulated confirmation; no physical delivery"
+          },
+          "exceptions": []
+        }
+      },
+      "observations": [],
+      "task": {
+        "restaurant_id": "R1",
+        "ingredient_scope": [
+          "beef"
+        ],
+        "period": {
+          "days": 2
+        },
+        "task_id": "PMC2",
+        "requested_analysis": "purchase"
+      },
+      "advice": {
+        "restaurant_id": "R1",
+        "demand": {
+          "beef": 12
+        },
+        "usable_stock": {
+          "beef": 8
+        },
+        "horizon": 2,
+        "limitations": [
+          "Synthetic prepared records; deterministic mean usage forecast; unknown dates excluded from usable stock."
+        ],
+        "proposed_quantities": {
+          "beef": 4
+        }
+      },
+      "draft": {
+        "id": "PO-DEMO-1",
+        "version": 2,
+        "quantities": {
+          "beef": 5
+        }
+      },
+      "approval": {
+        "id": "APP-2",
+        "restaurant_id": "R1",
+        "version": 2,
+        "actor": "demo-manager",
+        "quantities": {
+          "beef": 5
+        }
+      },
+      "order": {
+        "id": "PO-DEMO-1",
+        "restaurant_id": "R1",
+        "version": 2,
+        "lines": [
+          {
+            "ingredient_id": "beef",
+            "quantity": 5,
+            "unit": "kg"
+          }
+        ],
+        "approval_reference": "APP-2",
+        "state": "CONFIRMED",
+        "order_id": "PO-DEMO-1",
+        "confirmation_reference": "C1",
+        "delivery_information": {
+          "note": "simulated confirmation; no physical delivery"
+        }
+      }
+    }
+  },
+  "errors": [
+    {
+      "name": "unapproved",
+      "error": {
+        "code": "UNAUTHORIZED",
+        "message": "Current retained approval required"
+      },
+      "unchanged": true
+    },
+    {
+      "name": "false-approval",
+      "error": {
+        "code": "UNAUTHORIZED",
+        "message": "Explicit approval required"
+      },
+      "unchanged": true
+    },
+    {
+      "name": "staff-approval",
+      "error": {
+        "code": "UNAUTHORIZED",
+        "message": "Prepared actor role and scope do not authorize this task"
+      },
+      "unchanged": true
+    },
+    {
+      "name": "wrong-restaurant",
+      "error": {
+        "code": "UNAUTHORIZED",
+        "message": "Prepared actor role and scope do not authorize this task"
+      },
+      "unchanged": true
+    },
+    {
+      "name": "invalid-quantity",
+      "error": {
+        "code": "INVALID_PACKET",
+        "message": "Invalid revised quantities"
+      },
+      "unchanged": true
+    },
+    {
+      "name": "stale-approval",
+      "error": {
+        "code": "UNAUTHORIZED",
+        "message": "Current retained approval required"
+      },
+      "unchanged": true
+    },
+    {
+      "name": "wrong-order-response",
+      "error": {
+        "code": "DOMAIN_STATE",
+        "message": "Invalid supplier association or state"
+      },
+      "unchanged": true
+    },
+    {
+      "name": "overwrite-lines",
+      "error": {
+        "code": "INVALID_PACKET",
+        "message": "Supplier response cannot alter approved order fields"
+      },
+      "unchanged": true
+    },
+    {
+      "name": "missing-confirmation",
+      "error": {
+        "code": "DOMAIN_STATE",
+        "message": "Confirmation reference required"
+      },
+      "unchanged": true
+    }
+  ],
+  "events": [
+    {
+      "sequence": 1,
+      "flow": "P-IF.04",
+      "source": "P-F.0.5",
+      "recipient": "P-F.0.2",
+      "packet": {
+        "restaurant_id": "R1",
+        "ingredient_scope": [
+          "beef"
+        ],
+        "period": {
+          "days": 2
+        },
+        "task_id": "PMC2",
+        "requested_analysis": "purchase"
+      }
+    },
+    {
+      "sequence": 2,
+      "flow": "P-IF.02",
+      "source": "P-F.0.2",
+      "recipient": "P-F.0.1",
+      "packet": {
+        "restaurant_id": "R1",
+        "ingredient_scope": [
+          "beef"
+        ],
+        "period": {
+          "days": 2
+        },
+        "query_id": "PMC2"
+      }
+    },
+    {
+      "sequence": 3,
+      "flow": "P-IF.03",
+      "source": "P-F.0.1",
+      "recipient": "P-F.0.2",
+      "packet": {
+        "restaurant_id": "R1",
+        "inventory": [
+          {
+            "id": "B1",
+            "restaurant_id": "R1",
+            "ingredient": "beef",
+            "quantity": 8,
+            "unit": "kg",
+            "expires": "2026-10-08"
+          }
+        ],
+        "usage_history": [
+          {
+            "ingredient": "beef",
+            "quantity": 6
+          }
+        ],
+        "expiration_dates": [
+          {
+            "id": "B1",
+            "expires": "2026-10-08"
+          }
+        ],
+        "missing_fields": [],
+        "query_id": "PMC2"
+      }
+    },
+    {
+      "sequence": 4,
+      "flow": "P-IF.05",
+      "source": "P-F.0.2",
+      "recipient": "P-F.0.3",
+      "packet": {
+        "restaurant_id": "R1",
+        "demand": {
+          "beef": 12
+        },
+        "usable_stock": {
+          "beef": 8
+        },
+        "horizon": 2,
+        "limitations": [
+          "Synthetic prepared records; deterministic mean usage forecast; unknown dates excluded from usable stock."
+        ],
+        "proposed_quantities": {
+          "beef": 4
+        }
+      }
+    },
+    {
+      "sequence": 5,
+      "flow": "P-IF.06",
+      "source": "P-F.0.3",
+      "recipient": "P-F.0.5",
+      "packet": {
+        "restaurant_id": "R1",
+        "draft_id": "PO-DEMO-1",
+        "version": 1,
+        "lines": [
+          {
+            "ingredient_id": "beef",
+            "quantity": 4,
+            "unit": "kg"
+          }
+        ],
+        "limitations": [
+          "Synthetic prepared records; deterministic mean usage forecast; unknown dates excluded from usable stock."
+        ],
+        "approval_state": "UNAPPROVED"
+      }
+    },
+    {
+      "sequence": 6,
+      "flow": "P-IF.19",
+      "source": "P-F.0.3",
+      "recipient": "P-F.0.1",
+      "packet": {
+        "restaurant_id": "R1",
+        "order_id": "PO-DEMO-1",
+        "version": 1,
+        "event_id": "PO-DEMO-1:1:APPROVAL",
+        "event_type": "APPROVAL",
+        "payload": {
+          "id": "APP-1",
+          "restaurant_id": "R1",
+          "version": 1,
+          "actor": "demo-manager",
+          "quantities": {
+            "beef": 4
+          }
+        },
+        "approval_reference": "APP-1"
+      }
+    },
+    {
+      "sequence": 7,
+      "flow": "P-IF.21",
+      "source": "P-F.0.1",
+      "recipient": "P-F.0.3",
+      "packet": {
+        "restaurant_id": "R1",
+        "order_id": "PO-DEMO-1",
+        "event_id": "PO-DEMO-1:1:APPROVAL",
+        "retained": true,
+        "errors": []
+      }
+    },
+    {
+      "sequence": 8,
+      "flow": "P-IF.06",
+      "source": "P-F.0.3",
+      "recipient": "P-F.0.5",
+      "packet": {
+        "restaurant_id": "R1",
+        "draft_id": "PO-DEMO-1",
+        "version": 2,
+        "lines": [
+          {
+            "ingredient_id": "beef",
+            "quantity": 5,
+            "unit": "kg"
+          }
+        ],
+        "limitations": [
+          "Synthetic prepared records; deterministic mean usage forecast; unknown dates excluded from usable stock."
+        ],
+        "approval_state": "UNAPPROVED"
+      }
+    },
+    {
+      "sequence": 9,
+      "flow": "P-IF.19",
+      "source": "P-F.0.3",
+      "recipient": "P-F.0.1",
+      "packet": {
+        "restaurant_id": "R1",
+        "order_id": "PO-DEMO-1",
+        "version": 2,
+        "event_id": "PO-DEMO-1:2:APPROVAL",
+        "event_type": "APPROVAL",
+        "payload": {
+          "id": "APP-2",
+          "restaurant_id": "R1",
+          "version": 2,
+          "actor": "demo-manager",
+          "quantities": {
+            "beef": 5
+          }
+        },
+        "approval_reference": "APP-2"
+      }
+    },
+    {
+      "sequence": 10,
+      "flow": "P-IF.21",
+      "source": "P-F.0.1",
+      "recipient": "P-F.0.3",
+      "packet": {
+        "restaurant_id": "R1",
+        "order_id": "PO-DEMO-1",
+        "event_id": "PO-DEMO-1:2:APPROVAL",
+        "retained": true,
+        "errors": []
+      }
+    },
+    {
+      "sequence": 11,
+      "flow": "P-IF.19",
+      "source": "P-F.0.3",
+      "recipient": "P-F.0.1",
+      "packet": {
+        "restaurant_id": "R1",
+        "order_id": "PO-DEMO-1",
+        "version": 2,
+        "event_id": "PO-DEMO-1:2:TRANSMISSION",
+        "event_type": "TRANSMISSION",
+        "payload": {
+          "id": "PO-DEMO-1",
+          "restaurant_id": "R1",
+          "version": 2,
+          "lines": [
+            {
+              "ingredient_id": "beef",
+              "quantity": 5,
+              "unit": "kg"
+            }
+          ],
+          "approval_reference": "APP-2",
+          "state": "SENT_AWAITING_CONFIRMATION"
+        },
+        "approval_reference": "APP-2"
+      }
+    },
+    {
+      "sequence": 12,
+      "flow": "P-IF.21",
+      "source": "P-F.0.1",
+      "recipient": "P-F.0.3",
+      "packet": {
+        "restaurant_id": "R1",
+        "order_id": "PO-DEMO-1",
+        "event_id": "PO-DEMO-1:2:TRANSMISSION",
+        "retained": true,
+        "errors": []
+      }
+    },
+    {
+      "sequence": 13,
+      "flow": "P-IF.19",
+      "source": "P-F.0.3",
+      "recipient": "P-F.0.1",
+      "packet": {
+        "restaurant_id": "R1",
+        "order_id": "PO-DEMO-1",
+        "version": 2,
+        "event_id": "PO-DEMO-1:2:SUPPLIER_CONFIRMED",
+        "event_type": "SUPPLIER_CONFIRMED",
+        "payload": {
+          "restaurant_id": "R1",
+          "order_id": "PO-DEMO-1",
+          "state": "CONFIRMED",
+          "confirmation_reference": "C1",
+          "delivery_information": {
+            "note": "simulated confirmation; no physical delivery"
+          }
+        },
+        "approval_reference": "APP-2"
+      }
+    },
+    {
+      "sequence": 14,
+      "flow": "P-IF.21",
+      "source": "P-F.0.1",
+      "recipient": "P-F.0.3",
+      "packet": {
+        "restaurant_id": "R1",
+        "order_id": "PO-DEMO-1",
+        "event_id": "PO-DEMO-1:2:SUPPLIER_CONFIRMED",
+        "retained": true,
+        "errors": []
+      }
+    },
+    {
+      "sequence": 15,
+      "flow": "P-IF.07",
+      "source": "P-F.0.3",
+      "recipient": "P-F.0.5",
+      "packet": {
+        "restaurant_id": "R1",
+        "order_id": "PO-DEMO-1",
+        "state": "CONFIRMED",
+        "confirmation_reference": "C1",
+        "delivery_information": {
+          "note": "simulated confirmation; no physical delivery"
+        },
+        "exceptions": []
+      }
+    }
+  ],
+  "scope": "In-memory prototype. Not durable storage or physical fulfillment."
+}

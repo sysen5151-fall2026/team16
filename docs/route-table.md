@@ -14,3 +14,12 @@ Baseline read from Team 16 main commit 5e83b1fb66de4eb4f0338a164399fbb69af8af5a 
 | createArchitecture API | UC.1-UC.15 architecture prototype | In-process test adapter; no HTTP routes, external server or credentials added. |
 
 No unsupported business endpoint was found in the inspected source. UC.2-UC.15 are covered by the architecture and selected prepared module checks, but no complete operational GUI for those use cases is claimed. Developer test/build/stub-generation commands are verification tooling, not business entry points.
+
+## PMC2 selected branch
+
+| Actual entry point | Handler | Use case | Functions | Status |
+|---|---|---|---|---|
+| node tools/pmc2_scenario.js | createArchitecture in src/architecture/index.js | UC.1 prepared purchase scenario | P-F.0.3.1-4 | Executable CLI; no network purchase |
+| quantity/approval/next controls in PANTRI_Milestone1.html | src/app.js and src/core.js | UC.1 | Behavior demo; see separate architecture CLI for P-F.0.3 module evidence | Existing offline UI; not claimed to invoke orders.js |
+
+The original UI and architecture CLI are separate execution surfaces. Do not present UI clicks as proof that orders.js was called. The PMC2 CLI is the direct executable witness for the selected module. Model flow-down and production authorization remain separate checks.

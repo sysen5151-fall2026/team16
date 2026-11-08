@@ -1,0 +1,46 @@
+✔ all modeled destinations have generated-server handlers (1.2109ms)
+✔ prepared model pipeline produces independent 4 6 1 kg advice (1.1345ms)
+✔ quantity revision is reviewable and remains unapproved (1.1705ms)
+✔ unapproved order never reaches supplier handoff (0.5747ms)
+✔ explicit approval snapshot and transmitted fields agree (0.5036ms)
+✔ editing after approval invalidates authority (0.3936ms)
+✔ false approval is rejected (0.2551ms)
+✔ repeated transmission does not make a second commitment (0.297ms)
+✔ supplier response without matching order is rejected (0.3514ms)
+✔ valid confirmation is recorded and presented (0.5075ms)
+✔ partial and delayed outcomes remain distinguishable (0.3835ms)
+✔ cross restaurant and staff approval are rejected without mutation (0.3862ms)
+✔ invalid units reject the entire record batch (0.1542ms)
+✔ reconciliation preserves both prior and changed values (0.2437ms)
+✔ unknown expiration and horizon boundaries remain distinct (0.1098ms)
+✔ paired metrics match independent arithmetic and zero stays not calculable (0.1186ms)
+✔ contract rejects missing fields and invalid model endpoints (0.1601ms)
+✔ valid schema cannot bypass restaurant scope (0.1875ms)
+✔ observations from each operational function are retained (0.1777ms)
+✔ recorded context alone cannot initiate recovery (0.2966ms)
+✔ restore and handover preserve prepared confirmed record relationships (0.4677ms)
+✔ supplier cannot overwrite the approved lines in a response (0.2803ms)
+✔ a scoped recovery envelope cannot carry another restaurants records (0.2255ms)
+✔ Baseline end-to-end path preserves revised quantities through approval, transmission, receipt and status review (6.2384ms)
+✔ An out-of-order send, skipped supplier, or duplicate action is blocked without changing the run (2.7272ms)
+✔ Unchecked or missing explicit approval cannot commit a purchase (1.603ms)
+✔ Review acknowledgments are required before adjustment and completion (3.216ms)
+✔ Invalid or empty order edits fail atomically, allowing a subsequent valid edit (2.2824ms)
+✔ Mutating returned snapshots cannot alter approval or transmitted quantities (1.497ms)
+✔ Recommendation exposes assumptions and distinguishes recorded stock from expired or unknown stock (0.6519ms)
+✔ An expiration date equal to the scenario date is included by the explicitly defined demo rule (0.5604ms)
+✔ PANTRI remains awaiting confirmation until supplier receipt and confirmation are recorded (3.9446ms)
+✔ Independent sessions and exported evidence retain the scope and simulation disclosures (3.2942ms)
+✔ P-AFR.01 prepared receipt usage waste manifest preserves all 24 fields (1.3307ms)
+✔ P-AFR.07 fractional outputs have declared units and numerical tolerance (0.4503ms)
+✔ P-AFR.07 missing and zero denominators remain not calculable (0.1551ms)
+✔ Delivered HTML executes its actual UI handlers through all 22 actions and exports the edited order (22.5461ms)
+✔ UI rejects blank quantity input and allows correction without advancing prematurely (5.6346ms)
+ℹ tests 38
+ℹ suites 0
+ℹ pass 38
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 120.3737
