@@ -14,3 +14,27 @@ Baseline read from Team 16 main commit 5e83b1fb66de4eb4f0338a164399fbb69af8af5a 
 | createArchitecture API | UC.1-UC.15 architecture prototype | In-process test adapter; no HTTP routes, external server or credentials added. |
 
 No unsupported business endpoint was found in the inspected source. UC.2-UC.15 are covered by the architecture and selected prepared module checks, but no complete operational GUI for those use cases is claimed. Developer test/build/stub-generation commands are verification tooling, not business entry points.
+
+## PMC2 selected branch
+
+| Actual entry point | Handler | Use case | Functions | Status |
+|---|---|---|---|---|
+| node tools/pmc2_scenario.js | createArchitecture in src/architecture/index.js | UC.1 prepared purchase scenario | P-F.0.3.1-4 | Executable CLI; no network purchase |
+| quantity/approval/next controls in PANTRI_Milestone1.html | src/app.js and src/core.js | UC.1 | Behavior demo; see separate architecture CLI for P-F.0.3 module evidence | Existing offline UI; not claimed to invoke orders.js |
+
+The original UI and architecture CLI are separate execution surfaces. Do not present UI clicks as proof that orders.js was called. The PMC2 CLI is the direct executable witness for the selected module. Model flow-down and production authorization remain separate checks.
+
+## Current PMC2 product (2026-11-08)
+
+Open `PANTRI_PMC2.html` offline. It bundles `src/pmc2-ui.js`, `src/architecture/pmc2-session.js` and the actual architecture modules. This new interface, CLI and Python tests now share the same purchase implementation; the original Milestone1 HTML remains a separate legacy product.
+
+| Product control / entry | Actual handler | Use case | Function | State |
+|---|---|---|---|---|
+| Save revised draft | pmc2-ui.js -> index.revise -> orders.revise | UC.1 | P-F.0.3.1 | Implemented; blank/invalid/sent-version edits rejected |
+| Record approval | pmc2-ui.js -> index.approve -> orders.approve | UC.1 | P-F.0.3.2 | Implemented; explicit current-draft approval |
+| Transmit approved order | pmc2-ui.js -> index.transmit -> orders.transmit | UC.1 | P-F.0.3.3 | Implemented; retained approval required |
+| Record supplier response | pmc2-ui.js -> index.supplierResponse -> orders.response | UC.1 | P-F.0.3.4 | Implemented with simulated supplier input |
+| Export run evidence | pmc2-ui.js | Evidence for UC.1 | Supporting control | Downloads actual session; no production handover claim |
+| Reset demo session | pmc2-ui.js -> createPreparedSession | Prepared UC.1 setup | Supporting control | Resets isolated in-memory demo |
+
+There are no HTTP business routes in this offline UI. This does not turn design PC-IF HTTP paths into deployed services.

@@ -1,0 +1,108 @@
+{
+  "checked": "2026-11-08",
+  "scope": "Purchase Coordination selected branch; no global model certification",
+  "entities": [
+    {
+      "number": "P-AFR.08",
+      "description": "The PANTRI System shall create an unapproved purchase-draft version reflecting each accepted manager quantity revision.",
+      "rationale": "Rationale: Revision must preserve manager control without commitment. Higher-level source: SR.03A; P-SFR.01. Allocated function: P-F.0.3.1. MOP: Revision quantity unit and version agreement. Proposed verification criterion: Revise beef from 4 to 5 kg in the prepared 4/6/1 kg draft; the revised version is 5/6/1 kg, remains unapproved and produces no transmission. Invalid quantities are rejected. Method: Test. Verification status: Planned; no implementation or operational acceptance result is inferred from the architecture model.\nQuantified design MOP clarification: 100 x valid revision fixtures preserving quantity, unit, version and unapproved state / valid revision fixtures [%]; target 100%; accepted invalid revisions = 0. Nonempty denominators are fixed by the independent fixture manifest before execution."
+    },
+    {
+      "number": "P-AFR.09",
+      "description": "The PANTRI System shall record explicit Restaurant Manager approval with the restaurant identifier and the approved final purchase-draft version.",
+      "rationale": "Rationale: Approval authorizes a specific commitment. Higher-level source: SR.03; P-SFR.01. Allocated function: P-F.0.3.2. MOP: Approval version and restaurant association agreement. Proposed verification criterion: Record approval of a selected draft and compare the retained immutable snapshot; editing creates a new unapproved version and cannot reuse the stale approval. Method: Test. Verification status: Planned; no implementation or operational acceptance result is inferred from the architecture model.\nQuantified design MOP clarification: 100 x approvals bound to the correct restaurant, final version and immutable snapshot / valid approval fixtures [%]; target 100%; stale approvals reused = 0. Nonempty denominators are fixed by the independent fixture manifest before execution."
+    },
+    {
+      "number": "P-AFR.10",
+      "description": "The PANTRI System shall transmit a purchase order only when its restaurant identifier, final version, ingredient identifiers, quantities and units agree with its explicit manager approval record.",
+      "rationale": "Rationale: The supplier must receive the authorized version unchanged. Higher-level source: SR.03; P-SFR.01. Allocated function: P-F.0.3.3. MOP: Unauthorized transmissions and approved-to-sent discrepancies. Proposed verification criterion: Unapproved, revised-after-approval and wrong-restaurant cases produce zero handoffs; a valid 5/6/1 kg approval produces an exactly matching supplier payload. Duplicate attempts do not create a second commitment. Method: Test. Verification status: Planned; no implementation or operational acceptance result is inferred from the architecture model.\nQuantified design MOP clarification: Unauthorized or duplicate commitments = 0 events; approved-to-sent payload discrepancies = 0 fields. Nonempty denominators are fixed by the independent fixture manifest before execution."
+    },
+    {
+      "number": "P-AFR.11",
+      "description": "The PANTRI System shall update the recorded supplier order state only from a valid associated supplier response or an explicitly recorded pending or exception event.",
+      "rationale": "Rationale: Sending is distinct from confirmation and delivery. Higher-level source: SR.04, SR.11; P-SFR.01. Allocated function: P-F.0.3.4. MOP: Invalid confirmation transitions and valid response association rate. Proposed verification criterion: Test absent, normal, partial, delayed and wrong-order responses; absence stays unconfirmed and wrong-order responses do not change the order. Status retains supporting response reference. Method: Test. Verification status: Planned; no implementation or operational acceptance result is inferred from the architecture model.\nQuantified design MOP clarification: 100 x valid responses associated with the correct order and state / valid response fixtures [%]; target 100%; invalid state changes = 0 events. Nonempty denominators are fixed by the independent fixture manifest before execution."
+    },
+    {
+      "number": "P-DFR.03",
+      "description": "The PANTRI System shall coordinate Approved Ingredient Orders.",
+      "relationships": [
+        "satisfied by \r\n      Many 2   Add Toggle Dropdown Relate Existing Entities  Create ActionCreate ArtifactCreate AssetCreate CharacteristicCreate ConduitCreate CostCreate DependencyCreate Input/OutputCreate LogicalCreate MeasureCreate OrbitalCreate PhysicalCreate ResourceCreate TaskCreate Test CaseCreate TimeCreate TransitionCreate Virtual      P-F.0.3  Coordinate Approved Ingredient Orders      PA.3  Purchase Coordination Subsystem    ",
+        "sourced by \r\n      Artifact 1   Add Toggle Dropdown Relate Existing Entities  Create Artifact      P-DOC.SYS  PANTRI Integrated System Specification    ",
+        "traced from \r\n      Statement 5   Add Toggle Dropdown Relate Existing Entities  Create RequirementCreate Statement      P-SFR.01  Provide Restaurant Ingredient Planning and Coordination      SR.03  Transmit only approved final orders      SR.04  Follow the approved order      SR.11  Maintain actionable exception records      SR.03A  Revise proposed purchase quantities    ",
+        "traced to \r\n      Many 24   Add Toggle Dropdown Relate Existing Entities  Create ActionCreate ArtifactCreate AssetCreate CharacteristicCreate ConduitCreate CostCreate DecisionCreate DependencyCreate Input/OutputCreate LogicalCreate MeasureCreate OrbitalCreate PhysicalCreate RequirementCreate ResourceCreate StatementCreate TaskCreate Test CaseCreate TransitionCreate Virtual      P-PCR.F.01  Revise Purchase Drafts      P-PCR.F.02  Record Explicit Purchase Approval      P-PCR.F.03  Transmit Approved Purchase Orders      P-PCR.F.04  Maintain Supplier Order State      P-PCR.IF.01  Manager Approval Interface      P-PCR.IF.02  Supplier Order Interface      P-PCR.IF.03  Purchase Record Interface      P-PCR.IF.04  Purchasing Advice Interface      P-PCR.IF.05  Purchase Presentation Interface      P-PCR.IF.06  Purchase Governance Interface      P-PCR.IO.01  Purchase Quantity Revisions      P-PCR.IO.02  Supplier Confirmation Delivery and Exception Information      P-PCR.IO.03  Proposed Purchasing Advice      P-PCR.IO.04  Authorized Supply Disposition      P-PCR.IO.05  Purchase Record Retention Result      P-PCR.IO.06  Order State Query      P-PCR.IO.07  Explicit Purchase Approvals      P-PCR.IO.08  Authorized Task Constraints      P-PCR.IO.09  Approved Purchase Orders      P-PCR.IO.10  Reviewable Purchase Draft      P-PCR.IO.11  Recorded Supplier Order State      P-PCR.IO.12  Supply Exception Context      P-PCR.IO.13  Purchase Transaction Record      P-PCR.IO.14  Operating Task Observations    ",
+        "verified by \r\n      Many 1   Add Toggle Dropdown Relate Existing Entities  Create ActionCreate ArtifactCreate AssetCreate CharacteristicCreate ConduitCreate CostCreate DependencyCreate Input/OutputCreate LogicalCreate MeasureCreate OrbitalCreate PhysicalCreate RequirementCreate ResourceCreate TaskCreate Test CaseCreate TimeCreate TransitionCreate Virtual      P-V.DFR.03  Verify Coordinate Approved Ingredient Orders    "
+      ]
+    },
+    {
+      "number": "PA.3",
+      "relationships": [
+        "decomposed by \r\n      Children 4   Add Toggle Dropdown Relate Existing Entities  Create AssetCreate Resource      PA.3.1  Draft Revision Module  Attributes     PA.3.2  Approval Record Module  Attributes     PA.3.3  Approved Order Gateway  Attributes     PA.3.4  Supplier State Module  Attributes   ",
+        "performs \r\n      Action 15   Add Toggle Dropdown Relate Existing Entities  Create ActionCreate TaskCreate Test CaseCreate Transition      INT.P-IF.05.R.0.3  Receive P-IF.05 Proposed Purchasing Advice  Attributes     INT.P-IF.06.S.0.3  Send P-IF.06 Reviewable Purchase Draft  Attributes     INT.P-IF.07.S.0.3  Send P-IF.07 Recorded Supplier Order State  Attributes     INT.P-IF.12.S.0.3  Send P-IF.12 Supply Exception Context  Attributes     INT.P-IF.14.R.0.3  Receive P-IF.14 Authorized Supply Disposition  Attributes     INT.P-IF.16.R.0.3  Receive P-IF.16 Authorized Task Constraints  Attributes     INT.P-IF.19.S.0.3  Send P-IF.19 Purchase Transaction Record  Attributes     INT.P-IF.21.R.0.3  Receive P-IF.21 Purchase Record Retention Result  Attributes     INT.P-IF.23.R.0.3  Receive P-IF.23 Order State Query  Attributes     INT.P-IF.24.S.0.3  Send P-IF.24 Operating Task Observations  Attributes     INT.P-IO.02.R.0.3  Receive P-IO.02 Purchase Quantity Revisions  Attributes     INT.P-IO.03.R.0.3  Receive P-IO.03 Explicit Purchase Approvals  Attributes     INT.P-IO.05.R.0.3  Receive P-IO.05 Supplier Confirmation Delivery and Exception Information  Attributes     INT.P-IO.11.S.0.3  Send P-IO.11 Approved Purchase Orders  Attributes     P-F.0.3  Coordinate Approved Ingredient Orders  Attributes   ",
+        "satisfies \r\n      Requirement 34   Add Toggle Dropdown Relate Existing Entities  Create Requirement      1.1.2  Accept Purchase Quantity Revisions      1.1.3  Accept Explicit Purchase Approvals      1.1.5  Accept Supplier Confirmation Delivery and Exception Information      1.2.2  Provide Reviewable Purchasing Recommendations      1.2.4  Provide Approved Purchase Orders      1.2.6  Provide Recorded Order and Collection Status      1.3.1  Demand, Order Approval, Recommendations & Alerts      1.3.2  Approved Orders & Delivery Information      P-DFR.03  Coordinate Approved Ingredient Orders      P-NFR.02  Support Authorized Use Without Cross Restaurant Access      P-PCR.IF.01  Manager Approval Interface      P-PCR.IF.02  Supplier Order Interface      P-PCR.IF.03  Purchase Record Interface      P-PCR.IF.04  Purchasing Advice Interface      P-PCR.IF.05  Purchase Presentation Interface      P-PCR.IF.06  Purchase Governance Interface      P-PCR.IO.01  Purchase Quantity Revisions      P-PCR.IO.02  Supplier Confirmation Delivery and Exception Information      P-PCR.IO.03  Proposed Purchasing Advice      P-PCR.IO.04  Authorized Supply Disposition      P-PCR.IO.05  Purchase Record Retention Result      P-PCR.IO.06  Order State Query      P-PCR.IO.07  Explicit Purchase Approvals      P-PCR.IO.08  Authorized Task Constraints      P-PCR.IO.09  Approved Purchase Orders      P-PCR.IO.10  Reviewable Purchase Draft      P-PCR.IO.11  Recorded Supplier Order State      P-PCR.IO.12  Supply Exception Context      P-PCR.IO.13  Purchase Transaction Record      P-PCR.IO.14  Operating Task Observations      P-PCR.SW.01  Purchase workflow availability      P-PCR.SW.02  Purchase task authorization      P-PCR.SW.03  Recoverable purchase transaction state      P-SFR.01  Provide Restaurant Ingredient Planning and Coordination    "
+      ]
+    },
+    {
+      "number": "PA.3.1",
+      "relationships": [
+        "decomposes \r\n      Parents 1   Add Toggle Dropdown Relate Existing Entities  Create AssetCreate Resource      PA.3  Purchase Coordination Subsystem  Attributes   ",
+        "performs \r\n      Action 1   Add Toggle Dropdown Relate Existing Entities  Create ActionCreate TaskCreate Test CaseCreate Transition      P-F.0.3.1  Revise Purchase Drafts  Attributes   "
+      ]
+    },
+    {
+      "number": "PA.3.2",
+      "relationships": [
+        "decomposes \r\n      Parents 1   Add Toggle Dropdown Relate Existing Entities  Create AssetCreate Resource      PA.3  Purchase Coordination Subsystem  Attributes   ",
+        "performs \r\n      Action 1   Add Toggle Dropdown Relate Existing Entities  Create ActionCreate TaskCreate Test CaseCreate Transition      P-F.0.3.2  Record Explicit Purchase Approval  Attributes   "
+      ]
+    },
+    {
+      "number": "PA.3.3",
+      "relationships": [
+        "decomposes \r\n      Parents 1   Add Toggle Dropdown Relate Existing Entities  Create AssetCreate Resource      PA.3  Purchase Coordination Subsystem  Attributes   ",
+        "performs \r\n      Action 1   Add Toggle Dropdown Relate Existing Entities  Create ActionCreate TaskCreate Test CaseCreate Transition      P-F.0.3.3  Transmit Approved Purchase Orders  Attributes   "
+      ]
+    },
+    {
+      "number": "PA.3.4",
+      "relationships": [
+        "decomposes \r\n      Parents 1   Add Toggle Dropdown Relate Existing Entities  Create AssetCreate Resource      PA.3  Purchase Coordination Subsystem  Attributes   ",
+        "performs \r\n      Action 1   Add Toggle Dropdown Relate Existing Entities  Create ActionCreate TaskCreate Test CaseCreate Transition      P-F.0.3.4  Maintain Supplier Order State  Attributes   "
+      ]
+    },
+    {
+      "number": "P-PCR.SW.02",
+      "description": "The Purchase Coordination Subsystem shall deny 100% of prepared unauthorized purchase tasks while completing at least 95% of prepared legitimate purchase tasks under the agreed restaurant and task policy.",
+      "rationale": "Rationale: Equivalence: the same denial and legitimate-completion thresholds apply to the component task subset; weakening either gate could violate the system policy.\nMOP: Denied unauthorized / unauthorized = 100%; completed legitimate / legitimate >= 95%; nonzero predeclared sets.\nVerification criterion: Exercise every module with valid manager, wrong restaurant, staff approval, stale policy and denied support cases; denied operations disclose no protected state and perform no mutation.\nMethod: Test and inspection\nStatus: Draft; verification not executed.",
+      "relationships": [
+        "satisfied by \r\n      Many 5   Add Toggle Dropdown Relate Existing Entities  Create ActionCreate ArtifactCreate AssetCreate CharacteristicCreate ConduitCreate CostCreate DependencyCreate Input/OutputCreate LogicalCreate MeasureCreate OrbitalCreate PhysicalCreate ResourceCreate TaskCreate Test CaseCreate TimeCreate TransitionCreate Virtual      PA.3  Purchase Coordination Subsystem      PA.3.1  Draft Revision Module      PA.3.2  Approval Record Module      PA.3.3  Approved Order Gateway      PA.3.4  Supplier State Module    ",
+        "traced from \r\n      Statement 1   Add Toggle Dropdown Relate Existing Entities  Create RequirementCreate Statement      P-NFR.02  Support Authorized Use Without Cross Restaurant Access    ",
+        "verified by \r\n      Many 1   Add Toggle Dropdown Relate Existing Entities  Create ActionCreate ArtifactCreate AssetCreate CharacteristicCreate ConduitCreate CostCreate DependencyCreate Input/OutputCreate LogicalCreate MeasureCreate OrbitalCreate PhysicalCreate RequirementCreate ResourceCreate TaskCreate Test CaseCreate TimeCreate TransitionCreate Virtual      P-V.PCR.SW.02  Verify Purchase task authorization    "
+      ]
+    },
+    {
+      "number": "P-NFR.02",
+      "description": "<p>PANTRI shall enforce the agreed restaurant and task authorization policy so that all prepared unauthorized-access scenarios are denied while at least 95% of legitimate role-specific tasks succeed.</p>"
+    },
+    {
+      "number": "P-DOC.PC",
+      "relationships": [
+        "source of \r\n      Many 27   Add Toggle Dropdown Relate Existing Entities  Create ActionCreate ArtifactCreate AssetCreate CharacteristicCreate ConduitCreate CostCreate DecisionCreate DependencyCreate EquationCreate Input/OutputCreate IssueCreate LogicalCreate MeasureCreate OrbitalCreate PhysicalCreate RequirementCreate ResourceCreate RiskCreate StatementCreate TaskCreate Test CaseCreate TimeCreate TransitionCreate Virtual      P-PCR.F.01  Revise Purchase Drafts      P-PCR.F.02  Record Explicit Purchase Approval      P-PCR.F.03  Transmit Approved Purchase Orders      P-PCR.F.04  Maintain Supplier Order State      P-PCR.IF.01  Manager Approval Interface      P-PCR.IF.02  Supplier Order Interface      P-PCR.IF.03  Purchase Record Interface      P-PCR.IF.04  Purchasing Advice Interface      P-PCR.IF.05  Purchase Presentation Interface      P-PCR.IF.06  Purchase Governance Interface      P-PCR.IO.01  Purchase Quantity Revisions      P-PCR.IO.02  Supplier Confirmation Delivery and Exception Information      P-PCR.IO.03  Proposed Purchasing Advice      P-PCR.IO.04  Authorized Supply Disposition      P-PCR.IO.05  Purchase Record Retention Result      P-PCR.IO.06  Order State Query      P-PCR.IO.07  Explicit Purchase Approvals      P-PCR.IO.08  Authorized Task Constraints      P-PCR.IO.09  Approved Purchase Orders      P-PCR.IO.10  Reviewable Purchase Draft      P-PCR.IO.11  Recorded Supplier Order State      P-PCR.IO.12  Supply Exception Context      P-PCR.IO.13  Purchase Transaction Record      P-PCR.IO.14  Operating Task Observations      P-PCR.SW.01  Purchase workflow availability      P-PCR.SW.02  Purchase task authorization      P-PCR.SW.03  Recoverable purchase transaction state    "
+      ]
+    },
+    {
+      "number": "P-PCR.F.01",
+      "description": "The Purchase Coordination Subsystem shall create an unapproved purchase-draft version reflecting each accepted manager quantity revision.",
+      "rationale": "Rationale: Revision must preserve manager control without commitment.\nMOP: 100 x valid revision fixtures preserving quantity, unit, version and unapproved state / valid revision fixtures [%]; target 100%; accepted invalid revisions = 0.\nVerification criterion: Revise beef from 4 to 5 kg in the prepared 4/6/1 kg draft; the revised version is 5/6/1 kg, remains unapproved and produces no transmission. Invalid quantities are rejected.\nMethod: Test\nStatus: Draft; verification not executed."
+    },
+    {
+      "number": "P-PCR.IO.01",
+      "description": "The Purchase Coordination Subsystem shall accept Purchase Quantity Revisions from the Restaurant Manager.",
+      "rationale": "Rationale: Retain restaurant, draft version, ingredient quantities and units. A revision creates a new unapproved version; a sent version is immutable.\nMOP: Correct declared cases / applicable cases = 100%; accepted invalid associations = 0.\nVerification criterion: Valid 4/6/1 kg draft revised to 5/6/1 kg is unapproved; negative, unknown-unit, wrong-restaurant and already-sent version edits are rejected.\nMethod: Test and inspection\nStatus: Draft; verification not executed."
+    },
+    {
+      "number": "P-PCR.IF.01",
+      "description": "The Purchase Coordination Subsystem shall interface with the Restaurant Manager through the Manager Approval Interface.",
+      "rationale": "Rationale: Makes the component boundary and conduit contract explicit.\nMOP: Interface endpoint and transfer-set discrepancies = 0.\nVerification criterion: Inspect P-CX.1 and test every applicable transferred flow against its P-PCR.IO contract; check source, target, direction, scope and rejection behavior.\nMethod: Test and inspection\nStatus: Draft; verification not executed."
+    }
+  ]
+}

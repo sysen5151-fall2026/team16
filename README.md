@@ -43,7 +43,7 @@ src/core.js                 State machine, restaurant-data fixture, forecasting 
 src/app.js                  Minimal UI and run-evidence export
 src/template.html           UI source and original-model placeholders
 model/                      Original Asset and UC.1 Action figures; source/action registry
-docs/TRACEABILITY.md         Need → requirement → action → implementation → demo evidence
+docs/traceability.md         Need → requirement → action → implementation → demo evidence
 docs/AI_PROVENANCE.md        Actual user request, source use, constraints and assistant contribution
 docs/DEMO_SCRIPT.md          Short classroom pitch and demo steps
 docs/TEST_REPORT.md          Actual test results and limits
@@ -72,9 +72,14 @@ Upload this extracted folder's contents to your team's GitHub repository. No ext
 
 The two original figures support the live presentation. The complete requirements baseline, stakeholder analysis and remaining rubric areas should point to the team's existing reports/model in the Canvas template. Those documents have not been edited and their draft status has not been changed.
 
-Sources and observed revision dates are in `model/SOURCES.md`; the selected use case and all 22 diagram actions are mapped in `docs/TRACEABILITY.md`.
+Sources and observed revision dates are in `model/SOURCES.md`; the selected use case and all 22 diagram actions are mapped in `docs/traceability.md`.
 
 
 ## Function architecture increment October 23 2026
 
 The first-level architecture implementation is in src/architecture. Its 24 internal interfaces come from the Innoslate flow register, with a machine-readable contract in contracts/api-v1.json and generated signatures in contracts/generated. Run npm test and npm run demo:architecture. See docs/route-table.md, docs/FUNCTION_ARCHITECTURE_TRACEABILITY.md and docs/FUNCTION_ARCHITECTURE_TEST_REPORT.md. The original offline walking skeleton remains available; it is not described as already migrated to the new module library.
+
+
+## PMC2 purchase product
+
+Open `PANTRI_PMC2.html` for the direct P-F.0.3 architecture-module interface. Rebuild with `python tools/build_pmc2.py`. See [recording-readiness evidence](docs/PMC2_READINESS_ZH.md), [traceability](docs/traceability.md) and [entry points](docs/route-table.md). This is an in-memory prepared prototype with simulated supplier input, not a production procurement service.
