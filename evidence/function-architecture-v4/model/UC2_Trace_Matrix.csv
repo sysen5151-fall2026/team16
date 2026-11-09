@@ -1,0 +1,5 @@
+﻿step,behavior_io,producer,consumer,flow,source,target
+1,UC.2.IO.01,UC.2.1,UC.2.2,P-IO.01,P-F.1,P-F.0.5
+1.1,UC.2.IO.02,UC.2.2,UC.2.3,P-IF.01,P-F.0.5,P-F.0.1
+1.2,UC.2.IO.03,UC.2.3,UC.2.4,P-IF.08,P-F.0.1,P-F.0.5
+2,UC.2.IO.04,UC.2.4,UC.2.5,P-IO.08,P-F.0.5,P-F.1

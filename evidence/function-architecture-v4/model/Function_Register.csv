@@ -1,0 +1,7 @@
+﻿id,name,description,sources
+P-F.0.1,Maintain Ingredient Operational Records,"Capture and retain actual restaurant events, queries and transaction history without claiming physical receiving or disposal.",SR.01; SR.07; SR.08; SR.09; SR.10
+P-F.0.2,Derive Ingredient Planning Information,"Derive scoped demand, reviewable advice, expiration and paired waste/availability results with explicit data limitations.",SR.02; SR.05; SR.06
+P-F.0.3,Coordinate Approved Ingredient Orders,"Maintain versioned drafts, explicit approvals, unchanged supplier handoff and evidence-associated order state.",SR.03A; SR.03; SR.04; SR.11
+P-F.0.4,Coordinate Food Recovery Requests,Exchange recovery information from recorded context under an authorized support command; a request does not establish physical collection.,SR.11
+P-F.0.5,Present Restaurant Decision Information,Accept scoped information tasks and present recorded or derived results; managers retain purchasing authority.,SR.01; SR.02; SR.03A; SR.04; SR.05; SR.06
+P-F.0.6,Govern PANTRI Service Continuity,"Apply task authorization, observe service and exceptions, restore confirmed records and export authorized handover records.",SR.11; SR.12; SR.13; SR.14; SR.15

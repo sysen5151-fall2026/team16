@@ -1,0 +1,256 @@
+{
+  "checks": [
+    {
+      "check": "Six first-level children of P-F.0",
+      "passed": true
+    },
+    {
+      "check": "All 21 leaf functions have the intended parent",
+      "passed": true
+    },
+    {
+      "check": "All 17 carried-down boundary connections exist",
+      "passed": true
+    },
+    {
+      "check": "P-IF.01 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.02 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.03 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.04 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.05 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.06 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.07 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.08 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.09 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.10 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.11 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.12 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.13 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.14 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.15 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.16 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.17 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.18 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.19 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.20 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.21 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.22 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.23 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.24 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "All derived requirements have upper-level requirement traces",
+      "passed": true
+    },
+    {
+      "check": "All derived requirements have leaf-function allocation",
+      "passed": true
+    },
+    {
+      "check": "Every new requirement has a planned native verification case",
+      "passed": true
+    },
+    {
+      "check": "Sequence event names and numbers are unique",
+      "passed": true
+    },
+    {
+      "check": "UC.1 trace passes the continuous endpoint pencil test",
+      "passed": true
+    },
+    {
+      "check": "Trace 1 matches Metafunction I/O",
+      "passed": true
+    },
+    {
+      "check": "Trace 1.1 matches modeled interface",
+      "passed": true
+    },
+    {
+      "check": "Trace 1.2 matches modeled interface",
+      "passed": true
+    },
+    {
+      "check": "Trace 1.3 matches modeled interface",
+      "passed": true
+    },
+    {
+      "check": "Trace 1.4 matches modeled interface",
+      "passed": true
+    },
+    {
+      "check": "Trace 1.5 matches modeled interface",
+      "passed": true
+    },
+    {
+      "check": "Trace 2 matches Metafunction I/O",
+      "passed": true
+    },
+    {
+      "check": "Trace 3 matches Metafunction I/O",
+      "passed": true
+    },
+    {
+      "check": "Trace 3.1 matches modeled interface",
+      "passed": true
+    },
+    {
+      "check": "Trace 4 matches Metafunction I/O",
+      "passed": true
+    },
+    {
+      "check": "Trace 5 matches Metafunction I/O",
+      "passed": true
+    },
+    {
+      "check": "Trace 5.1 matches modeled interface",
+      "passed": true
+    },
+    {
+      "check": "Trace 5.2 matches modeled interface",
+      "passed": true
+    },
+    {
+      "check": "Trace 6 matches Metafunction I/O",
+      "passed": true
+    },
+    {
+      "check": "Trace 7 matches Metafunction I/O",
+      "passed": true
+    },
+    {
+      "check": "Trace 7.1 matches modeled interface",
+      "passed": true
+    },
+    {
+      "check": "Trace 7.2 matches modeled interface",
+      "passed": true
+    },
+    {
+      "check": "Trace 7.3 matches modeled interface",
+      "passed": true
+    },
+    {
+      "check": "Trace 8 matches Metafunction I/O",
+      "passed": true
+    },
+    {
+      "check": "All distinct UC.1 I/O objects have an explicit aggregation or refinement",
+      "passed": true
+    },
+    {
+      "check": "UC2 1 behavior producer and consumer",
+      "passed": true
+    },
+    {
+      "check": "UC2 1 architecture endpoints",
+      "passed": true
+    },
+    {
+      "check": "UC2 1.1 behavior producer and consumer",
+      "passed": true
+    },
+    {
+      "check": "UC2 1.1 architecture endpoints",
+      "passed": true
+    },
+    {
+      "check": "UC2 1.2 behavior producer and consumer",
+      "passed": true
+    },
+    {
+      "check": "UC2 1.2 architecture endpoints",
+      "passed": true
+    },
+    {
+      "check": "UC2 2 behavior producer and consumer",
+      "passed": true
+    },
+    {
+      "check": "UC2 2 architecture endpoints",
+      "passed": true
+    },
+    {
+      "check": "Added UC1 completeness outcome stays within manager review",
+      "passed": true
+    },
+    {
+      "check": "UC2 architecture path is continuous",
+      "passed": true
+    }
+  ],
+  "checks_passed": 62,
+  "distinct_source_io_objects": 21,
+  "traced_events": 19,
+  "note": "Structural graph and declared-path checks. Does not assert operational acceptance or production implementation."
+}

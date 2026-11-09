@@ -1,0 +1,2418 @@
+{
+  "functions": [
+    {
+      "id": "P-F.0.1",
+      "name": "Maintain Ingredient Operational Records",
+      "description": "Capture and retain actual restaurant events, queries and transaction history without claiming physical receiving or disposal.",
+      "children": [
+        {
+          "id": "P-F.0.1.1",
+          "name": "Capture Ingredient Events",
+          "native_id": "269314"
+        },
+        {
+          "id": "P-F.0.1.2",
+          "name": "Reconcile Ingredient Records",
+          "native_id": "269315"
+        },
+        {
+          "id": "P-F.0.1.3",
+          "name": "Preserve Operational History",
+          "native_id": "269316"
+        }
+      ],
+      "sources": [
+        "SR.01",
+        "SR.07",
+        "SR.08",
+        "SR.09",
+        "SR.10"
+      ],
+      "native_id": "269313",
+      "global_id": "I_700D40BE46F95_B2586CC301882"
+    },
+    {
+      "id": "P-F.0.2",
+      "name": "Derive Ingredient Planning Information",
+      "description": "Derive scoped demand, reviewable advice, expiration and paired waste/availability results with explicit data limitations.",
+      "children": [
+        {
+          "id": "P-F.0.2.1",
+          "name": "Forecast Ingredient Demand",
+          "native_id": "269318"
+        },
+        {
+          "id": "P-F.0.2.2",
+          "name": "Derive Purchasing Advice",
+          "native_id": "269319"
+        },
+        {
+          "id": "P-F.0.2.3",
+          "name": "Assess Expiration Exposure",
+          "native_id": "269320"
+        },
+        {
+          "id": "P-F.0.2.4",
+          "name": "Calculate Waste and Availability Measures",
+          "native_id": "269321"
+        }
+      ],
+      "sources": [
+        "SR.02",
+        "SR.05",
+        "SR.06"
+      ],
+      "native_id": "269317",
+      "global_id": "I_B22BBBF881405_3C3AEB1D7BA74"
+    },
+    {
+      "id": "P-F.0.3",
+      "name": "Coordinate Approved Ingredient Orders",
+      "description": "Maintain versioned drafts, explicit approvals, unchanged supplier handoff and evidence-associated order state.",
+      "children": [
+        {
+          "id": "P-F.0.3.1",
+          "name": "Revise Purchase Drafts",
+          "native_id": "269323"
+        },
+        {
+          "id": "P-F.0.3.2",
+          "name": "Record Explicit Purchase Approval",
+          "native_id": "269324"
+        },
+        {
+          "id": "P-F.0.3.3",
+          "name": "Transmit Approved Purchase Orders",
+          "native_id": "269325"
+        },
+        {
+          "id": "P-F.0.3.4",
+          "name": "Maintain Supplier Order State",
+          "native_id": "269326"
+        }
+      ],
+      "sources": [
+        "SR.03A",
+        "SR.03",
+        "SR.04",
+        "SR.11"
+      ],
+      "native_id": "269322",
+      "global_id": "I_667EB04B26455_85AA57C3EFE1A"
+    },
+    {
+      "id": "P-F.0.4",
+      "name": "Coordinate Food Recovery Requests",
+      "description": "Exchange recovery information from recorded context under an authorized support command; a request does not establish physical collection.",
+      "children": [
+        {
+          "id": "P-F.0.4.1",
+          "name": "Prepare Recovery Requests",
+          "native_id": "269328"
+        },
+        {
+          "id": "P-F.0.4.2",
+          "name": "Record Recovery Responses",
+          "native_id": "269329"
+        },
+        {
+          "id": "P-F.0.4.3",
+          "name": "Maintain Recovery Exception State",
+          "native_id": "269330"
+        }
+      ],
+      "sources": [
+        "SR.11"
+      ],
+      "native_id": "269327",
+      "global_id": "I_C14CAD8F71DC5_21F885AB2B468"
+    },
+    {
+      "id": "P-F.0.5",
+      "name": "Present Restaurant Decision Information",
+      "description": "Accept scoped information tasks and present recorded or derived results; managers retain purchasing authority.",
+      "children": [
+        {
+          "id": "P-F.0.5.1",
+          "name": "Accept Information Tasks",
+          "native_id": "269332"
+        },
+        {
+          "id": "P-F.0.5.2",
+          "name": "Present Planning Information",
+          "native_id": "269333"
+        },
+        {
+          "id": "P-F.0.5.3",
+          "name": "Present Transaction Information",
+          "native_id": "269334"
+        }
+      ],
+      "sources": [
+        "SR.01",
+        "SR.02",
+        "SR.03A",
+        "SR.04",
+        "SR.05",
+        "SR.06"
+      ],
+      "native_id": "269331",
+      "global_id": "I_AA66ABB3E8025_1C399380A2229"
+    },
+    {
+      "id": "P-F.0.6",
+      "name": "Govern PANTRI Service Continuity",
+      "description": "Apply task authorization, observe service and exceptions, restore confirmed records and export authorized handover records.",
+      "children": [
+        {
+          "id": "P-F.0.6.1",
+          "name": "Apply Restaurant Access Policies",
+          "native_id": "269336"
+        },
+        {
+          "id": "P-F.0.6.2",
+          "name": "Monitor Service and Exceptions",
+          "native_id": "269337"
+        },
+        {
+          "id": "P-F.0.6.3",
+          "name": "Restore Confirmed Records",
+          "native_id": "269338"
+        },
+        {
+          "id": "P-F.0.6.4",
+          "name": "Export Authorized Handover Records",
+          "native_id": "269339"
+        }
+      ],
+      "sources": [
+        "SR.11",
+        "SR.12",
+        "SR.13",
+        "SR.14",
+        "SR.15"
+      ],
+      "native_id": "269335",
+      "global_id": "I_57DF2472CFC65_AAFAA4B206555"
+    }
+  ],
+  "flows": [
+    {
+      "id": "P-IF.01",
+      "name": "Inventory View Query",
+      "sources": [
+        "P-F.0.5"
+      ],
+      "targets": [
+        "P-F.0.1"
+      ],
+      "role": "I",
+      "fields": [
+        "restaurant_id",
+        "ingredient_scope",
+        "period",
+        "query_id"
+      ],
+      "native_id": "269340",
+      "global_id": "I_5C936BDC90035_FCD8B96735991"
+    },
+    {
+      "id": "P-IF.02",
+      "name": "Planning Record Query",
+      "sources": [
+        "P-F.0.2"
+      ],
+      "targets": [
+        "P-F.0.1"
+      ],
+      "role": "I",
+      "fields": [
+        "restaurant_id",
+        "ingredient_scope",
+        "period",
+        "query_id"
+      ],
+      "native_id": "269341",
+      "global_id": "I_3931EFDD97585_154804C54671D"
+    },
+    {
+      "id": "P-IF.03",
+      "name": "Scoped Planning Records",
+      "sources": [
+        "P-F.0.1"
+      ],
+      "targets": [
+        "P-F.0.2"
+      ],
+      "role": "I",
+      "fields": [
+        "restaurant_id",
+        "inventory",
+        "usage_history",
+        "expiration_dates",
+        "missing_fields",
+        "query_id"
+      ],
+      "native_id": "269342",
+      "global_id": "I_9A37741F5D9F5_593991E164E65"
+    },
+    {
+      "id": "P-IF.04",
+      "name": "Planning Analysis Request",
+      "sources": [
+        "P-F.0.5"
+      ],
+      "targets": [
+        "P-F.0.2"
+      ],
+      "role": "I",
+      "fields": [
+        "restaurant_id",
+        "ingredient_scope",
+        "period",
+        "task_id",
+        "requested_analysis"
+      ],
+      "native_id": "269343",
+      "global_id": "I_3F2230289C555_A8DBDA807FC67"
+    },
+    {
+      "id": "P-IF.05",
+      "name": "Proposed Purchasing Advice",
+      "sources": [
+        "P-F.0.2"
+      ],
+      "targets": [
+        "P-F.0.3"
+      ],
+      "role": "I",
+      "fields": [
+        "restaurant_id",
+        "demand",
+        "usable_stock",
+        "horizon",
+        "limitations",
+        "proposed_quantities"
+      ],
+      "native_id": "269344",
+      "global_id": "I_E2EA844CA2515_239A03F7F6BCA"
+    },
+    {
+      "id": "P-IF.06",
+      "name": "Reviewable Purchase Draft",
+      "sources": [
+        "P-F.0.3"
+      ],
+      "targets": [
+        "P-F.0.5"
+      ],
+      "role": "I",
+      "fields": [
+        "restaurant_id",
+        "draft_id",
+        "version",
+        "lines",
+        "limitations",
+        "approval_state"
+      ],
+      "native_id": "269345",
+      "global_id": "I_78F9D06F75AB5_8C79C65D5692A"
+    },
+    {
+      "id": "P-IF.07",
+      "name": "Recorded Supplier Order State",
+      "sources": [
+        "P-F.0.3"
+      ],
+      "targets": [
+        "P-F.0.5"
+      ],
+      "role": "I",
+      "fields": [
+        "restaurant_id",
+        "order_id",
+        "state",
+        "confirmation_reference",
+        "delivery_information",
+        "exceptions"
+      ],
+      "native_id": "269346",
+      "global_id": "I_FC29113C19E85_51781606F6566"
+    },
+    {
+      "id": "P-IF.08",
+      "name": "Scoped Inventory View Data",
+      "sources": [
+        "P-F.0.1"
+      ],
+      "targets": [
+        "P-F.0.5"
+      ],
+      "role": "I",
+      "fields": [
+        "restaurant_id",
+        "inventory",
+        "recorded_dates",
+        "limitations"
+      ],
+      "native_id": "269347",
+      "global_id": "I_C7B724FA7E245_B6DBFED565C5B"
+    },
+    {
+      "id": "P-IF.09",
+      "name": "Expiration and Performance Results",
+      "sources": [
+        "P-F.0.2"
+      ],
+      "targets": [
+        "P-F.0.5"
+      ],
+      "role": "I",
+      "fields": [
+        "restaurant_id",
+        "result_type",
+        "period",
+        "expiration_classes",
+        "waste_per_100_covers",
+        "stockout_rate",
+        "limitations"
+      ],
+      "native_id": "269348",
+      "global_id": "I_A504CB3BCE7A5_C71A60EACE342"
+    },
+    {
+      "id": "P-IF.10",
+      "name": "Recorded Recovery Context",
+      "sources": [
+        "P-F.0.1"
+      ],
+      "targets": [
+        "P-F.0.4"
+      ],
+      "role": "I",
+      "fields": [
+        "restaurant_id",
+        "context_id",
+        "recorded_surplus_or_waste",
+        "quantities",
+        "units",
+        "limitations"
+      ],
+      "native_id": "269349",
+      "global_id": "I_DD120B4ED7775_AA48A6CE5F869"
+    },
+    {
+      "id": "P-IF.11",
+      "name": "Recorded Recovery State",
+      "sources": [
+        "P-F.0.4"
+      ],
+      "targets": [
+        "P-F.0.5"
+      ],
+      "role": "I",
+      "fields": [
+        "restaurant_id",
+        "request_id",
+        "state",
+        "response_reference",
+        "exceptions"
+      ],
+      "native_id": "269350",
+      "global_id": "I_0124133C9EB75_80A88BC18A6C8"
+    },
+    {
+      "id": "P-IF.12",
+      "name": "Supply Exception Context",
+      "sources": [
+        "P-F.0.3"
+      ],
+      "targets": [
+        "P-F.0.6"
+      ],
+      "role": "I",
+      "fields": [
+        "restaurant_id",
+        "order_id",
+        "state",
+        "exception",
+        "responsible_party",
+        "follow_up"
+      ],
+      "native_id": "269351",
+      "global_id": "I_C3E4ECC5F3AB5_B549112A04A5E"
+    },
+    {
+      "id": "P-IF.13",
+      "name": "Recovery Exception Context",
+      "sources": [
+        "P-F.0.4"
+      ],
+      "targets": [
+        "P-F.0.6"
+      ],
+      "role": "I",
+      "fields": [
+        "restaurant_id",
+        "request_id",
+        "state",
+        "exception",
+        "responsible_party",
+        "follow_up"
+      ],
+      "native_id": "269352",
+      "global_id": "I_979AE820A0945_1698E57185295"
+    },
+    {
+      "id": "P-IF.14",
+      "name": "Authorized Supply Disposition",
+      "sources": [
+        "P-F.0.6"
+      ],
+      "targets": [
+        "P-F.0.3"
+      ],
+      "role": "I",
+      "fields": [
+        "restaurant_id",
+        "order_id",
+        "command_id",
+        "authorized_disposition"
+      ],
+      "native_id": "269353",
+      "global_id": "I_6CFFBADCEF3D5_05C80C453EB35"
+    },
+    {
+      "id": "P-IF.15",
+      "name": "Authorized Recovery Disposition",
+      "sources": [
+        "P-F.0.6"
+      ],
+      "targets": [
+        "P-F.0.4"
+      ],
+      "role": "I",
+      "fields": [
+        "restaurant_id",
+        "request_id",
+        "command_id",
+        "authorized_disposition"
+      ],
+      "native_id": "269354",
+      "global_id": "I_0846F9FF576A5_2389DC2577AB2"
+    },
+    {
+      "id": "P-IF.16",
+      "name": "Authorized Task Constraints",
+      "sources": [
+        "P-F.0.6"
+      ],
+      "targets": [
+        "P-F.0.1",
+        "P-F.0.2",
+        "P-F.0.3",
+        "P-F.0.4",
+        "P-F.0.5"
+      ],
+      "role": "C",
+      "fields": [
+        "restaurant_id",
+        "role",
+        "allowed_tasks",
+        "policy_version",
+        "command_reference"
+      ],
+      "native_id": "269355",
+      "global_id": "I_0EFF6BD5F04A5_90E8BDF4E9FDA"
+    },
+    {
+      "id": "P-IF.17",
+      "name": "Recoverable Operational Snapshot",
+      "sources": [
+        "P-F.0.1"
+      ],
+      "targets": [
+        "P-F.0.6"
+      ],
+      "role": "I",
+      "fields": [
+        "restaurant_id",
+        "snapshot_id",
+        "confirmed_records",
+        "relationships",
+        "selected_scope"
+      ],
+      "native_id": "269356",
+      "global_id": "I_933C001900195_CF2827C27C307"
+    },
+    {
+      "id": "P-IF.18",
+      "name": "Restored Operational State",
+      "sources": [
+        "P-F.0.6"
+      ],
+      "targets": [
+        "P-F.0.1"
+      ],
+      "role": "I",
+      "fields": [
+        "restaurant_id",
+        "snapshot_id",
+        "records",
+        "relationships",
+        "reconciliation_result"
+      ],
+      "native_id": "269357",
+      "global_id": "I_910795A8B1295_09F987E6DDA5A"
+    },
+    {
+      "id": "P-IF.19",
+      "name": "Purchase Transaction Record",
+      "sources": [
+        "P-F.0.3"
+      ],
+      "targets": [
+        "P-F.0.1"
+      ],
+      "role": "I",
+      "fields": [
+        "restaurant_id",
+        "order_id",
+        "version",
+        "event_id",
+        "event_type",
+        "payload",
+        "approval_reference"
+      ],
+      "native_id": "269358",
+      "global_id": "I_63DDD82756835_47EAB8EB766C3"
+    },
+    {
+      "id": "P-IF.20",
+      "name": "Recovery Transaction Record",
+      "sources": [
+        "P-F.0.4"
+      ],
+      "targets": [
+        "P-F.0.1"
+      ],
+      "role": "I",
+      "fields": [
+        "restaurant_id",
+        "request_id",
+        "event_id",
+        "event_type",
+        "payload"
+      ],
+      "native_id": "269359",
+      "global_id": "I_FB06830CE1A95_932919BFC16D8"
+    },
+    {
+      "id": "P-IF.21",
+      "name": "Purchase Record Retention Result",
+      "sources": [
+        "P-F.0.1"
+      ],
+      "targets": [
+        "P-F.0.3"
+      ],
+      "role": "I",
+      "fields": [
+        "restaurant_id",
+        "order_id",
+        "event_id",
+        "retained",
+        "errors"
+      ],
+      "native_id": "269360",
+      "global_id": "I_A9446FE0FAC35_329A7C6BEC67C"
+    },
+    {
+      "id": "P-IF.22",
+      "name": "Recovery Record Retention Result",
+      "sources": [
+        "P-F.0.1"
+      ],
+      "targets": [
+        "P-F.0.4"
+      ],
+      "role": "I",
+      "fields": [
+        "restaurant_id",
+        "request_id",
+        "event_id",
+        "retained",
+        "errors"
+      ],
+      "native_id": "269361",
+      "global_id": "I_DCE6145F267F5_5ACBB4BD32C99"
+    },
+    {
+      "id": "P-IF.23",
+      "name": "Order State Query",
+      "sources": [
+        "P-F.0.5"
+      ],
+      "targets": [
+        "P-F.0.3"
+      ],
+      "role": "I",
+      "fields": [
+        "restaurant_id",
+        "order_id",
+        "query_id"
+      ],
+      "native_id": "269362",
+      "global_id": "I_4C83D100B6B85_159920F2A0AAE"
+    },
+    {
+      "id": "P-IF.24",
+      "name": "Operating Task Observations",
+      "sources": [
+        "P-F.0.1",
+        "P-F.0.2",
+        "P-F.0.3",
+        "P-F.0.4",
+        "P-F.0.5"
+      ],
+      "targets": [
+        "P-F.0.6"
+      ],
+      "role": "I",
+      "fields": [
+        "restaurant_id",
+        "source_function",
+        "task_id",
+        "timestamp",
+        "outcome",
+        "elapsed_ms"
+      ],
+      "native_id": "269363",
+      "global_id": "I_E64593E182765_492AD3405CFDC"
+    }
+  ],
+  "boundary": [
+    {
+      "id": "P-IO.01",
+      "name": "Planning and Information Requests",
+      "role": "C",
+      "function": "P-F.0.5",
+      "description": "<p>Restaurant and selected-ingredient scope, requested planning/information task, period and relevant demand context. Requests enable the requested interaction; they do not approve purchases.</p>",
+      "native_id": "265011",
+      "global_id": "I_40M2YX55PZBRA_VQTJ0Q9NBPKBN"
+    },
+    {
+      "id": "P-IO.02",
+      "name": "Purchase Quantity Revisions",
+      "role": "I",
+      "function": "P-F.0.3",
+      "description": "<p>Manager edits associated with a restaurant, draft/order version, ingredient, quantity and unit. Accepted changes update the unapproved draft without implying approval.</p>",
+      "native_id": "265012",
+      "global_id": "I_7HMVSQBGBHB7S_9FHAHFP8SSXWA"
+    },
+    {
+      "id": "P-IO.03",
+      "name": "Explicit Purchase Approvals",
+      "role": "C",
+      "function": "P-F.0.3",
+      "description": "<p>Explicit authorization associated with the final manager-approved order version and quantities. This is a control on commitment/transmission, separate from the revision input.</p>",
+      "native_id": "265013",
+      "global_id": "I_3JW0MERRD9AM6_VE0B12VNX4XPT"
+    },
+    {
+      "id": "P-IO.04",
+      "name": "Restaurant Operational Records",
+      "role": "I",
+      "function": "P-F.0.1",
+      "description": "<p>Bundled restaurant records covering inventory/batches, actual receipts, historical usage, counts/corrections, waste events, diner-cover observations and proposed ingredient-demand/stockout observations. Preserve quantities, units, occurrence/update context and explicit unknown information. Proposed evaluation dictionary: each demand opportunity identifies restaurant, ingredient, period, opportunity ID, occurrence time, observed availability outcome and observation completeness. Stockout rate uses unavailable observed demand opportunities divided by all valid observed opportunities for the same declared scope and period. Zero stock alone does not establish a demand stockout. Missing observations or zero denominators yield not calculable. This dictionary is a proposed evaluation clarification, not a confirmed operational policy.</p>",
+      "native_id": "265014",
+      "global_id": "I_7JYQAZJ2A0B7Z_SQ2SMBZHNQ451"
+    },
+    {
+      "id": "P-IO.05",
+      "name": "Supplier Confirmation Delivery and Exception Information",
+      "role": "I",
+      "function": "P-F.0.3",
+      "description": "<p>Transaction-associated supplier responses covering confirmation, delivery information, partial/delayed events and exceptions. If no valid associated supplier response has been received, the order remains unconfirmed. Messages are distinct from physical fulfillment.</p>",
+      "native_id": "265015",
+      "global_id": "I_3RXFJYSW4JA5M_VCJKY54ZGSS2F"
+    },
+    {
+      "id": "P-IO.06",
+      "name": "Recovery Response and Exception Information",
+      "role": "I",
+      "function": "P-F.0.4",
+      "description": "<p>Request-associated collection/pickup responses, exception context and reported follow-up. Source: UC.11, UC.12, UC.15 and the recovery loop in the operational concept; stakeholder coverage must be reviewed without inventing partner commitments.</p>",
+      "native_id": "265016",
+      "global_id": "I_7M1VPRC1P6A2X_RDHANFD713TX4"
+    },
+    {
+      "id": "P-IO.07",
+      "name": "Service Policies and Authorized Support Commands",
+      "role": "C",
+      "function": "P-F.0.6",
+      "description": "<p>Agreed operating hours, role/restaurant permissions, planning/retention rules and authorized support/recovery/handover commands. Unconfirmed values stay proposed; demo defaults do not become operational policy.</p>",
+      "native_id": "265017",
+      "global_id": "I_1JEECVKAMSBJZ_VW71SZDGYCPBE"
+    },
+    {
+      "id": "P-IO.08",
+      "name": "Inventory and Expiration Information",
+      "role": "O",
+      "function": "P-F.0.5",
+      "description": "<p>Restaurant-specific recorded ingredient/batch quantity, unit, update time, known/unknown expiration and horizon-based alerts. This reports recorded information rather than physical freshness certification.</p>",
+      "native_id": "265018",
+      "global_id": "I_3K6JBSK77YBFA_VDX5NNDTBMPRE"
+    },
+    {
+      "id": "P-IO.09",
+      "name": "Reviewable Purchasing Recommendations",
+      "role": "O",
+      "function": "P-F.0.5",
+      "description": "<p>Proposed purchase quantities with expected demand, usable recorded stock, expiration horizon and material data limitations. Recommendations are drafts until explicit final approval.</p>",
+      "native_id": "265019",
+      "global_id": "I_7HPFWVAJ8EARE_SBXGQYFF5Y8TT"
+    },
+    {
+      "id": "P-IO.10",
+      "name": "Joint Waste and Availability Measures",
+      "role": "O",
+      "function": "P-F.0.5",
+      "description": "<p>Waste mass per 100 diner covers and ingredient stockout rate for the same restaurant, ingredient scope and evaluation period, with missing/zero denominator treatment stated.</p>",
+      "native_id": "265020",
+      "global_id": "I_7374T8DN45AV4_8HKYVPF6FFB0V"
+    },
+    {
+      "id": "P-IO.11",
+      "name": "Approved Purchase Orders",
+      "role": "O",
+      "function": "P-F.0.3",
+      "description": "<p>Final orders associated with explicit manager approval. Ingredient identifiers, quantities and units remain unchanged between the approved version and outgoing supplier payload.</p>",
+      "native_id": "265021",
+      "global_id": "I_2CV2Y72S2BB4F_8D2Z82XZHV9H2"
+    },
+    {
+      "id": "P-IO.12",
+      "name": "Waste Collection Requests",
+      "role": "O",
+      "function": "P-F.0.4",
+      "description": "<p>Restaurant/request identifier, recorded surplus or recovery context and requested coordination information, as supported by the prior operational concept. A request is not evidence of completed collection.</p>",
+      "native_id": "265022",
+      "global_id": "I_7H9XGV3FAJA28_8DQXXR3QYWXVH"
+    },
+    {
+      "id": "P-IO.13",
+      "name": "Recorded Order and Collection Status",
+      "role": "O",
+      "function": "P-F.0.5",
+      "description": "<p>The current recorded transaction state, confirmation or exception, associated follow-up and available delivery/pickup information. Pending, partial, delayed and resolved states remain distinguishable.</p>",
+      "native_id": "265023",
+      "global_id": "I_0JGQSAZXG4BMZ_RMNDMH36ZC1V0"
+    },
+    {
+      "id": "P-IO.14",
+      "name": "Operational Record Acknowledgments",
+      "role": "O",
+      "function": "P-F.0.1",
+      "description": "<p>Accepted/rejected entry results and retained record identifiers or correction references. An acknowledgment certifies processing of a record, not the truth of a physical measurement.</p>",
+      "native_id": "265024",
+      "global_id": "I_42531F0PAHBPD_A10K686SMGTSV"
+    },
+    {
+      "id": "P-IO.15",
+      "name": "Exception and Service Monitoring Information",
+      "role": "O",
+      "function": "P-F.0.6",
+      "description": "<p>Affected order/collection transaction, restaurant, responsible party, current exception state and follow-up/resolution, together with workflow-availability observations for authorized service support.</p>",
+      "native_id": "265025",
+      "global_id": "I_1ESBZFYT4NB1W_9S2TCCVKB3GAT"
+    },
+    {
+      "id": "P-IO.16",
+      "name": "Recovered and Handover Records",
+      "role": "O",
+      "function": "P-F.0.6",
+      "description": "<p>Two related lifecycle outcomes distinguished in detailed requirements: restored confirmed records, and authorized handover exports. Both preserve required identifiers, quantities, units and recorded decision/correction relationships.</p>",
+      "native_id": "265026",
+      "global_id": "I_3Y6ZMSTFF2ANH_VKE1C1DXQT0Y2"
+    },
+    {
+      "id": "P-IO.17",
+      "name": "Authorized PANTRI Interaction State",
+      "role": "O",
+      "function": "P-F.0.6",
+      "description": "<p>Availability and authorized restaurant/task access conditions governing each participant interaction with PANTRI. This control gates use of the information service; it does not control external physical business operations. It derives from service/access policy and must not claim that authenticated access exists in the current offline prototype.</p>",
+      "native_id": "265027",
+      "global_id": "I_3TAWZCZG9TB1H_9MCYFADJTFHW5"
+    }
+  ],
+  "requirements": [
+    {
+      "id": "P-AFR.01",
+      "name": "Retain accepted ingredient events",
+      "statement": "The PANTRI System shall retain the restaurant identifier, event identifier, quantity, unit, occurrence time and explicit unknown values of each accepted ingredient event.",
+      "function": "P-F.0.1.1",
+      "parent": "P-F.0.1",
+      "sources": [
+        "SR.07",
+        "SR.08",
+        "SR.10",
+        "P-SFR.01"
+      ],
+      "rationale": "Reliable source records support subsequent planning.",
+      "mop": "Field preservation = 100*F/N [%]; N fixed by predeclared manifest; N=0 not computable",
+      "criterion": "F counts fields with correct value, type, unit and explicit unknown state. Require 100% within a predeclared valid receipt/usage/waste fixture set. Reject invalid identifiers or units without unauthorized mutation; evaluate rejections separately.",
+      "method": "Inspection and test",
+      "status": "Draft; technical verification planned",
+      "native_id": "269365",
+      "global_id": "I_094A5EA221CE5_0FD836C87FDB4"
+    },
+    {
+      "id": "P-AFR.02",
+      "name": "Preserve reconciliation history",
+      "statement": "The PANTRI System shall retain the previous recorded value and the identified correction event when reconciling an ingredient inventory count.",
+      "function": "P-F.0.1.2",
+      "parent": "P-F.0.1",
+      "sources": [
+        "SR.01",
+        "SR.09",
+        "P-SFR.01"
+      ],
+      "rationale": "A corrected stock value needs a defensible history.",
+      "mop": "Reconstructable correction chains divided by prepared correction chains",
+      "criterion": "Apply successive count corrections; every prior value and correction identifier can be reconstructed; the current value matches the final valid count.",
+      "method": "Test",
+      "status": "Draft; technical verification planned",
+      "native_id": "269367",
+      "global_id": "I_C35E7A2112305_17B8269F102C6"
+    },
+    {
+      "id": "P-AFR.03",
+      "name": "Preserve transaction relationships",
+      "statement": "The PANTRI System shall retain the relationship between each confirmed operational transaction record and its referenced approval or correction record.",
+      "function": "P-F.0.1.3",
+      "parent": "P-F.0.1",
+      "sources": [
+        "SR.09",
+        "SR.14",
+        "P-SFR.01"
+      ],
+      "rationale": "Restoration depends on retained transaction context.",
+      "mop": "Required retained relationships divided by independently listed relationships",
+      "criterion": "Prepare linked purchase and recovery events and reconcile retained links with an independent manifest; no dangling or wrong-restaurant link is permitted.",
+      "method": "Test and inspection",
+      "status": "Draft; technical verification planned",
+      "native_id": "269369",
+      "global_id": "I_4E2ECC289FD05_F8EA8FF67D77F"
+    },
+    {
+      "id": "P-AFR.04",
+      "name": "Forecast scoped ingredient demand",
+      "statement": "The PANTRI System shall calculate a demand forecast for the declared restaurant ingredient scope and planning period using the declared forecast method.",
+      "function": "P-F.0.2.1",
+      "parent": "P-F.0.2",
+      "sources": [
+        "SR.02",
+        "P-SFR.01"
+      ],
+      "rationale": "A recommendation requires a demand basis.",
+      "mop": "Forecast scope agreement and deterministic fixture agreement",
+      "criterion": "For a predeclared method and fixture, computed demand equals the independent expected result; record method, period and missing-data assumptions. Operational forecasting accuracy is not inferred.",
+      "method": "Analysis and test",
+      "status": "Draft; technical verification planned",
+      "native_id": "269371",
+      "global_id": "I_8845283381055_2C485B3785519"
+    },
+    {
+      "id": "P-AFR.05",
+      "name": "Provide purchasing advice basis",
+      "statement": "The PANTRI System shall associate each purchasing recommendation with its demand forecast, usable recorded stock, expiration horizon and material data limitations.",
+      "function": "P-F.0.2.2",
+      "parent": "P-F.0.2",
+      "sources": [
+        "SR.02",
+        "P-SFR.01"
+      ],
+      "rationale": "Managers must be able to assess advice.",
+      "mop": "Advice basis field coverage and agreement",
+      "criterion": "Compare each prepared recommendation to independently specified demand, stock, horizon and limitation facts; all applicable basis fields agree.",
+      "method": "Test",
+      "status": "Draft; technical verification planned",
+      "native_id": "269373",
+      "global_id": "I_8CE14E408EE55_C22AE46EBFAA8"
+    },
+    {
+      "id": "P-AFR.06",
+      "name": "Distinguish expiration information",
+      "statement": "The PANTRI System shall classify recorded ingredient batches relative to the declared expiration horizon while preserving unknown expiration dates as unknown.",
+      "function": "P-F.0.2.3",
+      "parent": "P-F.0.2",
+      "sources": [
+        "SR.05",
+        "P-SFR.01"
+      ],
+      "rationale": "Unknown dates cannot support use-first assurances.",
+      "mop": "Expiration classification accuracy and unknown-date false-safe count",
+      "criterion": "Test before, on and after horizon boundaries and null dates; each class matches an independent date oracle and no unknown date becomes safe.",
+      "method": "Analysis and test",
+      "status": "Draft; technical verification planned",
+      "native_id": "269375",
+      "global_id": "I_095462EE2ECB5_868888BC5E034"
+    },
+    {
+      "id": "P-AFR.07",
+      "name": "Calculate paired waste and availability measures",
+      "statement": "The PANTRI System shall calculate waste per one hundred diner covers and ingredient stockout rate for the same declared restaurant ingredient scope and evaluation period.",
+      "function": "P-F.0.2.4",
+      "parent": "P-F.0.2",
+      "sources": [
+        "SR.06",
+        "P-SFR.01"
+      ],
+      "rationale": "Both measures are needed to evaluate the waste and availability tradeoff.",
+      "mop": "W=100*waste_mass_kg/covers [kg/100 covers]; S=100*unavailable/all opportunities [%]",
+      "criterion": "Independent recomputation agrees within max(1e-9,1e-9*abs(expected)). Include fractional 1/3 fixtures; zero/missing denominators yield null. Separately verify both measures use the same restaurant, ingredient scope and period. Display rounding is separate.",
+      "method": "Analysis and test",
+      "status": "Draft; technical verification planned",
+      "native_id": "269377",
+      "global_id": "I_23105EB3CDB75_718B9C82CB794"
+    },
+    {
+      "id": "P-AFR.08",
+      "name": "Version quantity revisions",
+      "statement": "The PANTRI System shall create an unapproved purchase-draft version reflecting each accepted manager quantity revision.",
+      "function": "P-F.0.3.1",
+      "parent": "P-F.0.3",
+      "sources": [
+        "SR.03A",
+        "P-SFR.01"
+      ],
+      "rationale": "Revision must preserve manager control without commitment.",
+      "mop": "Revision quantity unit and version agreement",
+      "criterion": "Revise beef from 4 to 5 kg in the prepared 4/6/1 kg draft; the revised version is 5/6/1 kg, remains unapproved and produces no transmission. Invalid quantities are rejected.",
+      "method": "Test",
+      "status": "Draft; technical verification planned",
+      "native_id": "269379",
+      "global_id": "I_388B003E6C495_E3E900D4D7AFE"
+    },
+    {
+      "id": "P-AFR.09",
+      "name": "Bind approval to the final version",
+      "statement": "The PANTRI System shall record explicit Restaurant Manager approval with the restaurant identifier and the approved final purchase-draft version.",
+      "function": "P-F.0.3.2",
+      "parent": "P-F.0.3",
+      "sources": [
+        "SR.03",
+        "P-SFR.01"
+      ],
+      "rationale": "Approval authorizes a specific commitment.",
+      "mop": "Approval version and restaurant association agreement",
+      "criterion": "Record approval of a selected draft and compare the retained immutable snapshot; editing creates a new unapproved version and cannot reuse the stale approval.",
+      "method": "Test",
+      "status": "Draft; technical verification planned",
+      "native_id": "269381",
+      "global_id": "I_E7FE871637CB5_7F1BF39309D58"
+    },
+    {
+      "id": "P-AFR.10",
+      "name": "Transmit only the approved final order",
+      "statement": "The PANTRI System shall transmit a purchase order only when its restaurant identifier, final version, ingredient identifiers, quantities and units agree with its explicit manager approval record.",
+      "function": "P-F.0.3.3",
+      "parent": "P-F.0.3",
+      "sources": [
+        "SR.03",
+        "P-SFR.01"
+      ],
+      "rationale": "The supplier must receive the authorized version unchanged.",
+      "mop": "Unauthorized transmissions and approved-to-sent discrepancies",
+      "criterion": "Unapproved, revised-after-approval and wrong-restaurant cases produce zero handoffs; a valid 5/6/1 kg approval produces an exactly matching supplier payload. Duplicate attempts do not create a second commitment.",
+      "method": "Test",
+      "status": "Draft; technical verification planned",
+      "native_id": "269383",
+      "global_id": "I_5A654B9ABCC05_292B7C2011680"
+    },
+    {
+      "id": "P-AFR.11",
+      "name": "Maintain evidence based order state",
+      "statement": "The PANTRI System shall update the recorded supplier order state only from a valid associated supplier response or an explicitly recorded pending or exception event.",
+      "function": "P-F.0.3.4",
+      "parent": "P-F.0.3",
+      "sources": [
+        "SR.04",
+        "SR.11",
+        "P-SFR.01"
+      ],
+      "rationale": "Sending is distinct from confirmation and delivery.",
+      "mop": "Invalid confirmation transitions and valid response association rate",
+      "criterion": "Test absent, normal, partial, delayed and wrong-order responses; absence stays unconfirmed and wrong-order responses do not change the order. Status retains supporting response reference.",
+      "method": "Test",
+      "status": "Draft; technical verification planned",
+      "native_id": "269385",
+      "global_id": "I_E4EF5B634C0E5_C6D98945A79CC"
+    },
+    {
+      "id": "P-AFR.12",
+      "name": "Prepare authorized recovery requests",
+      "statement": "The PANTRI System shall create a recovery collection request only when recorded recovery context and a scoped authorized support command are associated with the same restaurant.",
+      "function": "P-F.0.4.1",
+      "parent": "P-F.0.4",
+      "sources": [
+        "SR.11",
+        "SR.13",
+        "P-SFR.01"
+      ],
+      "rationale": "The OpsCon needs a defensible recovery trigger.",
+      "mop": "Requests without context or authorization",
+      "criterion": "Prepared missing-context, wrong-restaurant and missing-command cases produce zero requests; a valid scoped case retains context and command references. Physical suitability remains an external determination.",
+      "method": "Test",
+      "status": "Draft; technical verification planned",
+      "native_id": "269387",
+      "global_id": "I_AE82D5D446C85_0589A87D9B777"
+    },
+    {
+      "id": "P-AFR.13",
+      "name": "Associate recovery responses",
+      "statement": "The PANTRI System shall associate each accepted recovery response with its identified recovery request.",
+      "function": "P-F.0.4.2",
+      "parent": "P-F.0.4",
+      "sources": [
+        "SR.11",
+        "P-SFR.01"
+      ],
+      "rationale": "Recovery information must remain tied to the request.",
+      "mop": "Response-to-request association agreement",
+      "criterion": "Use valid, unknown-request and repeated response fixtures; only a valid associated response changes recorded request state and repeated receipt remains identifiable.",
+      "method": "Test",
+      "status": "Draft; technical verification planned",
+      "native_id": "269389",
+      "global_id": "I_E19BB50032735_B3C96D2C8F43C"
+    },
+    {
+      "id": "P-AFR.14",
+      "name": "Retain recovery exception context",
+      "statement": "The PANTRI System shall retain the recovery request identifier, responsible party, current state and recorded follow-up for each recovery exception.",
+      "function": "P-F.0.4.3",
+      "parent": "P-F.0.4",
+      "sources": [
+        "SR.11",
+        "P-SFR.01"
+      ],
+      "rationale": "Support needs actionable recovery information.",
+      "mop": "Required exception field completeness",
+      "criterion": "Prepare unresolved and resolved collection exceptions; all four contextual elements remain reconstructable and no request is called physically completed without explicit evidence.",
+      "method": "Test and inspection",
+      "status": "Draft; technical verification planned",
+      "native_id": "269391",
+      "global_id": "I_50A9F33D196B5_EC59E8B5BE1EE"
+    },
+    {
+      "id": "P-AFR.15",
+      "name": "Scope information requests",
+      "statement": "The PANTRI System shall associate each accepted information task with its restaurant identifier, selected ingredient scope and requested period.",
+      "function": "P-F.0.5.1",
+      "parent": "P-F.0.5",
+      "sources": [
+        "SR.01",
+        "SR.02",
+        "SR.06",
+        "P-SFR.01"
+      ],
+      "rationale": "Information is only meaningful within its requested scope.",
+      "mop": "Request scope preservation rate",
+      "criterion": "Send inventory, planning and performance queries for different restaurants and periods; downstream task payloads retain their original scope without cross-restaurant substitution.",
+      "method": "Test",
+      "status": "Draft; technical verification planned",
+      "native_id": "269393",
+      "global_id": "I_46CC388B1EA75_EC48EA47D91CD"
+    },
+    {
+      "id": "P-AFR.16",
+      "name": "Present reviewable planning results",
+      "statement": "The PANTRI System shall present each planning result with its applicable scope, recorded or derived basis and material limitations.",
+      "function": "P-F.0.5.2",
+      "parent": "P-F.0.5",
+      "sources": [
+        "SR.01",
+        "SR.02",
+        "SR.05",
+        "SR.06",
+        "P-SFR.01"
+      ],
+      "rationale": "An output is useful only if its basis can be interpreted.",
+      "mop": "Displayed required-field agreement",
+      "criterion": "Inspect inventory, advice, expiration and paired-metric views against independent expected payloads; all applicable basis and limitation fields are visible.",
+      "method": "Demonstration and inspection",
+      "status": "Draft; technical verification planned",
+      "native_id": "269395",
+      "global_id": "I_65D6186C2EE35_A8381BE30B573"
+    },
+    {
+      "id": "P-AFR.17",
+      "name": "Present recorded transaction status",
+      "statement": "The PANTRI System shall present the current recorded purchase or recovery transaction state with its associated confirmation or exception information.",
+      "function": "P-F.0.5.3",
+      "parent": "P-F.0.5",
+      "sources": [
+        "SR.04",
+        "SR.11",
+        "P-SFR.01"
+      ],
+      "rationale": "Users must distinguish recorded progress from physical fulfillment.",
+      "mop": "Displayed-to-recorded state agreement",
+      "criterion": "Render pending, confirmed, partial, delayed and unresolved exception payloads; displayed state and references agree exactly with the underlying record.",
+      "method": "Test and demonstration",
+      "status": "Draft; technical verification planned",
+      "native_id": "269397",
+      "global_id": "I_98CC62FF95055_A2E99F7DF51A7"
+    },
+    {
+      "id": "P-AFR.18",
+      "name": "Apply scoped task authorization",
+      "statement": "The PANTRI System shall deny a task when its actor role, restaurant scope or requested action is outside the declared authorization policy.",
+      "function": "P-F.0.6.1",
+      "parent": "P-F.0.6",
+      "sources": [
+        "SR.13",
+        "P-SFR.01"
+      ],
+      "rationale": "All functions must respect restaurant and task boundaries.",
+      "mop": "Unauthorized task success count",
+      "criterion": "Compare allowed and denied prepared tasks against an independently declared policy matrix; every unauthorized task is blocked without data disclosure or mutation. This bounded test is not a complete security assessment.",
+      "method": "Test",
+      "status": "Draft; technical verification planned",
+      "native_id": "269399",
+      "global_id": "I_AE12D95B42F65_244BF2B9F3DC1"
+    },
+    {
+      "id": "P-AFR.19",
+      "name": "Retain service and exception observations",
+      "statement": "The PANTRI System shall retain the source function, task identifier, observation time and outcome for each received service observation.",
+      "function": "P-F.0.6.2",
+      "parent": "P-F.0.6",
+      "sources": [
+        "SR.11",
+        "SR.12",
+        "P-SFR.01"
+      ],
+      "rationale": "Monitoring needs observations rather than inferred availability.",
+      "mop": "Service observation field preservation rate",
+      "criterion": "Inject successful and failed task observations from all five operational functions; retained records preserve source, time, task and outcome. Operating-hour availability remains a separate planned operational validation.",
+      "method": "Test",
+      "status": "Draft; technical verification planned",
+      "native_id": "269401",
+      "global_id": "I_855C9979CA9B5_01284E8C88E80"
+    },
+    {
+      "id": "P-AFR.20",
+      "name": "Restore confirmed linked records",
+      "statement": "The PANTRI System shall restore confirmed operational records and their required approval and correction relationships from the selected authorized recovery snapshot.",
+      "function": "P-F.0.6.3",
+      "parent": "P-F.0.6",
+      "sources": [
+        "SR.14",
+        "P-SFR.01"
+      ],
+      "rationale": "Restored files alone do not establish semantic integrity.",
+      "mop": "Restored record and relationship integrity rates",
+      "criterion": "Compare recovery output with an independent record and link manifest; both integrity rates are 100% for the declared fixture. No agreed recovery-time or recovery-point objective is inferred.",
+      "method": "Test",
+      "status": "Draft; technical verification planned",
+      "native_id": "269403",
+      "global_id": "I_0FBE9350D2775_31BA1A46ABAA8"
+    },
+    {
+      "id": "P-AFR.21",
+      "name": "Export scoped handover records",
+      "statement": "The PANTRI System shall export the selected operational records and required relationships within the authorized restaurant handover scope.",
+      "function": "P-F.0.6.4",
+      "parent": "P-F.0.6",
+      "sources": [
+        "SR.15",
+        "P-SFR.01"
+      ],
+      "rationale": "Retirement or transfer requires a usable scoped handover.",
+      "mop": "Authorized export completeness and out-of-scope record count",
+      "criterion": "Compare the export against an independent selected-scope manifest; all required records and links are present and out-of-scope records count is zero.",
+      "method": "Test and inspection",
+      "status": "Draft; technical verification planned",
+      "native_id": "269405",
+      "global_id": "I_E2F8CC91E6275_B82AE4EDA8583"
+    }
+  ],
+  "baseline_requirements": [
+    {
+      "id": "1.1.1",
+      "name": "Accept Planning and Information Requests",
+      "statement": "<p>The PANTRI System shall accept Planning and Information Requests from the Restaurant Manager.</p>",
+      "details": "Draft Rationale: Manager requests identify the restaurant, ingredient scope, period and information task needed to produce relevant inventory, advice, expiration and performance views under SR.01, SR.02, SR.05 and SR.06. Requesting information must not itself authorize purchasing. Upstream stakeholder requirements: SR.01, SR.05, SR.06, SR.02. MOP: P-IO.01 field-preservation rate, valid-request acceptance rate and invalid-request rejection rate at the P-F.1-to-P-F.0 control boundary. Proposed verification criterion: Using the proposed request schema, accept a manager request carrying restaurant ID, selected ingredient IDs, task type and period; preserve supplied demand context. Reject missing restaurant, unsupported task or unauthorized scope without changing accepted operational records. Compare accepted fields with the independent input fixture. The valid information request produces no approval or purchase transmission. All prepared applicable cases meet these expectations. Method: Boundary test and inspection. Scenario scope: Valid inventory/advice/expiration/performance request; Missing restaurant ID; Unsupported task; Wrong restaurant scope; Repeated information request. Evaluation status: Planned, not executed. Fixture definitions are proposed review assumptions; operational agreement is not claimed. Requirement status: Draft.",
+      "functions": [
+        "P-F.0.5"
+      ],
+      "native_id": "265075",
+      "global_id": "I_C79EFNYZA0G4A_B3MCVAVCCEDM8"
+    },
+    {
+      "id": "1.1.2",
+      "name": "Accept Purchase Quantity Revisions",
+      "statement": "The PANTRI System shall accept Purchase Quantity Revisions from the Restaurant Manager.",
+      "details": "Draft Rationale: SR.03A requires manager control of proposed quantities before approval. A revision must remain associated with its restaurant and draft version so that an unrelated edit cannot silently change the purchase decision. Upstream stakeholder requirements: SR.03A. MOP: P-IO.02 accepted-edit field/version agreement and invalid-edit rejection at the P-F.1-to-P-F.0 input boundary. Proposed verification criterion: For the proposed edit fixture, accept a Restaurant Manager revision containing restaurant, draft/version, ingredient, finite nonnegative quantity and unit; a 4-to-5 kg edit changes only the referenced unapproved draft. Reject a negative/nonfinite quantity, missing unit, unrelated draft or superseded version; the previous accepted draft remains intact. An accepted revision neither approves nor transmits an order. All prepared applicable cases meet the independent expected-state fixture. Method: Boundary and state-transition test. Scenario scope: 4-to-5 kg edit; Zero quantity; Negative or nonfinite quantity; Missing unit; Wrong/superseded draft; Repeated edit. Evaluation status: Planned, not executed. Fixture definitions are proposed review assumptions; operational agreement is not claimed. Requirement status: Draft.",
+      "functions": [
+        "P-F.0.3"
+      ],
+      "native_id": "265074",
+      "global_id": "I_DRA06GV5GEJRF_ADB5QAZTF9VBS"
+    },
+    {
+      "id": "1.1.3",
+      "name": "Accept Explicit Purchase Approvals",
+      "statement": "The PANTRI System shall accept Explicit Purchase Approvals from the Restaurant Manager.",
+      "details": "Draft Rationale: SR.03 reserves commitment to explicit manager approval of the final purchase version. Keeping approval separate from draft editing prevents a review or stale approval from being treated as authority to send a different order. Upstream stakeholder requirements: SR.03. MOP: P-IO.03 approval-to-final-version association agreement and invalid-approval rejection at the P-F.1-to-P-F.0 control boundary. Proposed verification criterion: The proposed approval fixture identifies restaurant, approving manager, order/version and the final ingredient quantities/units or an immutable reference to that snapshot. Accept only a valid authorized approval of the current final version. Reject missing explicit approval, wrong restaurant and stale/version-mismatched approval without authorizing transmission. Compare the retained approval association with the independent approved snapshot; revision alone creates no approval. Method: Boundary test and approval-event inspection. Scenario scope: Explicit current-version approval; Absent approval; Stale version; Wrong restaurant or role; Revision without approval. Evaluation status: Planned, not executed. Fixture definitions are proposed review assumptions; operational agreement is not claimed. Requirement status: Draft.",
+      "functions": [
+        "P-F.0.3"
+      ],
+      "native_id": "265073",
+      "global_id": "I_AN89X47Z2JKYH_9FX0V071CJQYY"
+    },
+    {
+      "id": "1.1.4",
+      "name": "Accept Restaurant Operational Records",
+      "statement": "The PANTRI System shall accept Restaurant Operational Records from the Restaurant Staff.",
+      "details": "Draft Rationale: Receiving, usage, counts/corrections, waste and demand observations supply the evidence for SR.01, SR.02 and SR.05-SR.10. Preserving record type, restaurant, quantities and occurrence context prevents unrelated observations or unknown values from becoming misleading planning inputs. Upstream stakeholder requirements: SR.01, SR.02, SR.05, SR.06, SR.07, SR.08, SR.09, SR.10. MOP: P-IO.04 required-field preservation and accepted/rejected record agreement for each proposed record type at the P-F.2-to-P-F.0 input boundary. Proposed verification criterion: Prepare independent receiving, usage, count/correction, waste, cover and stockout-observation fixtures under the proposed dictionary. Accept valid associated records with quantities, units and occurrence/update context intact; retain explicit unknown batch/expiration values. Reject missing type-specific mandatory fields, invalid quantities/units or another restaurant's submission without a new accepted record. Retain prior correction links. Each record type has a positive and an adverse case; saving a receipt does not assert physical-delivery completion. Method: Typed-record boundary test and retained-record inspection. Scenario scope: Complete receipt and unknown batch/expiration; Usage with missing unit; Second linked correction; Waste with recorded reason; Cover observation; Stockout opportunity observation; Wrong restaurant. Evaluation status: Planned, not executed. Fixture definitions are proposed review assumptions; operational agreement is not claimed. Requirement status: Draft.",
+      "functions": [
+        "P-F.0.1"
+      ],
+      "native_id": "265072",
+      "global_id": "I_515CBQEG3GJM9_96RWSSNQVW29V"
+    },
+    {
+      "id": "1.1.5",
+      "name": "Accept Supplier Confirmation Delivery and Exception Information",
+      "statement": "The PANTRI System shall accept Supplier Confirmation Delivery and Exception Information from the Ingredient Supplier.",
+      "details": "Draft Rationale: Supplier messages support SR.04 and SR.11 only when associated with the correct approved order. Confirmation, delivery information and exceptions must remain distinguishable. If no valid associated supplier response has been received, the order remains unconfirmed. Upstream stakeholder requirements: SR.04, SR.11. MOP: P-IO.05 accepted-message field and order-association agreement; rejection of malformed/unrelated supplier messages at P-F.3-to-P-F.0. Proposed verification criterion: Use proposed supplier fixtures containing restaurant/order reference, event identifier, event type, occurrence time and applicable confirmed quantity/unit, delivery or exception information. Accept a valid associated event unchanged; reject an unknown order, restaurant mismatch or missing required event context without altering another transaction. Compare retained events with an independent event ledger. Duplicate behavior follows the declared proposed deduplication rule. An absent response must not be represented as confirmation or physical delivery. Method: Boundary test and event-ledger inspection. Scenario scope: Confirmation; Partial confirmation; Delayed delivery report; Exception; Unknown order; Duplicate event; No response. Evaluation status: Planned, not executed. Fixture definitions are proposed review assumptions; operational agreement is not claimed. Requirement status: Draft.",
+      "functions": [
+        "P-F.0.3"
+      ],
+      "native_id": "265071",
+      "global_id": "I_F7SJEVFC0CHP5_85CFQJCS42X1K"
+    },
+    {
+      "id": "1.1.6",
+      "name": "Accept Recovery Response and Exception Information",
+      "statement": "The PANTRI System shall accept Recovery Response and Exception Information from the Recovery Partner.",
+      "details": "Draft Rationale: The recovery loop and SR.11 require collection responses and exceptions to remain associated with the originating request. A partner response is operational information; it cannot by itself establish that physical collection has occurred. Upstream stakeholder requirements: SR.11. MOP: P-IO.06 accepted-message field and collection-request association agreement; malformed/unrelated recovery-message rejection at P-F.4-to-P-F.0. Proposed verification criterion: Use proposed recovery fixtures containing restaurant/request reference, event identifier/type, occurrence time and applicable pickup response, exception and follow-up context. Accept a valid associated response unchanged. Reject a missing request reference, another restaurant's response or unknown request without changing an accepted collection transaction. Compare retained events with the independent request/event ledger. Duplicate behavior follows the declared proposed rule. Missing response remains pending; response receipt alone does not mark physical collection complete. Method: Boundary test and request/event-ledger inspection. Scenario scope: Valid pickup response; Collection exception; Unknown request; Wrong restaurant; Duplicate response; No response. Evaluation status: Planned, not executed. Fixture definitions are proposed review assumptions; operational agreement is not claimed. Requirement status: Draft.",
+      "functions": [
+        "P-F.0.4"
+      ],
+      "native_id": "265070",
+      "global_id": "I_4MHEYXPSPWHXT_8QYGX1FN6RYT2"
+    },
+    {
+      "id": "1.1.7",
+      "name": "Accept Service Policies and Authorized Support Commands",
+      "statement": "The PANTRI System shall accept Service Policies and Authorized Support Commands from the PANTRI Staff.",
+      "details": "Draft Rationale: SR.12-SR.15 require an authorized policy and command source for service, restaurant/task access, recovery and handover. Accepting an administrative request must not silently substitute prototype defaults for agreed operational policy. Upstream stakeholder requirements: SR.12, SR.13, SR.14, SR.15. MOP: P-IO.07 policy/command scope and version preservation; authorized-command acceptance and invalid-command rejection at the P-F.5-to-P-F.0 control boundary. Proposed verification criterion: Proposed policy fixtures identify authorized support actor, restaurant/task scope, policy version and effective period; command fixtures additionally identify command type and target reference set. Accept a valid scoped policy or recovery/export command unchanged. Reject missing scope, unauthorized actor, unsupported command or stale policy version without applying it. Compare accepted controls with an independent policy/command ledger. Distinguish accepting a command from successfully completing recovery or export, which is evaluated under 1.2.9. Method: Control-boundary test and policy/command inspection. Scenario scope: Valid scoped policy; Authorized recovery command; Authorized handover command; Missing scope; Wrong role; Stale version; Unsupported command. Evaluation status: Planned, not executed. Fixture definitions are proposed review assumptions; operational agreement is not claimed. Requirement status: Draft.",
+      "functions": [
+        "P-F.0.6"
+      ],
+      "native_id": "265069",
+      "global_id": "I_3WJ9PTK1VMGW7_BQGRHAN4WRKRZ"
+    },
+    {
+      "id": "1.2.1",
+      "name": "Provide Inventory and Expiration Information",
+      "statement": "The PANTRI System shall provide Inventory and Expiration Information to the Restaurant Manager.",
+      "details": "Draft Derivation: The P-IO.08 exchange supports SR.01, SR.05. Restaurant-specific recorded ingredient/batch quantity, unit, update time, known/unknown expiration and horizon-based alerts. This reports recorded information rather than physical freshness certification. Upstream stakeholder requirements: SR.01, SR.05. MOP: Agreement of displayed ingredient, quantity, unit, batch, expiration/unknown marker and update time with a reference record set. Classification agreement against a reference set evaluated with a declared horizon and date-boundary rule. Proposed verification criterion: Every mandatory field in each prepared complete record agrees exactly with the reference; absent or stale information retains the corresponding marker. Every prepared in-horizon and out-of-horizon record is classified according to the declared rule; unknown dates remain unknown. The operational horizon and boundary policy require confirmation before baselining. Method: Test and inspection; Test and analysis. Scenario scope: Complete batch; Unknown expiration; Missing or stale stock; Different restaurant; Horizon lower boundary; Upper boundary; Outside horizon; Unknown date; Already expired record. Evaluation status: Planned, not executed. Source targets and operational agreements remain proposed. Requirement status: Draft.",
+      "functions": [
+        "P-F.0.1",
+        "P-F.0.2",
+        "P-F.0.5"
+      ],
+      "native_id": "265068",
+      "global_id": "I_3GEVPYQ8AJK0J_9DKA4786XA30D"
+    },
+    {
+      "id": "1.2.2",
+      "name": "Provide Reviewable Purchasing Recommendations",
+      "statement": "The PANTRI System shall provide Reviewable Purchasing Recommendations to the Restaurant Manager.",
+      "details": "Draft Derivation: The P-IO.09 exchange supports SR.02, SR.03A. Proposed purchase quantities with expected demand, usable recorded stock, expiration horizon and material data limitations. Recommendations are drafts until explicit final approval. Upstream stakeholder requirements: SR.02, SR.03A. MOP: Completeness and numerical agreement of the recommendation basis with the selected scenario input and disclosed calculation. Agreement between accepted manager edits and the retained draft version before approval. Proposed verification criterion: All prepared recommendations identify expected demand, usable recorded inventory, horizon and material limitations; values reconcile with the selected input records. Every accepted edit is reflected in the draft; invalid edits leave the prior accepted draft intact; the revision event does not itself approve or transmit an order. Method: Test and inspection; Test. Scenario scope: Normal advice; Incomplete usage history; Unknown batch dates; Changed horizon; Beef 4 to 5 kg; Zero quantity; Negative or nonfinite quantity; Repeated edit; Revision after approval under agreed change policy. Evaluation status: Planned, not executed. Source targets and operational agreements remain proposed. Requirement status: Draft.",
+      "functions": [
+        "P-F.0.2",
+        "P-F.0.3",
+        "P-F.0.5"
+      ],
+      "native_id": "265067",
+      "global_id": "I_25G03CBDAGKVD_AJNFNS3G3RWYQ"
+    },
+    {
+      "id": "1.2.3",
+      "name": "Provide Joint Waste and Availability Measures",
+      "statement": "The PANTRI System shall provide Joint Waste and Availability Measures to the Restaurant Manager.",
+      "details": "Draft Rationale: The P-IO.10 exchange supports SR.06. Waste mass per 100 diner covers and ingredient stockout rate for the same restaurant, ingredient scope and evaluation period, with missing/zero denominator treatment stated Upstream stakeholder requirements: SR.06. MOP: Waste-mass-per-100-covers and ingredient-stockout-rate calculation agreement with an independently computed decimal reference using the proposed observation dictionary, scope and display precision. Proposed verification criterion: Both metrics use the identical declared restaurant, selected-ingredient scope and period. Under the proposed fixture definition, 10 kg waste/200 covers yields 5.00 kg per 100 covers; 2 unavailable ingredient-demand opportunities/100 observed opportunities yields 2.00%. Compare independently calculated values at the proposed two-decimal test display precision. Missing observations or zero denominators yield an explicit not-calculable result and reason, not zero. Show metric denominators and coverage so reduced observation cannot masquerade as improvement. Method: Independent calculation analysis and output test. Scenario scope: Known totals; Zero covers; Zero stockout-opportunity denominator; Missing observation interval; Different restaurant/period; Waste decreases while stockouts increase. Evaluation status: Planned, not executed. Fixture definitions are proposed review assumptions; operational agreement is not claimed. Requirement status: Draft.",
+      "functions": [
+        "P-F.0.2",
+        "P-F.0.5"
+      ],
+      "native_id": "265066",
+      "global_id": "I_92TQMSXT4YGBB_B2BRPQKH4KQ4V"
+    },
+    {
+      "id": "1.2.4",
+      "name": "Provide Approved Purchase Orders",
+      "statement": "The PANTRI System shall provide Approved Purchase Orders to the Ingredient Supplier.",
+      "details": "Draft Rationale: The P-IO.11 exchange supports SR.03. Final orders associated with explicit manager approval. Ingredient identifiers, quantities and units remain unchanged between the approved version and outgoing supplier payload Upstream stakeholder requirements: SR.03. MOP: Approved-to-transmitted order agreement and unapproved-transmission rejection, paired with successful transmission of valid approved orders Proposed verification criterion: Every prepared valid explicitly approved order reaches the supplier boundary with the same approved order version, ingredient identifiers, quantities and units as the independently retained approval snapshot. Unapproved, superseded or wrong-restaurant drafts are blocked. Repeated-send behavior follows the declared proposed transaction rule and cannot silently create a second independent commitment. Record handoff separately from supplier confirmation or physical fulfillment. Method: Test and event inspection. Scenario scope: Valid approved order; Unapproved draft; Changed/superseded version; Wrong restaurant/session; Repeated send; Unit preservation. Evaluation status: Planned, not executed. Fixture definitions are proposed review assumptions; operational agreement is not claimed. Requirement status: Draft.",
+      "functions": [
+        "P-F.0.3"
+      ],
+      "native_id": "265065",
+      "global_id": "I_E2V23D6RX8G5Y_BVGW1CT2FYZHT"
+    },
+    {
+      "id": "1.2.5",
+      "name": "Provide Waste Collection Requests",
+      "statement": "The PANTRI System shall provide Waste Collection Requests to the Recovery Partner.",
+      "details": "Draft Derivation: The P-IO.12 exchange supports SR.11. Restaurant/request identifier, recorded surplus or recovery context and requested coordination information, as supported by the prior operational concept. A request is not evidence of completed collection. Upstream stakeholder requirements: SR.11. MOP: Agreement of the outgoing collection-request fields and transaction association with an independent reference request. Proposed verification criterion: Every prepared valid request is provided to the Recovery Partner with the same restaurant/request identifier, recorded surplus or recovery context and required coordination information as the reference. A malformed, unrelated or unauthorized request is not silently forwarded. Sending a request does not mark physical collection complete or manufacture a partner response. Method: Output contract test and inspection. Scenario scope: Valid collection request; Missing request identifier; Wrong restaurant; Repeated request under agreed policy; No partner response. Evaluation status: Planned, not executed. Source targets and operational agreements remain proposed. Requirement status: Draft.",
+      "functions": [
+        "P-F.0.4"
+      ],
+      "native_id": "265064",
+      "global_id": "I_7TCCV23PHYH74_8R7A1W8YFBPX2"
+    },
+    {
+      "id": "1.2.6",
+      "name": "Provide Recorded Order and Collection Status",
+      "statement": "The PANTRI System shall provide Recorded Order and Collection Status to the Restaurant Manager.",
+      "details": "Draft Rationale: The P-IO.13 exchange supports SR.04, SR.11. The current recorded transaction state, confirmation or exception, associated follow-up and available delivery/pickup information. Pending, partial, delayed and resolved states remain distinguishable Upstream stakeholder requirements: SR.11, SR.04. MOP: Agreement of displayed order or collection-request state with the latest accepted, correctly associated supplier or recovery-partner event. Completeness of transaction, restaurant, ownership, exception state and follow-up information. Proposed verification criterion: Compare each prepared order and collection-request display with an independent transaction/event ledger. Preserve the correct restaurant and transaction association; distinguish awaiting, confirmed, partial, delayed and exceptional states as applicable. Missing responses remain pending. Each exception retains its responsible party and recorded follow-up/resolution; unassigned responsibility is explicit. An unrelated, duplicate or out-of-order event cannot silently overwrite another transaction or imply physical fulfillment. Use a declared proposed event-ordering/deduplication rule for these cases. Method: State-transition test and transaction-ledger inspection. Scenario scope: Supplier confirmation; Recovery response; No supplier/recovery response; Partial/delayed state; Collection exception; Unrelated/duplicate/out-of-order event; Unresolved follow-up. Evaluation status: Planned, not executed. Fixture definitions are proposed review assumptions; operational agreement is not claimed. Requirement status: Draft.",
+      "functions": [
+        "P-F.0.3",
+        "P-F.0.4",
+        "P-F.0.5"
+      ],
+      "native_id": "265063",
+      "global_id": "I_HK51V6EJ0GAC_8P5C2C6FTG1VR"
+    },
+    {
+      "id": "1.2.7",
+      "name": "Provide Operational Record Acknowledgments",
+      "statement": "The PANTRI System shall provide Operational Record Acknowledgments to the Restaurant Staff.",
+      "details": "Draft Rationale: The P-IO.14 exchange supports SR.07, SR.08, SR.09, SR.10. Accepted/rejected entry results and retained record identifiers or correction references. An acknowledgment certifies processing of a record, not the truth of a physical measurement Upstream stakeholder requirements: SR.07, SR.08, SR.09, SR.10. MOP: Acknowledgment outcome, originating staff-context and retained record/correction-reference agreement, paired with the existing receiving, usage, correction-history and waste-field preservation measures. Proposed verification criterion: Each prepared entry attempt returns the correct accepted/rejected result to the originating authorized staff context. Accepted results identify the retained record or correction; rejected results do not claim a retained record. Compare the acknowledgment with an independently specified expected result and the retained record/history. Preserve the existing type-specific quantity, unit, time, reason and explicit-unknown criteria. A later correction retains earlier history; another restaurant receives neither the acknowledgment nor its protected record identifiers. Method: Acknowledgment contract test and retained-record/history inspection. Scenario scope: Accepted receipt/usage/waste; Rejected invalid entry; Accepted linked correction; Second correction; Unknown batch/expiration; Wrong restaurant context. Evaluation status: Planned, not executed. Fixture definitions are proposed review assumptions; operational agreement is not claimed. Requirement status: Draft.",
+      "functions": [
+        "P-F.0.1"
+      ],
+      "native_id": "265062",
+      "global_id": "I_7V10GEP6WAKWN_8KWCDR4NXSG0V"
+    },
+    {
+      "id": "1.2.8",
+      "name": "Provide Exception and Service Monitoring Information",
+      "statement": "The PANTRI System shall provide Exception and Service Monitoring Information to the PANTRI Staff.",
+      "details": "Draft Derivation: The P-IO.15 exchange supports SR.11, SR.12. Affected order/collection transaction, restaurant, responsible party, current exception state and follow-up/resolution, together with workflow-availability observations for authorized service support. Upstream stakeholder requirements: SR.11, SR.12. MOP: Completeness and association accuracy of exception transaction, ownership, state and follow-up information. Agreement of recorded service availability/unavailability observations with the workflow-check reference log. Proposed verification criterion: Each prepared supply/collection exception retains the affected transaction, restaurant, responsible party, current state and recorded action/resolution; unresolved cases remain unresolved. Service-monitoring scenarios also retain the affected workflow, restaurant scope, observed state and observation time consistently with the independent check log; missing observations are explicit and do not imply availability. Method: Test and demonstration. Scenario scope: Supply delay; Collection delay; Partial fulfillment; Unassigned follow-up; Resolution without physical-completion evidence. Evaluation status: Planned, not executed. Source targets and operational agreements remain proposed. Requirement status: Draft.",
+      "functions": [
+        "P-F.0.6"
+      ],
+      "native_id": "265061",
+      "global_id": "I_2QSEYGE4S0G0W_8NC6DX4D8JX23"
+    },
+    {
+      "id": "1.2.9",
+      "name": "Provide Recovered and Handover Records",
+      "statement": "The PANTRI System shall provide Recovered and Handover Records to the PANTRI Staff.",
+      "details": "Draft Derivation: The P-IO.16 exchange supports SR.14, SR.15. Two related lifecycle outcomes distinguished in detailed requirements: restored confirmed records, and authorized handover exports. Both preserve required identifiers, quantities, units and recorded decision/correction relationships. Upstream stakeholder requirements: SR.14, SR.15. MOP: Required-field and linked-identifier reconciliation of an authorized export against a retained reference set. Recovery content and relationship integrity against the retained confirmed-record reference set. Proposed verification criterion: All selected reference records can be reconciled with exported identifiers, quantities, units and decision history; an export for another restaurant or unauthorized task is denied. Recovery additionally reconciles all confirmed identifiers, quantities, units, approvals, corrections and relationships against a prepared set of at least 50 linked records; elapsed recovery time is recorded, without claiming an agreed time limit. Method: Test and inspection. Scenario scope: Complete handover; Subset export; Linked correction history; Unauthorized export. Evaluation status: Planned, not executed. Source targets and operational agreements remain proposed. Requirement status: Draft.",
+      "functions": [
+        "P-F.0.1",
+        "P-F.0.6"
+      ],
+      "native_id": "265060",
+      "global_id": "I_BW2167JT6RJZJ_9Y5Z7QPPRA4GR"
+    },
+    {
+      "id": "1.2.14",
+      "name": "Provide Authorized PANTRI Interaction State (PANTRI Staff)",
+      "statement": "The PANTRI System shall provide Authorized PANTRI Interaction State to the PANTRI Staff.",
+      "details": "Draft Derivation: The P-IO.17 exchange supports SR.12, SR.13. Availability and authorized restaurant/task access conditions governing each participant interaction with PANTRI. This control gates use of the information service; it does not control external physical business operations. It derives from service/access policy and must not claim that authenticated access exists in the current offline prototype. Upstream stakeholder requirements: SR.12, SR.13. MOP: Agreement of the accepted policy or interaction state with the authorized restaurant, role, task and service-state reference. Proposed verification criterion: Every prepared authorized interaction uses the applicable restaurant/task policy; unavailable or unauthorized interaction is explicitly rejected and does not imply that external physical work has been controlled. Method: Test and inspection. Scenario scope: Authorized task; Wrong restaurant; Wrong role; Unavailable service. Evaluation status: Planned, not executed. Source targets and operational agreements remain proposed. Requirement status: Draft.",
+      "functions": [
+        "P-F.0.6"
+      ],
+      "native_id": "265059",
+      "global_id": "I_9RQRKG05TEKH6_BMWQ0KBXQZAY8"
+    },
+    {
+      "id": "1.3.1",
+      "name": "Demand, Order Approval, Recommendations & Alerts",
+      "statement": "The PANTRI System shall interface with the Restaurant Manager through the Demand, Order Approval, Recommendations &amp; Alerts.",
+      "details": "Draft Rationale: The manager conduit carries scoped requests, revisions and approvals toward PANTRI and returns the information used for restaurant decisions. Bidirectional association and field preservation are needed to maintain purchasing authority and avoid showing one restaurant another's operational information. Upstream stakeholder requirements: SR.01, SR.02, SR.03, SR.03A, SR.04, SR.05, SR.06, SR.11. MOP: Direction, recipient, association and required-field preservation across P-IO.01-.03 inbound and P-IO.08-.10, .13 and .17 outbound. Proposed verification criterion: In proposed fixtures, route manager requests/revisions/approvals from P-F.1 to P-F.0 and inventory/advice/metrics/status/interaction-state outputs back to the authorized manager boundary. Preserve restaurant and task, draft/order version, ingredient quantities/units or metric scope/period as applicable. Compare each direction with independent message fixtures. Accept a valid scoped exchange; reject a missing mandatory association or wrong restaurant/task without leakage or unintended approval. Every listed message category has at least one valid and one adverse case. Method: Bidirectional interface contract test and message inspection. Scenario scope: Valid request and information response; Valid revision and explicit approval; Missing draft/version; Wrong restaurant; Unauthorized task; Pending external status. Evaluation status: Planned, not executed. Fixture definitions are proposed review assumptions; operational agreement is not claimed. Requirement status: Draft.",
+      "functions": [
+        "P-F.0.2",
+        "P-F.0.3",
+        "P-F.0.5"
+      ],
+      "native_id": "265058",
+      "global_id": "I_7M726BD7TTJFH_9GZ73WKPN2XWM"
+    },
+    {
+      "id": "1.3.2",
+      "name": "Approved Orders & Delivery Information",
+      "statement": "The PANTRI System shall interface with the Ingredient Supplier through the Approved Orders &amp; Delivery Information.",
+      "details": "Draft Rationale: The supplier conduit transfers approved purchasing intent outward and associated confirmation/delivery/exception information inward. Keeping the two directions distinct preserves the approved order while avoiding a false equivalence between transmission, supplier confirmation and physical delivery. Upstream stakeholder requirements: SR.03, SR.04, SR.11. MOP: Approved-order and interaction-state preservation outward through P-IO.11/.17; supplier-event association and field preservation inward through P-IO.05. Proposed verification criterion: Use proposed bidirectional fixtures: P-F.0-to-P-F.3 orders carry restaurant/order/version, ingredient identifiers, quantities and units; P-F.3-to-P-F.0 events carry the matching order, event type/time and applicable confirmation/delivery/exception context. Compare both with independent approval and event ledgers. Accept valid associated exchanges; reject a missing order reference or wrong restaurant. Preserve pending state when no valid response arrives. Duplicates follow the declared proposed rule and do not manufacture confirmation or delivery. Method: Bidirectional interface contract test and ledger inspection. Scenario scope: Approved order and associated confirmation; Partial/delayed event; Missing order reference; Wrong restaurant/order; Duplicate message; No response. Evaluation status: Planned, not executed. Fixture definitions are proposed review assumptions; operational agreement is not claimed. Requirement status: Draft.",
+      "functions": [
+        "P-F.0.3"
+      ],
+      "native_id": "265057",
+      "global_id": "I_2FC7BWQRQMG6H_9R1FHBDWKCAYM"
+    },
+    {
+      "id": "1.3.3",
+      "name": "Waste Collection & Recovery Information",
+      "statement": "The PANTRI System shall interface with the Recovery Partner through the Waste Collection &amp; Recovery Information.",
+      "details": "Draft Rationale: The recovery conduit connects a restaurant's collection request with partner responses and exception follow-up. Correct association supports the operational recovery loop and SR.11 without assuming that electronic coordination guarantees physical collection. Upstream stakeholder requirements: SR.11. MOP: P-IO.12/.17 outbound recipient and request-field agreement; P-IO.06 inbound recovery-response field and request-association agreement. Proposed verification criterion: Proposed P-F.0-to-P-F.4 fixtures carry restaurant/request ID, recorded surplus/recovery context and requested coordination information; reverse fixtures carry matching request, event type/time and response/exception context. Compare both directions with independent request/event fixtures. A valid exchange preserves these fields. A missing request reference, wrong restaurant or unauthorized task is rejected. A request with no response remains pending, and a response alone does not establish physical collection. Evaluate duplicates under the declared proposed rule. Method: Bidirectional interface contract test and request-ledger inspection. Scenario scope: Valid request and pickup response; Collection exception; Missing request ID; Wrong restaurant/request; Duplicate response; No response. Evaluation status: Planned, not executed. Fixture definitions are proposed review assumptions; operational agreement is not claimed. Requirement status: Draft.",
+      "functions": [
+        "P-F.0.4"
+      ],
+      "native_id": "265056",
+      "global_id": "I_9W6Q8RCSCYK0G_AQB6EMZVBXXC8"
+    },
+    {
+      "id": "1.3.4",
+      "name": "System Operation & Support Information",
+      "statement": "The PANTRI System shall interface with the PANTRI Staff through the System Operation &amp; Support Information.",
+      "details": "Draft Rationale: Support staff need scoped policy/command input and trustworthy exception, availability, recovery and handover output. Preserving command authority and restaurant context prevents support actions from becoming an uncontrolled route across restaurant boundaries. Upstream stakeholder requirements: SR.11, SR.15, SR.14, SR.13, SR.12. MOP: P-IO.07 inbound command/policy scope and version agreement; P-IO.15-.17 outbound monitoring, recovered/exported-record and interaction-state agreement. Proposed verification criterion: In proposed P-F.5-to-P-F.0 fixtures, policies/commands preserve authorized actor, restaurant/task scope, version/effective context and referenced recovery/export set. Reverse fixtures preserve exception/workflow ID, observation time/state and recovered/exported record references as applicable. Compare both directions with independent policy, monitoring and record fixtures. Valid authorized exchanges succeed; missing scope, wrong role or unrelated restaurant is denied. Command acceptance is distinct from completed restoration/export; missing monitoring observations do not imply availability. Method: Bidirectional interface contract test and support-record inspection. Scenario scope: Valid policy and monitoring exchange; Authorized recovery/export; Missing scope; Wrong role/restaurant; Missing observation; Unavailable service. Evaluation status: Planned, not executed. Fixture definitions are proposed review assumptions; operational agreement is not claimed. Requirement status: Draft.",
+      "functions": [
+        "P-F.0.6"
+      ],
+      "native_id": "265055",
+      "global_id": "I_FT0KD2VM6CGPQ_8QD7APV5SCVER"
+    },
+    {
+      "id": "1.3.5",
+      "name": "Receiving, Usage, Inventory & Waste Information",
+      "statement": "The PANTRI System shall interface with the Restaurant Staff through the Receiving, Usage, Inventory &amp; Waste Information.",
+      "details": "Draft Rationale: The restaurant-staff conduit carries the actual recorded receiving, usage, counts and waste evidence and returns processing acknowledgments. Type-specific field preservation and scoped replies are needed to distinguish an accepted record from a physical event or an unauthorized entry. Upstream stakeholder requirements: SR.07, SR.08, SR.09, SR.10. MOP: P-IO.04 inbound typed-record preservation; P-IO.14/.17 outbound acknowledgment and interaction-state agreement for the originating staff context. Proposed verification criterion: Proposed P-F.2-to-P-F.0 fixtures include restaurant, record type, ingredient, quantity/unit and occurrence context, plus receiving batch/expiration, correction history or waste reason as applicable. Reverse acknowledgment fixtures carry accepted/rejected outcome and retained record/correction ID where accepted. Compare messages with independent entry and expected-result fixtures. A valid associated entry succeeds; missing unit, missing required type-specific context or wrong restaurant is rejected. Rejected acknowledgments do not assert a saved record or physical completion. Method: Bidirectional typed-record interface test and acknowledgment inspection. Scenario scope: Valid receiving/usage/count/waste entry; Unknown batch/expiration; Missing unit or correction reason; Wrong restaurant; Accepted/rejected acknowledgment; Repeated correction. Evaluation status: Planned, not executed. Fixture definitions are proposed review assumptions; operational agreement is not claimed. Requirement status: Draft.",
+      "functions": [
+        "P-F.0.1"
+      ],
+      "native_id": "265054",
+      "global_id": "I_B0H2K8ZJS0K1Y_AQ2XVTXA5CP7A"
+    },
+    {
+      "id": "P-SFR.01",
+      "name": "Provide Restaurant Ingredient Planning and Coordination",
+      "statement": "The PANTRI System shall provide restaurant ingredient planning and coordination.",
+      "details": "Draft Rationale: A single SoI obligation connects restaurant records to planning, purchasing authority, partner coordination and record continuity across the operational concept. Its detailed I/O and interface obligations make that broad function observable. The supplemental origin explains provenance; the operational dependencies explain why the requirement is necessary. Upstream stakeholder requirements: SR.01, SR.11, SR.15, SR.14, SR.10, SR.13, SR.03, SR.12, SR.02, SR.04, SR.05, SR.06, SR.07, SR.08, SR.09, SR.03A. MOP: Coverage and agreement of P-F.0 inputs, controls, outputs and interfaces with their individual acceptance records; count of passing detailed records divided by applicable detailed records. Proposed verification criterion: The proposed integrated fixture manifest includes every detailed functional/I/O/interface requirement and its valid, boundary and adverse scenarios. Every applicable detailed criterion passes; any exclusion is identified and justified before execution. Approval/version preservation, restaurant boundaries and pending external states remain intact across connected scenarios. Suitability is evaluated separately through P-NFR.01-P-NFR.03. Method: Integrated scenario test and allocation inspection. Scenario scope: Record-to-inventory/advice path; Revision-to-explicit-approval-to-transmission path; Supplier and recovery status paths; Service/access and recovery/handover paths. Evaluation status: Planned, not executed. Fixture definitions are proposed review assumptions; operational agreement is not claimed. Requirement status: Draft.",
+      "functions": [
+        "P-F.0.1",
+        "P-F.0.2",
+        "P-F.0.3",
+        "P-F.0.4",
+        "P-F.0.5",
+        "P-F.0.6"
+      ],
+      "native_id": "265657",
+      "global_id": "I_1FNGZN6BDXAHT_BW423JP9GTH99"
+    },
+    {
+      "id": "P-SFR.02",
+      "name": "Provide Authorized PANTRI Interaction State to Restaurant Manager",
+      "statement": "<p>The PANTRI System shall provide Authorized PANTRI Interaction State to the Restaurant Manager.</p>",
+      "details": "Draft Rationale: The manager needs service and restaurant/task authorization state to review information, revise quantities and exercise purchasing authority safely. The staff-only native output leaves this distinct recipient obligation unstated; this supplement closes that modeled P-IO.17 boundary without changing the generated statement. Upstream stakeholder requirements: SR.13, SR.12. MOP: Manager interaction-state output agreement with the proposed restaurant/role/task/service reference matrix, including positive authorized completion and denied-state results. Proposed verification criterion: For proposed manager fixtures, P-F.0 provides P-IO.17 to P-F.1 for the restaurant/task in question. Available authorized inventory/revision/approval interactions receive the applicable state and succeed; wrong-restaurant, unauthorized-task and unavailable-service cases receive denied/unavailable state. Compare outputs with an independent matrix. A denied interaction does not produce a purchase approval or transmission. The state governs use of PANTRI, not the manager's physical restaurant work. Method: Recipient contract test and authorization-state inspection. Scenario scope: Authorized manager task; Wrong restaurant; Unauthorized task; Unavailable service. Evaluation status: Planned, not executed. Fixture definitions are proposed review assumptions; operational agreement is not claimed. Requirement status: Draft.",
+      "functions": [
+        "P-F.0.6"
+      ],
+      "native_id": "265658",
+      "global_id": "I_6J8ZJGBYN3ANW_T3R442SH9R9W8"
+    },
+    {
+      "id": "P-SFR.03",
+      "name": "Provide Authorized PANTRI Interaction State to Restaurant Staff",
+      "statement": "<p>The PANTRI System shall provide Authorized PANTRI Interaction State to the Restaurant Staff.</p>",
+      "details": "Draft Rationale: Restaurant staff need service and scoped task authorization to enter operational records while remaining outside manager purchasing authority. This supplement makes the P-IO.17 staff-recipient obligation explicit instead of assuming that the PANTRI Staff output covers restaurant staff. Upstream stakeholder requirements: SR.12, SR.13. MOP: Restaurant Staff interaction-state agreement with the proposed restaurant/role/task/service matrix, paired with legitimate record-entry completion. Proposed verification criterion: P-F.0 provides the applicable P-IO.17 state to P-F.2 for each proposed fixture. Authorized available receipt/usage/count/waste entry succeeds. Another restaurant's record access, staff purchase approval and unavailable-service entry return denied/unavailable state and do not create an accepted record or purchase approval. Compare the returned state and resulting action with an independent matrix. The state does not claim control over physical receiving or food preparation. Method: Recipient contract test and authorization-state inspection. Scenario scope: Authorized record entry; Wrong restaurant; Staff attempts purchase approval; Unavailable service. Evaluation status: Planned, not executed. Fixture definitions are proposed review assumptions; operational agreement is not claimed. Requirement status: Draft.",
+      "functions": [
+        "P-F.0.6"
+      ],
+      "native_id": "265659",
+      "global_id": "I_1BQBBR29XCAHY_RHGSP3CP8XY9G"
+    },
+    {
+      "id": "P-SFR.04",
+      "name": "Provide Authorized PANTRI Interaction State to Ingredient Supplier",
+      "statement": "<p>The PANTRI System shall provide Authorized PANTRI Interaction State to the Ingredient Supplier.</p>",
+      "details": "Draft Rationale: The supplier boundary needs an explicit service and transaction/task authorization decision so that unrelated restaurant orders or responses cannot be exposed or accepted. This supplement states the supplier recipient of P-IO.17 separately from the native PANTRI Staff recipient. Upstream stakeholder requirements: SR.13, SR.12. MOP: Supplier interaction-state agreement with the proposed scoped order/task/service reference matrix, paired with legitimate transaction exchange completion. Proposed verification criterion: P-F.0 provides P-IO.17 to P-F.3 in the proposed supplier fixtures. A valid available scoped order/response exchange receives authorized state and succeeds. An unrelated restaurant/order, unauthorized task or unavailable service receives denied/unavailable state without exposing an unrelated order or accepting its response. Compare state and exchange outcome with the independent matrix. Authorization of information exchange does not establish supplier fulfillment. Method: Recipient contract test and boundary inspection. Scenario scope: Authorized scoped supplier exchange; Unrelated restaurant/order; Unauthorized task; Unavailable service. Evaluation status: Planned, not executed. Fixture definitions are proposed review assumptions; operational agreement is not claimed. Requirement status: Draft.",
+      "functions": [
+        "P-F.0.6"
+      ],
+      "native_id": "265660",
+      "global_id": "I_1KARDS20TGBX2_T4S286XJ4HYGB"
+    },
+    {
+      "id": "P-SFR.05",
+      "name": "Provide Authorized PANTRI Interaction State to Recovery Partner",
+      "statement": "<p>The PANTRI System shall provide Authorized PANTRI Interaction State to the Recovery Partner.</p>",
+      "details": "Draft Rationale: Recovery coordination needs service and request/task authorization state to protect restaurant information and prevent unrelated collection responses from being accepted. The modeled recovery recipient therefore requires its own P-IO.17 obligation beyond the native PANTRI Staff statement. Upstream stakeholder requirements: SR.13, SR.12. MOP: Recovery Partner interaction-state agreement with the proposed scoped request/task/service matrix, paired with legitimate collection-information exchange completion. Proposed verification criterion: P-F.0 provides P-IO.17 to P-F.4 in the proposed recovery fixtures. An authorized available collection request/response exchange receives the applicable state and succeeds. An unrelated restaurant/request, unauthorized task or unavailable service receives denied/unavailable state without disclosing another request or changing its state. Compare outputs and exchange outcome with the independent matrix. This state authorizes PANTRI information interaction, not physical collection. Method: Recipient contract test and boundary inspection. Scenario scope: Authorized scoped recovery exchange; Unrelated restaurant/request; Unauthorized task; Unavailable service. Evaluation status: Planned, not executed. Fixture definitions are proposed review assumptions; operational agreement is not claimed. Requirement status: Draft.",
+      "functions": [
+        "P-F.0.6"
+      ],
+      "native_id": "265661",
+      "global_id": "I_2XAE60YZFJANF_V6GDAW3ZWJH8D"
+    },
+    {
+      "id": "P-NFR.01",
+      "name": "Provide Operating Hour Workflow Availability",
+      "statement": "<p>PANTRI shall make the approved operational workflows available for at least 99% of the pilot restaurants' agreed operating time.</p>",
+      "details": "Draft Rationale: Availability during operating hours is necessary because interruption of planning, order and record workflows can prevent time-sensitive ingredient decisions under SR.12. A restaurant-specific assessment avoids hiding one pilot restaurant's disruption inside a combined service average. Upstream stakeholder requirements: SR.12. MOS: For each restaurant, 100 times (agreed operating minutes minus PANTRI-unavailable minutes) divided by agreed operating minutes. The proposed acceptance interpretation is at least 99% for every pilot restaurant, with any pooled rate reported separately. Proposed validation criterion: During the proposed 28-day pilot, evaluate every restaurant against its declared operating calendar and approved workflow set. Proposed accounting counts an in-scope interval unavailable when any required workflow cannot complete because of PANTRI. Report each restaurant's numerator, denominator, outages and observation gaps; require at least 99% availability per restaurant. Fix sampling, outage start/end inference and exclusions before execution. Missing observation coverage prevents a conformance conclusion and is not automatically counted as available time. Method: Planned operational validation through scheduled representative workflow checks and independent outage-log reconciliation. Scenario scope: All required workflows available; One required workflow unavailable; Restaurant-specific outage; Outside agreed hours; Maintenance under declared rule; Missing observations. Evaluation status: Planned, not executed. Fixture definitions are proposed review assumptions; operational agreement is not claimed. Requirement status: Draft.",
+      "functions": [
+        "P-F.0.6"
+      ],
+      "native_id": "265029",
+      "global_id": "I_7557WWRHC8ASP_9XMJ5JX0T4CG2"
+    },
+    {
+      "id": "P-NFR.02",
+      "name": "Support Authorized Use Without Cross Restaurant Access",
+      "statement": "<p>PANTRI shall enforce the agreed restaurant and task authorization policy so that all prepared unauthorized-access scenarios are denied while at least 95% of legitimate role-specific tasks succeed.</p>",
+      "details": "Draft Rationale: Restaurant and task boundaries protect operational records and purchasing authority under SR.13. Pairing denial with legitimate completion prevents a design that blocks everyone from satisfying the access requirement while leaving intended restaurant work unusable. Upstream stakeholder requirements: SR.13. MOS: Unauthorized rejection rate = 100 times correctly denied prepared unauthorized scenarios divided by all prepared unauthorized scenarios. Legitimate completion rate = 100 times successfully completed prepared authorized role-specific tasks divided by all prepared authorized tasks. Report both denominators and per-role/restaurant results. Proposed validation criterion: Use a proposed, predeclared restaurant/role/action matrix covering all pilot restaurants and relevant actor tasks. Deny every prepared unauthorized scenario and complete at least 95% of the prepared legitimate task set. Compare access decisions and resulting record/order effects with independently specified matrix expectations; a denied task must not leak records or perform the action. Denominators must be nonzero and fixed before execution. Report incomplete observations separately; do not generalize this bounded result to all security threats. Method: Planned scenario-based suitability validation with representative role-specific task execution and independent policy-matrix comparison. Scenario scope: Legitimate manager/staff tasks; Cross-restaurant access; Staff purchase approval; Authorized scoped support; Unauthorized supplier/recovery task; Legitimate task blocked. Evaluation status: Planned, not executed. Fixture definitions are proposed review assumptions; operational agreement is not claimed. Requirement status: Draft.",
+      "functions": [
+        "P-F.0.1",
+        "P-F.0.2",
+        "P-F.0.3",
+        "P-F.0.4",
+        "P-F.0.5",
+        "P-F.0.6"
+      ],
+      "native_id": "265030",
+      "global_id": "I_1GY11M1JYPBY3_BFZSS47KF7JSN"
+    },
+    {
+      "id": "P-NFR.03",
+      "name": "Preserve Confirmed Records Through Recovery",
+      "statement": "<p>PANTRI shall restore 100% of the confirmed records in the prepared interruption-recovery reference scenario with their required identifiers, quantities, units, approvals, corrections and relationships intact.</p>",
+      "details": "Draft Rationale: Approvals, corrections and transaction links must survive interruption so that restored records remain usable and auditable under SR.14. Restoring field values without their relationships would not preserve the operational evidence needed for subsequent decisions and recovery follow-up. Upstream stakeholder requirements: SR.14. MOS: Record integrity rate = 100 times confirmed reference records with every required field preserved divided by all confirmed reference records. Relationship integrity rate = 100 times required reference relationships restored with correct endpoints and type divided by all required reference relationships. Both rates must be 100%. Proposed validation criterion: Prepare at least 50 confirmed linked records and an independently retained reference snapshot/relationship manifest before interruption. Include multiple restaurants, receipts, usage, waste, successive corrections, approvals and associated transaction records. After restoration, compare identifiers, quantities, units, decisions and every required relationship; both integrity rates must equal 100%. Cross-restaurant associations and missing/dangling links fail. Record elapsed restoration time and discrepancy logs. No agreed recovery-time limit, recovery-point objective or production resilience achievement is inferred. Method: Planned interruption-and-restoration validation with independent record and relationship reconciliation. Scenario scope: Complete linked recovery; Missing record; Changed quantity/unit; Missing approval/correction link; Wrong restaurant association; Repeated restoration. Evaluation status: Planned, not executed. Fixture definitions are proposed review assumptions; operational agreement is not claimed. Requirement status: Draft.",
+      "functions": [
+        "P-F.0.1",
+        "P-F.0.6"
+      ],
+      "native_id": "265031",
+      "global_id": "I_5EM08QXPAXA95_AM1MZ9SWSZ93E"
+    }
+  ],
+  "traces": [
+    {
+      "step": "1",
+      "name": "Purchasing Recommendation Request",
+      "source": "P-F.1",
+      "target": "P-F.0.5",
+      "flow": "P-IO.01",
+      "actions": "UC.1.2"
+    },
+    {
+      "step": "1.1",
+      "name": "Scoped Planning Analysis Request",
+      "source": "P-F.0.5",
+      "target": "P-F.0.2",
+      "flow": "P-IF.04",
+      "actions": "UC.1.2 refinement"
+    },
+    {
+      "step": "1.2",
+      "name": "Planning Record Request",
+      "source": "P-F.0.2",
+      "target": "P-F.0.1",
+      "flow": "P-IF.02",
+      "actions": "UC.1.3-UC.1.5 trigger"
+    },
+    {
+      "step": "1.3",
+      "name": "Inventory Usage and Expiration Records",
+      "source": "P-F.0.1",
+      "target": "P-F.0.2",
+      "flow": "P-IF.03",
+      "actions": "UC.1.3-UC.1.5"
+    },
+    {
+      "step": "1.4",
+      "name": "Proposed Recommendation Data",
+      "source": "P-F.0.2",
+      "target": "P-F.0.3",
+      "flow": "P-IF.05",
+      "actions": "UC.1.6-UC.1.7"
+    },
+    {
+      "step": "1.5",
+      "name": "Initial Reviewable Draft",
+      "source": "P-F.0.3",
+      "target": "P-F.0.5",
+      "flow": "P-IF.06",
+      "actions": "UC.1.8 preparation"
+    },
+    {
+      "step": "2",
+      "name": "Initial Purchasing Recommendation",
+      "source": "P-F.0.5",
+      "target": "P-F.1",
+      "flow": "P-IO.09",
+      "actions": "UC.1.8-UC.1.9"
+    },
+    {
+      "step": "3",
+      "name": "Adjusted Purchase Quantities",
+      "source": "P-F.1",
+      "target": "P-F.0.3",
+      "flow": "P-IO.02",
+      "actions": "UC.1.10-UC.1.11"
+    },
+    {
+      "step": "3.1",
+      "name": "Revised Reviewable Draft",
+      "source": "P-F.0.3",
+      "target": "P-F.0.5",
+      "flow": "P-IF.06",
+      "actions": "UC.1.11"
+    },
+    {
+      "step": "4",
+      "name": "Revised Purchase for Approval",
+      "source": "P-F.0.5",
+      "target": "P-F.1",
+      "flow": "P-IO.09",
+      "actions": "UC.1.11-UC.1.12 refinement"
+    },
+    {
+      "step": "5",
+      "name": "Explicit Final Version Approval",
+      "source": "P-F.1",
+      "target": "P-F.0.3",
+      "flow": "P-IO.03",
+      "actions": "UC.1.12-UC.1.13"
+    },
+    {
+      "step": "5.1",
+      "name": "Approved Purchase Record",
+      "source": "P-F.0.3",
+      "target": "P-F.0.1",
+      "flow": "P-IF.19",
+      "actions": "UC.1.13-UC.1.14 refinement"
+    },
+    {
+      "step": "5.2",
+      "name": "Approval Record Retention Result",
+      "source": "P-F.0.1",
+      "target": "P-F.0.3",
+      "flow": "P-IF.21",
+      "actions": "UC.1.13-UC.1.14 refinement"
+    },
+    {
+      "step": "6",
+      "name": "Approved Purchase Order",
+      "source": "P-F.0.3",
+      "target": "P-F.3",
+      "flow": "P-IO.11",
+      "actions": "UC.1.15-UC.1.16"
+    },
+    {
+      "step": "7",
+      "name": "Supplier Confirmation and Delivery Information",
+      "source": "P-F.3",
+      "target": "P-F.0.3",
+      "flow": "P-IO.05",
+      "actions": "UC.1.17-UC.1.19"
+    },
+    {
+      "step": "7.1",
+      "name": "Supplier Response Record",
+      "source": "P-F.0.3",
+      "target": "P-F.0.1",
+      "flow": "P-IF.19",
+      "actions": "UC.1.19-UC.1.20 refinement"
+    },
+    {
+      "step": "7.2",
+      "name": "Supplier Record Retention Result",
+      "source": "P-F.0.1",
+      "target": "P-F.0.3",
+      "flow": "P-IF.21",
+      "actions": "UC.1.19-UC.1.20 refinement"
+    },
+    {
+      "step": "7.3",
+      "name": "Recorded Confirmed Order State",
+      "source": "P-F.0.3",
+      "target": "P-F.0.5",
+      "flow": "P-IF.07",
+      "actions": "UC.1.20-UC.1.21"
+    },
+    {
+      "step": "8",
+      "name": "Order Status Information",
+      "source": "P-F.0.5",
+      "target": "P-F.1",
+      "flow": "P-IO.13",
+      "actions": "UC.1.21-UC.1.22"
+    }
+  ],
+  "action_allocation": {
+    "1": null,
+    "2": 5,
+    "3": 1,
+    "4": 1,
+    "5": 1,
+    "6": 2,
+    "7": 2,
+    "8": 5,
+    "9": null,
+    "10": null,
+    "11": 3,
+    "12": null,
+    "13": 3,
+    "14": 3,
+    "15": 3,
+    "16": null,
+    "17": null,
+    "18": null,
+    "19": 3,
+    "20": 3,
+    "21": 5,
+    "22": null
+  },
+  "new_global_ids": [
+    "I_0124133C9EB75_80A88BC18A6C8",
+    "I_02A2F41B438E5_28687E5F66716",
+    "I_02D10972976B5_020956AC3043C",
+    "I_0683480B9D525_2B1B7FB16278A",
+    "I_0846F9FF576A5_2389DC2577AB2",
+    "I_094A5EA221CE5_0FD836C87FDB4",
+    "I_095462EE2ECB5_868888BC5E034",
+    "I_0C2146E9036C5_8D48E5E8C2E30",
+    "I_0EFF6BD5F04A5_90E8BDF4E9FDA",
+    "I_0FBE9350D2775_31BA1A46ABAA8",
+    "I_105DD20D2E2D5_6B0B90B65B291",
+    "I_12813B09CDB55_FC798E5DD5121",
+    "I_1C13805C32725_3F6BB6A454C9F",
+    "I_1CDE37F02F6A5_8C2A43EB113AF",
+    "I_1CDF5D9FAF415_AD8B119DCCF4A",
+    "I_1D51D08348945_33D8409F1D3D0",
+    "I_23105EB3CDB75_718B9C82CB794",
+    "I_25B6DACE00885_43FBD8F90251B",
+    "I_2C3468E12F7B5_1B9B53C03ECEF",
+    "I_2E68797C2EC15_77D9231A71BD7",
+    "I_3010F9775BD75_8129E72283C90",
+    "I_36B6B36BDB985_C998F775AC263",
+    "I_388B003E6C495_E3E900D4D7AFE",
+    "I_3931EFDD97585_154804C54671D",
+    "I_3F2230289C555_A8DBDA807FC67",
+    "I_4553E97917E85_8D0B2F019DB2F",
+    "I_46CC388B1EA75_EC48EA47D91CD",
+    "I_4C83D100B6B85_159920F2A0AAE",
+    "I_4E2ECC289FD05_F8EA8FF67D77F",
+    "I_50A9F33D196B5_EC59E8B5BE1EE",
+    "I_51C3E5499E815_CA8A36441A1B2",
+    "I_57DF2472CFC65_AAFAA4B206555",
+    "I_5A654B9ABCC05_292B7C2011680",
+    "I_5C936BDC90035_FCD8B96735991",
+    "I_63DDD82756835_47EAB8EB766C3",
+    "I_65B69559A1EB5_ACF878AB47945",
+    "I_65D6186C2EE35_A8381BE30B573",
+    "I_667EB04B26455_85AA57C3EFE1A",
+    "I_6CFFBADCEF3D5_05C80C453EB35",
+    "I_6D18E9B689AC5_733A7EA0F942B",
+    "I_700D40BE46F95_B2586CC301882",
+    "I_772C6E943D605_8A4A380D6E76A",
+    "I_78F9D06F75AB5_8C79C65D5692A",
+    "I_855C9979CA9B5_01284E8C88E80",
+    "I_8845283381055_2C485B3785519",
+    "I_8ACF21B4AD315_BFAA0EE4A5CB3",
+    "I_8CC42DA509AA5_1519C88767F71",
+    "I_8CE14E408EE55_C22AE46EBFAA8",
+    "I_910795A8B1295_09F987E6DDA5A",
+    "I_933C001900195_CF2827C27C307",
+    "I_95C0120A574D5_7E8B89B5341DD",
+    "I_979AE820A0945_1698E57185295",
+    "I_97D4202AF7635_9B0AD9CCCF070",
+    "I_98CC62FF95055_A2E99F7DF51A7",
+    "I_9A37741F5D9F5_593991E164E65",
+    "I_9BF518B2337B5_7C1A943DB3F5F",
+    "I_9C54EAB711F65_3DCB96E1377B2",
+    "I_9E5DF51E26A95_2579E11C6B4D7",
+    "I_A504CB3BCE7A5_C71A60EACE342",
+    "I_A704F1CD85615_E298BBD24B565",
+    "I_A9446FE0FAC35_329A7C6BEC67C",
+    "I_AA66ABB3E8025_1C399380A2229",
+    "I_ADD248841D5B5_2438E914AF2B8",
+    "I_AE12D95B42F65_244BF2B9F3DC1",
+    "I_AE82D5D446C85_0589A87D9B777",
+    "I_B11DAD851DE25_EAEA6F7D95FA2",
+    "I_B22BBBF881405_3C3AEB1D7BA74",
+    "I_B35D5E790FA45_2059096E67201",
+    "I_B6CE1F8030955_D8DA327E52F64",
+    "I_BE624DB131C45_95787F6382FDE",
+    "I_C14CAD8F71DC5_21F885AB2B468",
+    "I_C35E7A2112305_17B8269F102C6",
+    "I_C3E4ECC5F3AB5_B549112A04A5E",
+    "I_C7B724FA7E245_B6DBFED565C5B",
+    "I_C9E59C80449A5_DDD9CDE4DBAAB",
+    "I_CA407C2D394A5_924AAC3DC5011",
+    "I_CC4F3A6D81FB5_7898220758513",
+    "I_D27AF0D3949A5_19FBB05B9A3FC",
+    "I_DA65286D589D5_CAABA0259ED98",
+    "I_DA904B10348A5_AE79F7BDB82CF",
+    "I_DCE6145F267F5_5ACBB4BD32C99",
+    "I_DD120B4ED7775_AA48A6CE5F869",
+    "I_DF5495B795975_AF68EB6CF6536",
+    "I_DFEE3AFCE60D5_7BD950D4E5826",
+    "I_E19BB50032735_B3C96D2C8F43C",
+    "I_E2490A381BE75_CADB5B37A477B",
+    "I_E2EA844CA2515_239A03F7F6BCA",
+    "I_E2F8CC91E6275_B82AE4EDA8583",
+    "I_E4EF5B634C0E5_C6D98945A79CC",
+    "I_E64593E182765_492AD3405CFDC",
+    "I_E66DB906F08A5_C959ACFA073AA",
+    "I_E7FE871637CB5_7F1BF39309D58",
+    "I_FB06830CE1A95_932919BFC16D8",
+    "I_FC29113C19E85_51781606F6566"
+  ],
+  "entities_before": 228,
+  "entities_after": 322,
+  "relations_after": 1982,
+  "import_status": "Imported and full XML readback verified",
+  "live_entity_count": 322,
+  "live_relation_count": 2024,
+  "action_io_mapping": [
+    {
+      "global_id": "I_3MK8GQBS78J2Q_ADCJ8S0CRZ06T",
+      "name": "Purchasing Recommendation Request",
+      "producers": [
+        "UC.1.2"
+      ],
+      "consumers": [
+        "UC.1.3"
+      ],
+      "architecture": "P-IO.01",
+      "interpretation": "Scoped planning control entering P-F.0.5."
+    },
+    {
+      "global_id": "I_EBPMBEA93RJ5V_81WA8GJH6AK0H",
+      "name": "Current Inventory Data",
+      "producers": [
+        "UC.1.3"
+      ],
+      "consumers": [
+        "UC.1.6"
+      ],
+      "architecture": "P-IO.04 / P-IF.03",
+      "interpretation": "Preloaded operational record subset; retrieved within P-F.0.1."
+    },
+    {
+      "global_id": "I_60TECDFYT0HKS_AAJJT262Y36HR",
+      "name": "Historical Usage Data",
+      "producers": [
+        "UC.1.4"
+      ],
+      "consumers": [
+        "UC.1.6"
+      ],
+      "architecture": "P-IO.04 / P-IF.03",
+      "interpretation": "Preloaded historical usage subset; no new external data source."
+    },
+    {
+      "global_id": "I_AKZKH7TBKJH98_9Q0Z0CBS7FHK9",
+      "name": "Expiration Data",
+      "producers": [
+        "UC.1.5"
+      ],
+      "consumers": [
+        "UC.1.6"
+      ],
+      "architecture": "P-IO.04 / P-IF.03",
+      "interpretation": "Recorded batch dates, including explicit unknowns."
+    },
+    {
+      "global_id": "I_1WEADPJBY6HXJ_8A1D1DE4NFZ3Y",
+      "name": "Demand Forecast",
+      "producers": [
+        "UC.1.6"
+      ],
+      "consumers": [
+        "UC.1.7"
+      ],
+      "architecture": "P-IF.05 / P-IO.09",
+      "interpretation": "Internal planning result; forecast is a field of the reviewable recommendation basis."
+    },
+    {
+      "global_id": "I_ADZ5TRXHF8GX6_BTMJ7NV8SEE1F",
+      "name": "Purchasing Recommendation",
+      "producers": [
+        "UC.1.7"
+      ],
+      "consumers": [
+        "UC.1.8"
+      ],
+      "architecture": "P-IF.05 / P-IF.06 / P-IO.09",
+      "interpretation": "Distinguish internal advice from the manager-facing reviewable draft using producer/consumer IDs."
+    },
+    {
+      "global_id": "I_2PGPD4AS0EKRH_9AHK23D95BF3S",
+      "name": "Purchasing Recommendation",
+      "producers": [
+        "UC.1.8"
+      ],
+      "consumers": [
+        "UC.1.9"
+      ],
+      "architecture": "P-IF.05 / P-IF.06 / P-IO.09",
+      "interpretation": "Distinguish internal advice from the manager-facing reviewable draft using producer/consumer IDs."
+    },
+    {
+      "global_id": "I_2X5GVX8X7PJ5W_989PY93Z66YF3",
+      "name": "Reviewed Purchasing Recommendation",
+      "producers": [
+        "UC.1.9"
+      ],
+      "consumers": [
+        "UC.1.10",
+        "UC.1.9A"
+      ],
+      "architecture": "P-F.1 / P-IO.09",
+      "interpretation": "Local manager review state; no additional cross-boundary I/O is asserted."
+    },
+    {
+      "global_id": "I_2QAXWPMMP0GFJ_B6M0HGFF39HM8",
+      "name": "Adjusted Purchase Quantities",
+      "producers": [
+        "UC.1.10"
+      ],
+      "consumers": [
+        "UC.1.11"
+      ],
+      "architecture": "P-IO.02",
+      "interpretation": "Manager revision input to P-F.0.3."
+    },
+    {
+      "global_id": "I_B30928AF99F65_925A7B86834C0",
+      "name": "Checked Ingredient Information",
+      "producers": [
+        "UC.1.9A"
+      ],
+      "consumers": [
+        "UC.1.10"
+      ],
+      "architecture": "P-F.1 / P-IO.09",
+      "interpretation": "Added manager-local completeness review; deferral produces no approval and does not add an architectural crossing."
+    },
+    {
+      "global_id": "I_2Y1DQQMN2PHYX_8N9CDENXN3GB2",
+      "name": "Updated Proposed Purchase Order",
+      "producers": [
+        "UC.1.11"
+      ],
+      "consumers": [
+        "UC.1.12"
+      ],
+      "architecture": "P-IF.06 / P-IO.09",
+      "interpretation": "Revised unapproved reviewable draft; added feedback message 4 makes approval basis explicit."
+    },
+    {
+      "global_id": "I_16HH8G0YYYG3A_97ESQ7YVECAHX",
+      "name": "Order Approval",
+      "producers": [
+        "UC.1.12"
+      ],
+      "consumers": [
+        "UC.1.13"
+      ],
+      "architecture": "P-IO.03",
+      "interpretation": "Explicit approval control, separate from revision."
+    },
+    {
+      "global_id": "I_62P4F23TSRHXR_BHFW4FF8R3HE1",
+      "name": "Approved Order Data",
+      "producers": [
+        "UC.1.13"
+      ],
+      "consumers": [
+        "UC.1.14"
+      ],
+      "architecture": "P-IF.19 / P-F.0.3",
+      "interpretation": "Internal retained approval state, version and quantities."
+    },
+    {
+      "global_id": "I_18EQGJZVA6HER_A4F0S4GXR1EPG",
+      "name": "Official Purchase Order",
+      "producers": [
+        "UC.1.14"
+      ],
+      "consumers": [
+        "UC.1.15"
+      ],
+      "architecture": "P-F.0.3 / P-IO.11",
+      "interpretation": "Internal official-order object becomes the unchanged approved outgoing order."
+    },
+    {
+      "global_id": "I_CAK4PAY58YJ9W_89KPE2WRCZST5",
+      "name": "Purchase Order",
+      "producers": [
+        "UC.1.15"
+      ],
+      "consumers": [
+        "UC.1.16"
+      ],
+      "architecture": "P-IO.11",
+      "interpretation": "Cross-boundary supplier handoff."
+    },
+    {
+      "global_id": "I_6QQJQRC6V0GQF_A1S18HAWEQDGA",
+      "name": "Received Purchase Order",
+      "producers": [
+        "UC.1.16"
+      ],
+      "consumers": [
+        "UC.1.17"
+      ],
+      "architecture": "P-F.3 / P-IO.11",
+      "interpretation": "Supplier-local received copy, not a second PANTRI transmission."
+    },
+    {
+      "global_id": "I_BWZF7A1GE0K2J_BGED018H95NA6",
+      "name": "Order Confirmation",
+      "producers": [
+        "UC.1.17"
+      ],
+      "consumers": [
+        "UC.1.18"
+      ],
+      "architecture": "P-F.3 / P-IO.05",
+      "interpretation": "Supplier-local confirmation before the response crosses to PANTRI."
+    },
+    {
+      "global_id": "I_F3C401HM52HGV_9W956S5ZVN95R",
+      "name": "Delivery Information",
+      "producers": [
+        "UC.1.18"
+      ],
+      "consumers": [
+        "UC.1.19"
+      ],
+      "architecture": "P-IO.05",
+      "interpretation": "Aggregate response includes order association, confirmation and delivery context."
+    },
+    {
+      "global_id": "I_5A5MQRWRTRG3E_BFPCA04Y3N45D",
+      "name": "Supplier Confirmation Record",
+      "producers": [
+        "UC.1.19"
+      ],
+      "consumers": [
+        "UC.1.20"
+      ],
+      "architecture": "P-IF.19 / P-IF.07",
+      "interpretation": "Retained supplier-response event and associated recorded state."
+    },
+    {
+      "global_id": "I_DAA6WKYETMGFF_81RK1EEMEN60M",
+      "name": "Updated Order Status",
+      "producers": [
+        "UC.1.20"
+      ],
+      "consumers": [
+        "UC.1.21"
+      ],
+      "architecture": "P-IF.07 / P-IO.13",
+      "interpretation": "Internal state to presentation then external status."
+    },
+    {
+      "global_id": "I_B273ASYMTWJWH_9PQMCQRAHZ2DX",
+      "name": "Order Status Information",
+      "producers": [
+        "UC.1.21"
+      ],
+      "consumers": [
+        "UC.1.22"
+      ],
+      "architecture": "P-IO.13",
+      "interpretation": "Recorded status delivered to the manager."
+    }
+  ],
+  "structural_checks": [
+    {
+      "check": "Six first-level children of P-F.0",
+      "passed": true
+    },
+    {
+      "check": "All 21 leaf functions have the intended parent",
+      "passed": true
+    },
+    {
+      "check": "All 17 carried-down boundary connections exist",
+      "passed": true
+    },
+    {
+      "check": "P-IF.01 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.02 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.03 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.04 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.05 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.06 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.07 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.08 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.09 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.10 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.11 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.12 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.13 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.14 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.15 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.16 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.17 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.18 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.19 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.20 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.21 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.22 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.23 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "P-IF.24 source and destination closure",
+      "passed": true
+    },
+    {
+      "check": "All derived requirements have upper-level requirement traces",
+      "passed": true
+    },
+    {
+      "check": "All derived requirements have leaf-function allocation",
+      "passed": true
+    },
+    {
+      "check": "Every new requirement has a planned native verification case",
+      "passed": true
+    },
+    {
+      "check": "Sequence event names and numbers are unique",
+      "passed": true
+    },
+    {
+      "check": "UC.1 trace passes the continuous endpoint pencil test",
+      "passed": true
+    },
+    {
+      "check": "Trace 1 matches Metafunction I/O",
+      "passed": true
+    },
+    {
+      "check": "Trace 1.1 matches modeled interface",
+      "passed": true
+    },
+    {
+      "check": "Trace 1.2 matches modeled interface",
+      "passed": true
+    },
+    {
+      "check": "Trace 1.3 matches modeled interface",
+      "passed": true
+    },
+    {
+      "check": "Trace 1.4 matches modeled interface",
+      "passed": true
+    },
+    {
+      "check": "Trace 1.5 matches modeled interface",
+      "passed": true
+    },
+    {
+      "check": "Trace 2 matches Metafunction I/O",
+      "passed": true
+    },
+    {
+      "check": "Trace 3 matches Metafunction I/O",
+      "passed": true
+    },
+    {
+      "check": "Trace 3.1 matches modeled interface",
+      "passed": true
+    },
+    {
+      "check": "Trace 4 matches Metafunction I/O",
+      "passed": true
+    },
+    {
+      "check": "Trace 5 matches Metafunction I/O",
+      "passed": true
+    },
+    {
+      "check": "Trace 5.1 matches modeled interface",
+      "passed": true
+    },
+    {
+      "check": "Trace 5.2 matches modeled interface",
+      "passed": true
+    },
+    {
+      "check": "Trace 6 matches Metafunction I/O",
+      "passed": true
+    },
+    {
+      "check": "Trace 7 matches Metafunction I/O",
+      "passed": true
+    },
+    {
+      "check": "Trace 7.1 matches modeled interface",
+      "passed": true
+    },
+    {
+      "check": "Trace 7.2 matches modeled interface",
+      "passed": true
+    },
+    {
+      "check": "Trace 7.3 matches modeled interface",
+      "passed": true
+    },
+    {
+      "check": "Trace 8 matches Metafunction I/O",
+      "passed": true
+    },
+    {
+      "check": "All distinct UC.1 I/O objects have an explicit aggregation or refinement",
+      "passed": true
+    },
+    {
+      "check": "UC2 1 behavior producer and consumer",
+      "passed": true
+    },
+    {
+      "check": "UC2 1 architecture endpoints",
+      "passed": true
+    },
+    {
+      "check": "UC2 1.1 behavior producer and consumer",
+      "passed": true
+    },
+    {
+      "check": "UC2 1.1 architecture endpoints",
+      "passed": true
+    },
+    {
+      "check": "UC2 1.2 behavior producer and consumer",
+      "passed": true
+    },
+    {
+      "check": "UC2 1.2 architecture endpoints",
+      "passed": true
+    },
+    {
+      "check": "UC2 2 behavior producer and consumer",
+      "passed": true
+    },
+    {
+      "check": "UC2 2 architecture endpoints",
+      "passed": true
+    },
+    {
+      "check": "Added UC1 completeness outcome stays within manager review",
+      "passed": true
+    },
+    {
+      "check": "UC2 architecture path is continuous",
+      "passed": true
+    }
+  ],
+  "uc2_traces": [
+    {
+      "step": "1",
+      "behavior_io": "UC.2.IO.01",
+      "producer": "UC.2.1",
+      "consumer": "UC.2.2",
+      "flow": "P-IO.01",
+      "source": "P-F.1",
+      "target": "P-F.0.5"
+    },
+    {
+      "step": "1.1",
+      "behavior_io": "UC.2.IO.02",
+      "producer": "UC.2.2",
+      "consumer": "UC.2.3",
+      "flow": "P-IF.01",
+      "source": "P-F.0.5",
+      "target": "P-F.0.1"
+    },
+    {
+      "step": "1.2",
+      "behavior_io": "UC.2.IO.03",
+      "producer": "UC.2.3",
+      "consumer": "UC.2.4",
+      "flow": "P-IF.08",
+      "source": "P-F.0.1",
+      "target": "P-F.0.5"
+    },
+    {
+      "step": "2",
+      "behavior_io": "UC.2.IO.04",
+      "producer": "UC.2.4",
+      "consumer": "UC.2.5",
+      "flow": "P-IO.08",
+      "source": "P-F.0.5",
+      "target": "P-F.1"
+    }
+  ]
+}

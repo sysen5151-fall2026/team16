@@ -1,0 +1,402 @@
+{
+  "scope": "Prepared in-process architecture demonstration; synthetic records and supplier response; no production authentication or external API",
+  "approved": {
+    "id": "APP-2",
+    "restaurant_id": "R1",
+    "version": 2,
+    "actor": "prepared-manager",
+    "quantities": {
+      "beef": 5,
+      "tofu": 6,
+      "mushrooms": 1
+    }
+  },
+  "sent": {
+    "id": "PO-DEMO-1",
+    "restaurant_id": "R1",
+    "version": 2,
+    "lines": [
+      {
+        "ingredient_id": "beef",
+        "quantity": 5,
+        "unit": "kg"
+      },
+      {
+        "ingredient_id": "tofu",
+        "quantity": 6,
+        "unit": "kg"
+      },
+      {
+        "ingredient_id": "mushrooms",
+        "quantity": 1,
+        "unit": "kg"
+      }
+    ],
+    "approval_reference": "APP-2",
+    "state": "SENT_AWAITING_CONFIRMATION"
+  },
+  "presented": {
+    "restaurant_id": "R1",
+    "order_id": "PO-DEMO-1",
+    "state": "CONFIRMED",
+    "confirmation_reference": "PREPARED-SUPPLIER-CONFIRMATION",
+    "delivery_information": null,
+    "exceptions": []
+  },
+  "internal_events": [
+    {
+      "sequence": 1,
+      "flow": "P-IF.04",
+      "source": "P-F.0.5",
+      "recipient": "P-F.0.2",
+      "packet": {
+        "restaurant_id": "R1",
+        "ingredient_scope": [
+          "beef",
+          "tofu",
+          "mushrooms"
+        ],
+        "period": {
+          "days": 2
+        },
+        "task_id": "DEMO-TASK",
+        "requested_analysis": "purchase"
+      }
+    },
+    {
+      "sequence": 2,
+      "flow": "P-IF.02",
+      "source": "P-F.0.2",
+      "recipient": "P-F.0.1",
+      "packet": {
+        "restaurant_id": "R1",
+        "ingredient_scope": [
+          "beef",
+          "tofu",
+          "mushrooms"
+        ],
+        "period": {
+          "days": 2
+        },
+        "query_id": "DEMO-TASK"
+      }
+    },
+    {
+      "sequence": 3,
+      "flow": "P-IF.03",
+      "source": "P-F.0.1",
+      "recipient": "P-F.0.2",
+      "packet": {
+        "restaurant_id": "R1",
+        "inventory": [
+          {
+            "id": "B1",
+            "restaurant_id": "R1",
+            "ingredient": "beef",
+            "quantity": 8,
+            "unit": "kg",
+            "expires": "2026-10-08"
+          },
+          {
+            "id": "T1",
+            "restaurant_id": "R1",
+            "ingredient": "tofu",
+            "quantity": 4,
+            "unit": "kg",
+            "expires": "2026-10-07"
+          },
+          {
+            "id": "M1",
+            "restaurant_id": "R1",
+            "ingredient": "mushrooms",
+            "quantity": 5,
+            "unit": "kg",
+            "expires": "2026-10-10"
+          }
+        ],
+        "usage_history": [
+          {
+            "ingredient": "beef",
+            "quantity": 5
+          },
+          {
+            "ingredient": "beef",
+            "quantity": 6
+          },
+          {
+            "ingredient": "beef",
+            "quantity": 7
+          },
+          {
+            "ingredient": "tofu",
+            "quantity": 4
+          },
+          {
+            "ingredient": "tofu",
+            "quantity": 5
+          },
+          {
+            "ingredient": "tofu",
+            "quantity": 6
+          },
+          {
+            "ingredient": "mushrooms",
+            "quantity": 3
+          },
+          {
+            "ingredient": "mushrooms",
+            "quantity": 3
+          },
+          {
+            "ingredient": "mushrooms",
+            "quantity": 3
+          }
+        ],
+        "expiration_dates": [
+          {
+            "id": "B1",
+            "expires": "2026-10-08"
+          },
+          {
+            "id": "T1",
+            "expires": "2026-10-07"
+          },
+          {
+            "id": "M1",
+            "expires": "2026-10-10"
+          }
+        ],
+        "missing_fields": [],
+        "query_id": "DEMO-TASK"
+      }
+    },
+    {
+      "sequence": 4,
+      "flow": "P-IF.05",
+      "source": "P-F.0.2",
+      "recipient": "P-F.0.3",
+      "packet": {
+        "restaurant_id": "R1",
+        "demand": {
+          "beef": 12,
+          "tofu": 10,
+          "mushrooms": 6
+        },
+        "usable_stock": {
+          "beef": 8,
+          "tofu": 4,
+          "mushrooms": 5
+        },
+        "horizon": 2,
+        "limitations": [
+          "Synthetic prepared records; deterministic mean usage forecast; unknown dates excluded from usable stock."
+        ],
+        "proposed_quantities": {
+          "beef": 4,
+          "tofu": 6,
+          "mushrooms": 1
+        }
+      }
+    },
+    {
+      "sequence": 5,
+      "flow": "P-IF.06",
+      "source": "P-F.0.3",
+      "recipient": "P-F.0.5",
+      "packet": {
+        "restaurant_id": "R1",
+        "draft_id": "PO-DEMO-1",
+        "version": 1,
+        "lines": [
+          {
+            "ingredient_id": "beef",
+            "quantity": 4,
+            "unit": "kg"
+          },
+          {
+            "ingredient_id": "tofu",
+            "quantity": 6,
+            "unit": "kg"
+          },
+          {
+            "ingredient_id": "mushrooms",
+            "quantity": 1,
+            "unit": "kg"
+          }
+        ],
+        "limitations": [
+          "Synthetic prepared records; deterministic mean usage forecast; unknown dates excluded from usable stock."
+        ],
+        "approval_state": "UNAPPROVED"
+      }
+    },
+    {
+      "sequence": 6,
+      "flow": "P-IF.06",
+      "source": "P-F.0.3",
+      "recipient": "P-F.0.5",
+      "packet": {
+        "restaurant_id": "R1",
+        "draft_id": "PO-DEMO-1",
+        "version": 2,
+        "lines": [
+          {
+            "ingredient_id": "beef",
+            "quantity": 5,
+            "unit": "kg"
+          },
+          {
+            "ingredient_id": "tofu",
+            "quantity": 6,
+            "unit": "kg"
+          },
+          {
+            "ingredient_id": "mushrooms",
+            "quantity": 1,
+            "unit": "kg"
+          }
+        ],
+        "limitations": [
+          "Synthetic prepared records; deterministic mean usage forecast; unknown dates excluded from usable stock."
+        ],
+        "approval_state": "UNAPPROVED"
+      }
+    },
+    {
+      "sequence": 7,
+      "flow": "P-IF.19",
+      "source": "P-F.0.3",
+      "recipient": "P-F.0.1",
+      "packet": {
+        "restaurant_id": "R1",
+        "order_id": "PO-DEMO-1",
+        "version": 2,
+        "event_id": "PO-DEMO-1:2:APPROVAL",
+        "event_type": "APPROVAL",
+        "payload": {
+          "id": "APP-2",
+          "restaurant_id": "R1",
+          "version": 2,
+          "actor": "prepared-manager",
+          "quantities": {
+            "beef": 5,
+            "tofu": 6,
+            "mushrooms": 1
+          }
+        },
+        "approval_reference": "APP-2"
+      }
+    },
+    {
+      "sequence": 8,
+      "flow": "P-IF.21",
+      "source": "P-F.0.1",
+      "recipient": "P-F.0.3",
+      "packet": {
+        "restaurant_id": "R1",
+        "order_id": "PO-DEMO-1",
+        "event_id": "PO-DEMO-1:2:APPROVAL",
+        "retained": true,
+        "errors": []
+      }
+    },
+    {
+      "sequence": 9,
+      "flow": "P-IF.19",
+      "source": "P-F.0.3",
+      "recipient": "P-F.0.1",
+      "packet": {
+        "restaurant_id": "R1",
+        "order_id": "PO-DEMO-1",
+        "version": 2,
+        "event_id": "PO-DEMO-1:2:TRANSMISSION",
+        "event_type": "TRANSMISSION",
+        "payload": {
+          "id": "PO-DEMO-1",
+          "restaurant_id": "R1",
+          "version": 2,
+          "lines": [
+            {
+              "ingredient_id": "beef",
+              "quantity": 5,
+              "unit": "kg"
+            },
+            {
+              "ingredient_id": "tofu",
+              "quantity": 6,
+              "unit": "kg"
+            },
+            {
+              "ingredient_id": "mushrooms",
+              "quantity": 1,
+              "unit": "kg"
+            }
+          ],
+          "approval_reference": "APP-2",
+          "state": "SENT_AWAITING_CONFIRMATION"
+        },
+        "approval_reference": "APP-2"
+      }
+    },
+    {
+      "sequence": 10,
+      "flow": "P-IF.21",
+      "source": "P-F.0.1",
+      "recipient": "P-F.0.3",
+      "packet": {
+        "restaurant_id": "R1",
+        "order_id": "PO-DEMO-1",
+        "event_id": "PO-DEMO-1:2:TRANSMISSION",
+        "retained": true,
+        "errors": []
+      }
+    },
+    {
+      "sequence": 11,
+      "flow": "P-IF.19",
+      "source": "P-F.0.3",
+      "recipient": "P-F.0.1",
+      "packet": {
+        "restaurant_id": "R1",
+        "order_id": "PO-DEMO-1",
+        "version": 2,
+        "event_id": "PO-DEMO-1:2:SUPPLIER_CONFIRMED",
+        "event_type": "SUPPLIER_CONFIRMED",
+        "payload": {
+          "restaurant_id": "R1",
+          "order_id": "PO-DEMO-1",
+          "state": "CONFIRMED",
+          "confirmation_reference": "PREPARED-SUPPLIER-CONFIRMATION"
+        },
+        "approval_reference": "APP-2"
+      }
+    },
+    {
+      "sequence": 12,
+      "flow": "P-IF.21",
+      "source": "P-F.0.1",
+      "recipient": "P-F.0.3",
+      "packet": {
+        "restaurant_id": "R1",
+        "order_id": "PO-DEMO-1",
+        "event_id": "PO-DEMO-1:2:SUPPLIER_CONFIRMED",
+        "retained": true,
+        "errors": []
+      }
+    },
+    {
+      "sequence": 13,
+      "flow": "P-IF.07",
+      "source": "P-F.0.3",
+      "recipient": "P-F.0.5",
+      "packet": {
+        "restaurant_id": "R1",
+        "order_id": "PO-DEMO-1",
+        "state": "CONFIRMED",
+        "confirmation_reference": "PREPARED-SUPPLIER-CONFIRMATION",
+        "delivery_information": null,
+        "exceptions": []
+      }
+    }
+  ]
+}

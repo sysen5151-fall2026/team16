@@ -1,0 +1,25 @@
+﻿id,name,sources,targets,role,fields
+P-IF.01,Inventory View Query,P-F.0.5,P-F.0.1,I,restaurant_id; ingredient_scope; period; query_id
+P-IF.02,Planning Record Query,P-F.0.2,P-F.0.1,I,restaurant_id; ingredient_scope; period; query_id
+P-IF.03,Scoped Planning Records,P-F.0.1,P-F.0.2,I,restaurant_id; inventory; usage_history; expiration_dates; missing_fields; query_id
+P-IF.04,Planning Analysis Request,P-F.0.5,P-F.0.2,I,restaurant_id; ingredient_scope; period; task_id; requested_analysis
+P-IF.05,Proposed Purchasing Advice,P-F.0.2,P-F.0.3,I,restaurant_id; demand; usable_stock; horizon; limitations; proposed_quantities
+P-IF.06,Reviewable Purchase Draft,P-F.0.3,P-F.0.5,I,restaurant_id; draft_id; version; lines; limitations; approval_state
+P-IF.07,Recorded Supplier Order State,P-F.0.3,P-F.0.5,I,restaurant_id; order_id; state; confirmation_reference; delivery_information; exceptions
+P-IF.08,Scoped Inventory View Data,P-F.0.1,P-F.0.5,I,restaurant_id; inventory; recorded_dates; limitations
+P-IF.09,Expiration and Performance Results,P-F.0.2,P-F.0.5,I,restaurant_id; result_type; period; expiration_classes; waste_per_100_covers; stockout_rate; limitations
+P-IF.10,Recorded Recovery Context,P-F.0.1,P-F.0.4,I,restaurant_id; context_id; recorded_surplus_or_waste; quantities; units; limitations
+P-IF.11,Recorded Recovery State,P-F.0.4,P-F.0.5,I,restaurant_id; request_id; state; response_reference; exceptions
+P-IF.12,Supply Exception Context,P-F.0.3,P-F.0.6,I,restaurant_id; order_id; state; exception; responsible_party; follow_up
+P-IF.13,Recovery Exception Context,P-F.0.4,P-F.0.6,I,restaurant_id; request_id; state; exception; responsible_party; follow_up
+P-IF.14,Authorized Supply Disposition,P-F.0.6,P-F.0.3,I,restaurant_id; order_id; command_id; authorized_disposition
+P-IF.15,Authorized Recovery Disposition,P-F.0.6,P-F.0.4,I,restaurant_id; request_id; command_id; authorized_disposition
+P-IF.16,Authorized Task Constraints,P-F.0.6,P-F.0.1; P-F.0.2; P-F.0.3; P-F.0.4; P-F.0.5,C,restaurant_id; role; allowed_tasks; policy_version; command_reference
+P-IF.17,Recoverable Operational Snapshot,P-F.0.1,P-F.0.6,I,restaurant_id; snapshot_id; confirmed_records; relationships; selected_scope
+P-IF.18,Restored Operational State,P-F.0.6,P-F.0.1,I,restaurant_id; snapshot_id; records; relationships; reconciliation_result
+P-IF.19,Purchase Transaction Record,P-F.0.3,P-F.0.1,I,restaurant_id; order_id; version; event_id; event_type; payload; approval_reference
+P-IF.20,Recovery Transaction Record,P-F.0.4,P-F.0.1,I,restaurant_id; request_id; event_id; event_type; payload
+P-IF.21,Purchase Record Retention Result,P-F.0.1,P-F.0.3,I,restaurant_id; order_id; event_id; retained; errors
+P-IF.22,Recovery Record Retention Result,P-F.0.1,P-F.0.4,I,restaurant_id; request_id; event_id; retained; errors
+P-IF.23,Order State Query,P-F.0.5,P-F.0.3,I,restaurant_id; order_id; query_id
+P-IF.24,Operating Task Observations,P-F.0.1; P-F.0.2; P-F.0.3; P-F.0.4; P-F.0.5,P-F.0.6,I,restaurant_id; source_function; task_id; timestamp; outcome; elapsed_ms

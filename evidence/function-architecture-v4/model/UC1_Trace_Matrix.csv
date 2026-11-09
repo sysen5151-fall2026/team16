@@ -1,0 +1,20 @@
+﻿step,name,source,target,flow,actions
+1,Purchasing Recommendation Request,P-F.1,P-F.0.5,P-IO.01,UC.1.2
+1.1,Scoped Planning Analysis Request,P-F.0.5,P-F.0.2,P-IF.04,UC.1.2 refinement
+1.2,Planning Record Request,P-F.0.2,P-F.0.1,P-IF.02,UC.1.3-UC.1.5 trigger
+1.3,Inventory Usage and Expiration Records,P-F.0.1,P-F.0.2,P-IF.03,UC.1.3-UC.1.5
+1.4,Proposed Recommendation Data,P-F.0.2,P-F.0.3,P-IF.05,UC.1.6-UC.1.7
+1.5,Initial Reviewable Draft,P-F.0.3,P-F.0.5,P-IF.06,UC.1.8 preparation
+2,Initial Purchasing Recommendation,P-F.0.5,P-F.1,P-IO.09,UC.1.8-UC.1.9
+3,Adjusted Purchase Quantities,P-F.1,P-F.0.3,P-IO.02,UC.1.10-UC.1.11
+3.1,Revised Reviewable Draft,P-F.0.3,P-F.0.5,P-IF.06,UC.1.11
+4,Revised Purchase for Approval,P-F.0.5,P-F.1,P-IO.09,UC.1.11-UC.1.12 refinement
+5,Explicit Final Version Approval,P-F.1,P-F.0.3,P-IO.03,UC.1.12-UC.1.13
+5.1,Approved Purchase Record,P-F.0.3,P-F.0.1,P-IF.19,UC.1.13-UC.1.14 refinement
+5.2,Approval Record Retention Result,P-F.0.1,P-F.0.3,P-IF.21,UC.1.13-UC.1.14 refinement
+6,Approved Purchase Order,P-F.0.3,P-F.3,P-IO.11,UC.1.15-UC.1.16
+7,Supplier Confirmation and Delivery Information,P-F.3,P-F.0.3,P-IO.05,UC.1.17-UC.1.19
+7.1,Supplier Response Record,P-F.0.3,P-F.0.1,P-IF.19,UC.1.19-UC.1.20 refinement
+7.2,Supplier Record Retention Result,P-F.0.1,P-F.0.3,P-IF.21,UC.1.19-UC.1.20 refinement
+7.3,Recorded Confirmed Order State,P-F.0.3,P-F.0.5,P-IF.07,UC.1.20-UC.1.21
+8,Order Status Information,P-F.0.5,P-F.1,P-IO.13,UC.1.21-UC.1.22

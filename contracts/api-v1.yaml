@@ -1,0 +1,940 @@
+openapi: 3.1.0
+info:
+  title: PANTRI Purchase Coordination design interface contracts
+  version: 1.0.0
+  description: First-level contracts adapted from api-v1.json; PC-IF.01-03 from the
+    2026-11-01 Innoslate snapshot. No HTTP service, durable storage or full component
+    conformance is asserted. Primary product is now PANTRI_App.html. /product paths
+    document actual local function arguments, not deployed HTTP routes; earlier /internal
+    contracts remain reference-architecture evidence.
+paths:
+  /internal/p-if-05:
+    post:
+      operationId: P_IF_05
+      summary: Proposed Purchasing Advice
+      x-flow-id: P-IF.05
+      x-function-id: P-F.0.3
+      x-producers:
+      - P-F.0.2
+      x-consumers:
+      - P-F.0.3
+      x-implementation: in-process FlowBus; this HTTP path is a design representation,
+        not a deployed route
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - restaurant_id
+              - demand
+              - usable_stock
+              - horizon
+              - limitations
+              - proposed_quantities
+              additionalProperties: false
+              properties:
+                restaurant_id:
+                  type: string
+                  minLength: 1
+                demand:
+                  type:
+                  - object
+                  - 'null'
+                usable_stock:
+                  type:
+                  - object
+                  - 'null'
+                horizon:
+                  type:
+                  - number
+                  - 'null'
+                  minimum: 0
+                limitations:
+                  type: array
+                proposed_quantities:
+                  type:
+                  - object
+                  - 'null'
+      responses:
+        '200':
+          description: In-process delivery accepted; no remote service asserted
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - accepted
+                - flow
+                - recipient
+                properties:
+                  accepted:
+                    type: boolean
+                  flow:
+                    type: string
+                  recipient:
+                    type: string
+  /internal/p-if-06:
+    post:
+      operationId: P_IF_06
+      summary: Reviewable Purchase Draft
+      x-flow-id: P-IF.06
+      x-function-id: P-F.0.3
+      x-producers:
+      - P-F.0.3
+      x-consumers:
+      - P-F.0.5
+      x-implementation: in-process FlowBus; this HTTP path is a design representation,
+        not a deployed route
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - restaurant_id
+              - draft_id
+              - version
+              - lines
+              - limitations
+              - approval_state
+              additionalProperties: false
+              properties:
+                restaurant_id:
+                  type: string
+                  minLength: 1
+                draft_id:
+                  type: string
+                  minLength: 1
+                version:
+                  type:
+                  - number
+                  - 'null'
+                  minimum: 0
+                lines:
+                  type: array
+                limitations:
+                  type: array
+                approval_state:
+                  type: string
+                  minLength: 1
+      responses:
+        '200':
+          description: In-process delivery accepted; no remote service asserted
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - accepted
+                - flow
+                - recipient
+                properties:
+                  accepted:
+                    type: boolean
+                  flow:
+                    type: string
+                  recipient:
+                    type: string
+  /internal/p-if-07:
+    post:
+      operationId: P_IF_07
+      summary: Recorded Supplier Order State
+      x-flow-id: P-IF.07
+      x-function-id: P-F.0.3
+      x-producers:
+      - P-F.0.3
+      x-consumers:
+      - P-F.0.5
+      x-implementation: in-process FlowBus; this HTTP path is a design representation,
+        not a deployed route
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - restaurant_id
+              - order_id
+              - state
+              - confirmation_reference
+              - delivery_information
+              - exceptions
+              additionalProperties: false
+              properties:
+                restaurant_id:
+                  type: string
+                  minLength: 1
+                order_id:
+                  type: string
+                  minLength: 1
+                state:
+                  type: string
+                  minLength: 1
+                confirmation_reference:
+                  type: string
+                  minLength: 1
+                delivery_information:
+                  type:
+                  - object
+                  - 'null'
+                exceptions:
+                  type: array
+      responses:
+        '200':
+          description: In-process delivery accepted; no remote service asserted
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - accepted
+                - flow
+                - recipient
+                properties:
+                  accepted:
+                    type: boolean
+                  flow:
+                    type: string
+                  recipient:
+                    type: string
+  /internal/p-if-12:
+    post:
+      operationId: P_IF_12
+      summary: Supply Exception Context
+      x-flow-id: P-IF.12
+      x-function-id: P-F.0.3
+      x-producers:
+      - P-F.0.3
+      x-consumers:
+      - P-F.0.6
+      x-implementation: in-process FlowBus; this HTTP path is a design representation,
+        not a deployed route
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - restaurant_id
+              - order_id
+              - state
+              - exception
+              - responsible_party
+              - follow_up
+              additionalProperties: false
+              properties:
+                restaurant_id:
+                  type: string
+                  minLength: 1
+                order_id:
+                  type: string
+                  minLength: 1
+                state:
+                  type: string
+                  minLength: 1
+                exception:
+                  type:
+                  - object
+                  - 'null'
+                responsible_party:
+                  type: string
+                  minLength: 1
+                follow_up:
+                  type:
+                  - object
+                  - 'null'
+      responses:
+        '200':
+          description: In-process delivery accepted; no remote service asserted
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - accepted
+                - flow
+                - recipient
+                properties:
+                  accepted:
+                    type: boolean
+                  flow:
+                    type: string
+                  recipient:
+                    type: string
+  /internal/p-if-14:
+    post:
+      operationId: P_IF_14
+      summary: Authorized Supply Disposition
+      x-flow-id: P-IF.14
+      x-function-id: P-F.0.3
+      x-producers:
+      - P-F.0.6
+      x-consumers:
+      - P-F.0.3
+      x-implementation: in-process FlowBus; this HTTP path is a design representation,
+        not a deployed route
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - restaurant_id
+              - order_id
+              - command_id
+              - authorized_disposition
+              additionalProperties: false
+              properties:
+                restaurant_id:
+                  type: string
+                  minLength: 1
+                order_id:
+                  type: string
+                  minLength: 1
+                command_id:
+                  type: string
+                  minLength: 1
+                authorized_disposition:
+                  type:
+                  - object
+                  - 'null'
+      responses:
+        '200':
+          description: In-process delivery accepted; no remote service asserted
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - accepted
+                - flow
+                - recipient
+                properties:
+                  accepted:
+                    type: boolean
+                  flow:
+                    type: string
+                  recipient:
+                    type: string
+  /internal/p-if-16:
+    post:
+      operationId: P_IF_16
+      summary: Authorized Task Constraints
+      x-flow-id: P-IF.16
+      x-function-id: P-F.0.3
+      x-producers:
+      - P-F.0.6
+      x-consumers:
+      - P-F.0.1
+      - P-F.0.2
+      - P-F.0.3
+      - P-F.0.4
+      - P-F.0.5
+      x-implementation: in-process FlowBus; this HTTP path is a design representation,
+        not a deployed route
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - restaurant_id
+              - role
+              - allowed_tasks
+              - policy_version
+              - command_reference
+              additionalProperties: false
+              properties:
+                restaurant_id:
+                  type: string
+                  minLength: 1
+                role:
+                  type: string
+                  minLength: 1
+                allowed_tasks:
+                  type: array
+                policy_version:
+                  type: string
+                  minLength: 1
+                command_reference:
+                  type: string
+                  minLength: 1
+      responses:
+        '200':
+          description: In-process delivery accepted; no remote service asserted
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - accepted
+                - flow
+                - recipient
+                properties:
+                  accepted:
+                    type: boolean
+                  flow:
+                    type: string
+                  recipient:
+                    type: string
+  /internal/p-if-19:
+    post:
+      operationId: P_IF_19
+      summary: Purchase Transaction Record
+      x-flow-id: P-IF.19
+      x-function-id: P-F.0.3
+      x-producers:
+      - P-F.0.3
+      x-consumers:
+      - P-F.0.1
+      x-implementation: in-process FlowBus; this HTTP path is a design representation,
+        not a deployed route
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - restaurant_id
+              - order_id
+              - version
+              - event_id
+              - event_type
+              - payload
+              - approval_reference
+              additionalProperties: false
+              properties:
+                restaurant_id:
+                  type: string
+                  minLength: 1
+                order_id:
+                  type: string
+                  minLength: 1
+                version:
+                  type:
+                  - number
+                  - 'null'
+                  minimum: 0
+                event_id:
+                  type: string
+                  minLength: 1
+                event_type:
+                  type: string
+                  minLength: 1
+                payload:
+                  type:
+                  - object
+                  - 'null'
+                approval_reference:
+                  type: string
+                  minLength: 1
+      responses:
+        '200':
+          description: In-process delivery accepted; no remote service asserted
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - accepted
+                - flow
+                - recipient
+                properties:
+                  accepted:
+                    type: boolean
+                  flow:
+                    type: string
+                  recipient:
+                    type: string
+  /internal/p-if-21:
+    post:
+      operationId: P_IF_21
+      summary: Purchase Record Retention Result
+      x-flow-id: P-IF.21
+      x-function-id: P-F.0.3
+      x-producers:
+      - P-F.0.1
+      x-consumers:
+      - P-F.0.3
+      x-implementation: in-process FlowBus; this HTTP path is a design representation,
+        not a deployed route
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - restaurant_id
+              - order_id
+              - event_id
+              - retained
+              - errors
+              additionalProperties: false
+              properties:
+                restaurant_id:
+                  type: string
+                  minLength: 1
+                order_id:
+                  type: string
+                  minLength: 1
+                event_id:
+                  type: string
+                  minLength: 1
+                retained:
+                  type: boolean
+                errors:
+                  type: array
+      responses:
+        '200':
+          description: In-process delivery accepted; no remote service asserted
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - accepted
+                - flow
+                - recipient
+                properties:
+                  accepted:
+                    type: boolean
+                  flow:
+                    type: string
+                  recipient:
+                    type: string
+  /internal/p-if-23:
+    post:
+      operationId: P_IF_23
+      summary: Order State Query
+      x-flow-id: P-IF.23
+      x-function-id: P-F.0.3
+      x-producers:
+      - P-F.0.5
+      x-consumers:
+      - P-F.0.3
+      x-implementation: in-process FlowBus; this HTTP path is a design representation,
+        not a deployed route
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - restaurant_id
+              - order_id
+              - query_id
+              additionalProperties: false
+              properties:
+                restaurant_id:
+                  type: string
+                  minLength: 1
+                order_id:
+                  type: string
+                  minLength: 1
+                query_id:
+                  type: string
+                  minLength: 1
+      responses:
+        '200':
+          description: In-process delivery accepted; no remote service asserted
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - accepted
+                - flow
+                - recipient
+                properties:
+                  accepted:
+                    type: boolean
+                  flow:
+                    type: string
+                  recipient:
+                    type: string
+  /internal/p-if-24:
+    post:
+      operationId: P_IF_24
+      summary: Operating Task Observations
+      x-flow-id: P-IF.24
+      x-function-id: P-F.0.3
+      x-producers:
+      - P-F.0.1
+      - P-F.0.2
+      - P-F.0.3
+      - P-F.0.4
+      - P-F.0.5
+      x-consumers:
+      - P-F.0.6
+      x-implementation: in-process FlowBus; this HTTP path is a design representation,
+        not a deployed route
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - restaurant_id
+              - source_function
+              - task_id
+              - timestamp
+              - outcome
+              - elapsed_ms
+              additionalProperties: false
+              properties:
+                restaurant_id:
+                  type: string
+                  minLength: 1
+                source_function:
+                  type: string
+                  minLength: 1
+                task_id:
+                  type: string
+                  minLength: 1
+                timestamp:
+                  type: string
+                  minLength: 1
+                outcome:
+                  type: string
+                  minLength: 1
+                elapsed_ms:
+                  type:
+                  - number
+                  - 'null'
+                  minimum: 0
+      responses:
+        '200':
+          description: In-process delivery accepted; no remote service asserted
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - accepted
+                - flow
+                - recipient
+                properties:
+                  accepted:
+                    type: boolean
+                  flow:
+                    type: string
+                  recipient:
+                    type: string
+  /design/purchase/pc-if-01:
+    post:
+      operationId: PC_IF_01
+      summary: Current Draft Snapshot
+      x-flow-id: PC-IF.01
+      x-function-id: P-F.0.3.1
+      x-consumer: P-F.0.3.2
+      x-decomposes: P-F.0.3
+      x-status: Design only; runtime currently uses shared in-memory state, not these
+        HTTP endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - restaurant_id
+              - order_id
+              - draft_version
+              - lines
+              - approval_state
+              properties:
+                restaurant_id:
+                  type: string
+                order_id:
+                  type: string
+                draft_version:
+                  type: integer
+                lines:
+                  type: array
+                  items:
+                    type: object
+                approval_state:
+                  type: string
+      responses:
+        '200':
+          description: Design contract only; requires implementation verification
+  /design/purchase/pc-if-02:
+    post:
+      operationId: PC_IF_02
+      summary: Retained Approval Reference
+      x-flow-id: PC-IF.02
+      x-function-id: P-F.0.3.2
+      x-consumer: P-F.0.3.3
+      x-decomposes: P-F.0.3
+      x-status: Design only; runtime currently uses shared in-memory state, not these
+        HTTP endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - restaurant_id
+              - order_id
+              - approved_version
+              - approval_id
+              - approved_lines
+              - durable_retention_reference
+              properties:
+                restaurant_id:
+                  type: string
+                order_id:
+                  type: string
+                approved_version:
+                  type: integer
+                approval_id:
+                  type: string
+                approved_lines:
+                  type: array
+                  items:
+                    type: object
+                durable_retention_reference:
+                  type: string
+      responses:
+        '200':
+          description: Design contract only; requires implementation verification
+  /design/purchase/pc-if-03:
+    post:
+      operationId: PC_IF_03
+      summary: Order Dispatch Outcome
+      x-flow-id: PC-IF.03
+      x-function-id: P-F.0.3.3
+      x-consumer: P-F.0.3.4
+      x-decomposes: P-F.0.3
+      x-status: Design only; runtime currently uses shared in-memory state, not these
+        HTTP endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - restaurant_id
+              - order_id
+              - approved_version
+              - transmission_key
+              - dispatch_state
+              - retained_attempt_reference
+              properties:
+                restaurant_id:
+                  type: string
+                order_id:
+                  type: string
+                approved_version:
+                  type: integer
+                transmission_key:
+                  type: string
+                dispatch_state:
+                  type: string
+                retained_attempt_reference:
+                  type: string
+      responses:
+        '200':
+          description: Design contract only; requires implementation verification
+  /product/editDraft:
+    post:
+      operationId: original_editDraft
+      summary: P-F.0.3.1 original App local transition
+      x-function-id: P-F.0.3.1
+      x-module: PANTRI_App.html#editDraft
+      x-decomposes: P-F.0.3
+      x-transport: Local immutable state transition, NOT an HTTP endpoint
+      x-internal-flow: PC-IF.01
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - state
+              - id
+              - version
+              - edits
+              properties:
+                state:
+                  type: object
+                  description: Restaurant-scoped immutable demo state; actual camelCase
+                    schema in PANTRI_App.html validateSaved.
+                id:
+                  type: string
+                version:
+                  type: integer
+                edits:
+                  type: array
+                  items:
+                    type: object
+      responses:
+        '200':
+          description: Actual local function result envelope
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - ok
+                properties:
+                  ok:
+                    type: boolean
+                  value:
+                    type: object
+                    description: New state on success
+                  message:
+                    type: string
+                    description: Reason on failure
+  /product/approveDraft:
+    post:
+      operationId: original_approveDraft
+      summary: P-F.0.3.2 original App local transition
+      x-function-id: P-F.0.3.2
+      x-module: PANTRI_App.html#approveDraft
+      x-decomposes: P-F.0.3
+      x-transport: Local immutable state transition, NOT an HTTP endpoint
+      x-internal-flow: PC-IF.02
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - state
+              - id
+              - version
+              - operationId
+              properties:
+                state:
+                  type: object
+                  description: Restaurant-scoped immutable demo state; actual camelCase
+                    schema in PANTRI_App.html validateSaved.
+                id:
+                  type: string
+                version:
+                  type: integer
+                operationId:
+                  type: string
+      responses:
+        '200':
+          description: Actual local function result envelope
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - ok
+                properties:
+                  ok:
+                    type: boolean
+                  value:
+                    type: object
+                    description: New state on success
+                  message:
+                    type: string
+                    description: Reason on failure
+  /product/sendApprovedOrder:
+    post:
+      operationId: original_sendApprovedOrder
+      summary: P-F.0.3.3 original App local transition
+      x-function-id: P-F.0.3.3
+      x-module: PANTRI_App.html#sendApprovedOrder
+      x-decomposes: P-F.0.3
+      x-transport: Local immutable state transition, NOT an HTTP endpoint
+      x-internal-flow: PC-IF.03
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - state
+              - id
+              - operationId
+              properties:
+                state:
+                  type: object
+                  description: Restaurant-scoped immutable demo state; actual camelCase
+                    schema in PANTRI_App.html validateSaved.
+                id:
+                  type: string
+                operationId:
+                  type: string
+      responses:
+        '200':
+          description: Actual local function result envelope
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - ok
+                properties:
+                  ok:
+                    type: boolean
+                  value:
+                    type: object
+                    description: New state on success
+                  message:
+                    type: string
+                    description: Reason on failure
+  /product/recordSupplierEvent:
+    post:
+      operationId: original_recordSupplierEvent
+      summary: P-F.0.3.4 original App local transition
+      x-function-id: P-F.0.3.4
+      x-module: PANTRI_App.html#recordSupplierEvent
+      x-decomposes: P-F.0.3
+      x-transport: Local immutable state transition, NOT an HTTP endpoint
+      x-internal-flow: Supplier event -> recorded order state
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - state
+              - event
+              properties:
+                state:
+                  type: object
+                  description: Restaurant-scoped immutable demo state; actual camelCase
+                    schema in PANTRI_App.html validateSaved.
+                event:
+                  type: object
+      responses:
+        '200':
+          description: Actual local function result envelope
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - ok
+                properties:
+                  ok:
+                    type: boolean
+                  value:
+                    type: object
+                    description: New state on success
+                  message:
+                    type: string
+                    description: Reason on failure

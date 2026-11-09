@@ -1,7 +1,12 @@
 {
-  "name": "pantri-milestone1-walking-skeleton",
-  "version": "1.0.0",
+  "name": "pantri-function-architecture-increment",
+  "version": "1.1.0",
   "private": true,
   "description": "Requirement-constrained offline UC.1 prototype for SYSEN 5151 Team 16",
-  "scripts": {"test": "node --test tests/*.test.js", "build": "python3 tools/build.py"}
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "build": "python3 tools/build.py",
+    "demo:architecture": "node tools/run_architecture_demo.js",
+    "generate:contracts": "node tools/generate_contract_stubs.js"
+  }
 }

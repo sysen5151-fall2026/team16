@@ -1,0 +1,18 @@
+{
+  "baseline_entities": 228,
+  "live_entities": 339,
+  "new_entities": 111,
+  "baseline_names_descriptions_preserved": false,
+  "baseline_relationships_preserved": true,
+  "missing_entities": [],
+  "changed_baseline_names_descriptions": [
+    "P-IO.08",
+    "UC.2",
+    "UC.1",
+    "UC.1.8"
+  ],
+  "live_relationships": 2146,
+  "prior_339_snapshot_all_entities_preserved": true,
+  "prior_339_snapshot_all_relationships_preserved": true,
+  "xml_sha256": "864c15dea87b44e52318f330af2e025f3748fd38cc357f635d815f04646dac2e"
+}
