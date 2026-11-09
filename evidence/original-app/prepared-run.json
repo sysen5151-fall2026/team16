@@ -1,0 +1,802 @@
+{
+  "checkpoints": {
+    "initial": {
+      "draft": {
+        "id": "draft-001",
+        "restaurantId": "restaurant-demo-1",
+        "supplierId": "Prime Foods",
+        "version": 1,
+        "status": "draft",
+        "lines": [
+          {
+            "ingredientId": "ing-001",
+            "unit": "kg",
+            "dailyDemand": 6,
+            "horizonDays": 2,
+            "forecastQty": 12,
+            "usableStock": 8,
+            "excludedStock": 0,
+            "exclusionNotes": [],
+            "suggestedQty": 4,
+            "managerQty": 4,
+            "unitCostCents": 1450
+          }
+        ],
+        "updatedAt": "2026-10-21T08:45:00"
+      },
+      "orders": [],
+      "stock": 8,
+      "partnerEvents": []
+    },
+    "revised": {
+      "draft": {
+        "id": "draft-001",
+        "restaurantId": "restaurant-demo-1",
+        "supplierId": "Prime Foods",
+        "version": 2,
+        "status": "draft",
+        "lines": [
+          {
+            "ingredientId": "ing-001",
+            "unit": "kg",
+            "dailyDemand": 6,
+            "horizonDays": 2,
+            "forecastQty": 12,
+            "usableStock": 8,
+            "excludedStock": 0,
+            "exclusionNotes": [],
+            "suggestedQty": 4,
+            "managerQty": 5,
+            "unitCostCents": 1450
+          }
+        ],
+        "updatedAt": "2026-10-21T09:16:40"
+      },
+      "orders": [],
+      "stock": 8,
+      "partnerEvents": []
+    },
+    "approved": {
+      "draft": {
+        "id": "draft-001",
+        "restaurantId": "restaurant-demo-1",
+        "supplierId": "Prime Foods",
+        "version": 2,
+        "status": "approved",
+        "lines": [
+          {
+            "ingredientId": "ing-001",
+            "unit": "kg",
+            "dailyDemand": 6,
+            "horizonDays": 2,
+            "forecastQty": 12,
+            "usableStock": 8,
+            "excludedStock": 0,
+            "exclusionNotes": [],
+            "suggestedQty": 4,
+            "managerQty": 5,
+            "unitCostCents": 1450
+          }
+        ],
+        "updatedAt": "2026-10-21T09:16:40"
+      },
+      "orders": [
+        {
+          "id": "PO-1001",
+          "restaurantId": "restaurant-demo-1",
+          "supplierId": "Prime Foods",
+          "sourceDraftId": "draft-001",
+          "approvedVersion": 2,
+          "approvedLines": [
+            {
+              "ingredientId": "ing-001",
+              "unit": "kg",
+              "dailyDemand": 6,
+              "horizonDays": 2,
+              "forecastQty": 12,
+              "usableStock": 8,
+              "excludedStock": 0,
+              "exclusionNotes": [],
+              "suggestedQty": 4,
+              "managerQty": 5,
+              "unitCostCents": 1450
+            }
+          ],
+          "approvedBy": "manager-demo-1",
+          "approvedAt": "2026-10-21T09:16:42",
+          "sentAt": null,
+          "supplierStatus": "not_sent",
+          "fulfillmentStatus": "not_received",
+          "receivedQuantities": {},
+          "events": [
+            {
+              "kind": "approved",
+              "occurredAt": "2026-10-21T09:16:42",
+              "note": "Version 2 explicitly approved"
+            }
+          ],
+          "latestSupplierAt": null,
+          "owner": "Manager",
+          "followUp": ""
+        }
+      ],
+      "stock": 8,
+      "partnerEvents": []
+    },
+    "sent": {
+      "draft": {
+        "id": "draft-001",
+        "restaurantId": "restaurant-demo-1",
+        "supplierId": "Prime Foods",
+        "version": 2,
+        "status": "approved",
+        "lines": [
+          {
+            "ingredientId": "ing-001",
+            "unit": "kg",
+            "dailyDemand": 6,
+            "horizonDays": 2,
+            "forecastQty": 12,
+            "usableStock": 8,
+            "excludedStock": 0,
+            "exclusionNotes": [],
+            "suggestedQty": 4,
+            "managerQty": 5,
+            "unitCostCents": 1450
+          }
+        ],
+        "updatedAt": "2026-10-21T09:16:40"
+      },
+      "orders": [
+        {
+          "id": "PO-1001",
+          "restaurantId": "restaurant-demo-1",
+          "supplierId": "Prime Foods",
+          "sourceDraftId": "draft-001",
+          "approvedVersion": 2,
+          "approvedLines": [
+            {
+              "ingredientId": "ing-001",
+              "unit": "kg",
+              "dailyDemand": 6,
+              "horizonDays": 2,
+              "forecastQty": 12,
+              "usableStock": 8,
+              "excludedStock": 0,
+              "exclusionNotes": [],
+              "suggestedQty": 4,
+              "managerQty": 5,
+              "unitCostCents": 1450
+            }
+          ],
+          "approvedBy": "manager-demo-1",
+          "approvedAt": "2026-10-21T09:16:42",
+          "sentAt": "2026-10-21T09:16:43",
+          "supplierStatus": "awaiting_confirmation",
+          "fulfillmentStatus": "not_received",
+          "receivedQuantities": {},
+          "events": [
+            {
+              "kind": "approved",
+              "occurredAt": "2026-10-21T09:16:42",
+              "note": "Version 2 explicitly approved"
+            },
+            {
+              "kind": "sent",
+              "occurredAt": "2026-10-21T09:16:43",
+              "note": "Approved snapshot sent to simulated supplier"
+            }
+          ],
+          "latestSupplierAt": null,
+          "owner": "Manager",
+          "followUp": ""
+        }
+      ],
+      "stock": 8,
+      "partnerEvents": []
+    },
+    "confirmed": {
+      "draft": {
+        "id": "draft-001",
+        "restaurantId": "restaurant-demo-1",
+        "supplierId": "Prime Foods",
+        "version": 2,
+        "status": "approved",
+        "lines": [
+          {
+            "ingredientId": "ing-001",
+            "unit": "kg",
+            "dailyDemand": 6,
+            "horizonDays": 2,
+            "forecastQty": 12,
+            "usableStock": 8,
+            "excludedStock": 0,
+            "exclusionNotes": [],
+            "suggestedQty": 4,
+            "managerQty": 5,
+            "unitCostCents": 1450
+          }
+        ],
+        "updatedAt": "2026-10-21T09:16:40"
+      },
+      "orders": [
+        {
+          "id": "PO-1001",
+          "restaurantId": "restaurant-demo-1",
+          "supplierId": "Prime Foods",
+          "sourceDraftId": "draft-001",
+          "approvedVersion": 2,
+          "approvedLines": [
+            {
+              "ingredientId": "ing-001",
+              "unit": "kg",
+              "dailyDemand": 6,
+              "horizonDays": 2,
+              "forecastQty": 12,
+              "usableStock": 8,
+              "excludedStock": 0,
+              "exclusionNotes": [],
+              "suggestedQty": 4,
+              "managerQty": 5,
+              "unitCostCents": 1450
+            }
+          ],
+          "approvedBy": "manager-demo-1",
+          "approvedAt": "2026-10-21T09:16:42",
+          "sentAt": "2026-10-21T09:16:43",
+          "supplierStatus": "confirmed",
+          "fulfillmentStatus": "not_received",
+          "receivedQuantities": {},
+          "events": [
+            {
+              "kind": "approved",
+              "occurredAt": "2026-10-21T09:16:42",
+              "note": "Version 2 explicitly approved"
+            },
+            {
+              "kind": "sent",
+              "occurredAt": "2026-10-21T09:16:43",
+              "note": "Approved snapshot sent to simulated supplier"
+            },
+            {
+              "id": "event-confirmed",
+              "restaurantId": "restaurant-demo-1",
+              "transactionId": "PO-1001",
+              "kind": "confirmed",
+              "occurredAt": "2026-10-21T10:00:00",
+              "note": "Simulated supplier response",
+              "partnerType": "supplier",
+              "simulated": true
+            }
+          ],
+          "latestSupplierAt": "2026-10-21T10:00:00",
+          "owner": "Manager",
+          "followUp": ""
+        }
+      ],
+      "stock": 8,
+      "partnerEvents": [
+        {
+          "id": "event-confirmed",
+          "restaurantId": "restaurant-demo-1",
+          "transactionId": "PO-1001",
+          "kind": "confirmed",
+          "occurredAt": "2026-10-21T10:00:00",
+          "note": "Simulated supplier response",
+          "partnerType": "supplier",
+          "simulated": true
+        }
+      ]
+    },
+    "partial": {
+      "draft": {
+        "id": "draft-001",
+        "restaurantId": "restaurant-demo-1",
+        "supplierId": "Prime Foods",
+        "version": 2,
+        "status": "approved",
+        "lines": [
+          {
+            "ingredientId": "ing-001",
+            "unit": "kg",
+            "dailyDemand": 6,
+            "horizonDays": 2,
+            "forecastQty": 12,
+            "usableStock": 8,
+            "excludedStock": 0,
+            "exclusionNotes": [],
+            "suggestedQty": 4,
+            "managerQty": 5,
+            "unitCostCents": 1450
+          }
+        ],
+        "updatedAt": "2026-10-21T09:16:40"
+      },
+      "orders": [
+        {
+          "id": "PO-1001",
+          "restaurantId": "restaurant-demo-1",
+          "supplierId": "Prime Foods",
+          "sourceDraftId": "draft-001",
+          "approvedVersion": 2,
+          "approvedLines": [
+            {
+              "ingredientId": "ing-001",
+              "unit": "kg",
+              "dailyDemand": 6,
+              "horizonDays": 2,
+              "forecastQty": 12,
+              "usableStock": 8,
+              "excludedStock": 0,
+              "exclusionNotes": [],
+              "suggestedQty": 4,
+              "managerQty": 5,
+              "unitCostCents": 1450
+            }
+          ],
+          "approvedBy": "manager-demo-1",
+          "approvedAt": "2026-10-21T09:16:42",
+          "sentAt": "2026-10-21T09:16:43",
+          "supplierStatus": "partial",
+          "fulfillmentStatus": "not_received",
+          "receivedQuantities": {},
+          "events": [
+            {
+              "kind": "approved",
+              "occurredAt": "2026-10-21T09:16:42",
+              "note": "Version 2 explicitly approved"
+            },
+            {
+              "kind": "sent",
+              "occurredAt": "2026-10-21T09:16:43",
+              "note": "Approved snapshot sent to simulated supplier"
+            },
+            {
+              "id": "event-confirmed",
+              "restaurantId": "restaurant-demo-1",
+              "transactionId": "PO-1001",
+              "kind": "confirmed",
+              "occurredAt": "2026-10-21T10:00:00",
+              "note": "Simulated supplier response",
+              "partnerType": "supplier",
+              "simulated": true
+            },
+            {
+              "id": "event-partial",
+              "restaurantId": "restaurant-demo-1",
+              "transactionId": "PO-1001",
+              "kind": "partial",
+              "occurredAt": "2026-10-21T11:00:00",
+              "note": "Simulated supplier response",
+              "partnerType": "supplier",
+              "simulated": true
+            }
+          ],
+          "latestSupplierAt": "2026-10-21T11:00:00",
+          "owner": "Manager",
+          "followUp": ""
+        }
+      ],
+      "stock": 8,
+      "partnerEvents": [
+        {
+          "id": "event-confirmed",
+          "restaurantId": "restaurant-demo-1",
+          "transactionId": "PO-1001",
+          "kind": "confirmed",
+          "occurredAt": "2026-10-21T10:00:00",
+          "note": "Simulated supplier response",
+          "partnerType": "supplier",
+          "simulated": true
+        },
+        {
+          "id": "event-partial",
+          "restaurantId": "restaurant-demo-1",
+          "transactionId": "PO-1001",
+          "kind": "partial",
+          "occurredAt": "2026-10-21T11:00:00",
+          "note": "Simulated supplier response",
+          "partnerType": "supplier",
+          "simulated": true
+        }
+      ]
+    },
+    "delayed": {
+      "draft": {
+        "id": "draft-001",
+        "restaurantId": "restaurant-demo-1",
+        "supplierId": "Prime Foods",
+        "version": 2,
+        "status": "approved",
+        "lines": [
+          {
+            "ingredientId": "ing-001",
+            "unit": "kg",
+            "dailyDemand": 6,
+            "horizonDays": 2,
+            "forecastQty": 12,
+            "usableStock": 8,
+            "excludedStock": 0,
+            "exclusionNotes": [],
+            "suggestedQty": 4,
+            "managerQty": 5,
+            "unitCostCents": 1450
+          }
+        ],
+        "updatedAt": "2026-10-21T09:16:40"
+      },
+      "orders": [
+        {
+          "id": "PO-1001",
+          "restaurantId": "restaurant-demo-1",
+          "supplierId": "Prime Foods",
+          "sourceDraftId": "draft-001",
+          "approvedVersion": 2,
+          "approvedLines": [
+            {
+              "ingredientId": "ing-001",
+              "unit": "kg",
+              "dailyDemand": 6,
+              "horizonDays": 2,
+              "forecastQty": 12,
+              "usableStock": 8,
+              "excludedStock": 0,
+              "exclusionNotes": [],
+              "suggestedQty": 4,
+              "managerQty": 5,
+              "unitCostCents": 1450
+            }
+          ],
+          "approvedBy": "manager-demo-1",
+          "approvedAt": "2026-10-21T09:16:42",
+          "sentAt": "2026-10-21T09:16:43",
+          "supplierStatus": "delayed",
+          "fulfillmentStatus": "not_received",
+          "receivedQuantities": {},
+          "events": [
+            {
+              "kind": "approved",
+              "occurredAt": "2026-10-21T09:16:42",
+              "note": "Version 2 explicitly approved"
+            },
+            {
+              "kind": "sent",
+              "occurredAt": "2026-10-21T09:16:43",
+              "note": "Approved snapshot sent to simulated supplier"
+            },
+            {
+              "id": "event-confirmed",
+              "restaurantId": "restaurant-demo-1",
+              "transactionId": "PO-1001",
+              "kind": "confirmed",
+              "occurredAt": "2026-10-21T10:00:00",
+              "note": "Simulated supplier response",
+              "partnerType": "supplier",
+              "simulated": true
+            },
+            {
+              "id": "event-partial",
+              "restaurantId": "restaurant-demo-1",
+              "transactionId": "PO-1001",
+              "kind": "partial",
+              "occurredAt": "2026-10-21T11:00:00",
+              "note": "Simulated supplier response",
+              "partnerType": "supplier",
+              "simulated": true
+            },
+            {
+              "id": "event-delayed",
+              "restaurantId": "restaurant-demo-1",
+              "transactionId": "PO-1001",
+              "kind": "delayed",
+              "occurredAt": "2026-10-21T12:00:00",
+              "note": "Simulated supplier response",
+              "partnerType": "supplier",
+              "simulated": true
+            }
+          ],
+          "latestSupplierAt": "2026-10-21T12:00:00",
+          "owner": "Manager",
+          "followUp": "Simulated supplier response"
+        }
+      ],
+      "stock": 8,
+      "partnerEvents": [
+        {
+          "id": "event-confirmed",
+          "restaurantId": "restaurant-demo-1",
+          "transactionId": "PO-1001",
+          "kind": "confirmed",
+          "occurredAt": "2026-10-21T10:00:00",
+          "note": "Simulated supplier response",
+          "partnerType": "supplier",
+          "simulated": true
+        },
+        {
+          "id": "event-partial",
+          "restaurantId": "restaurant-demo-1",
+          "transactionId": "PO-1001",
+          "kind": "partial",
+          "occurredAt": "2026-10-21T11:00:00",
+          "note": "Simulated supplier response",
+          "partnerType": "supplier",
+          "simulated": true
+        },
+        {
+          "id": "event-delayed",
+          "restaurantId": "restaurant-demo-1",
+          "transactionId": "PO-1001",
+          "kind": "delayed",
+          "occurredAt": "2026-10-21T12:00:00",
+          "note": "Simulated supplier response",
+          "partnerType": "supplier",
+          "simulated": true
+        }
+      ]
+    },
+    "exception": {
+      "draft": {
+        "id": "draft-001",
+        "restaurantId": "restaurant-demo-1",
+        "supplierId": "Prime Foods",
+        "version": 2,
+        "status": "approved",
+        "lines": [
+          {
+            "ingredientId": "ing-001",
+            "unit": "kg",
+            "dailyDemand": 6,
+            "horizonDays": 2,
+            "forecastQty": 12,
+            "usableStock": 8,
+            "excludedStock": 0,
+            "exclusionNotes": [],
+            "suggestedQty": 4,
+            "managerQty": 5,
+            "unitCostCents": 1450
+          }
+        ],
+        "updatedAt": "2026-10-21T09:16:40"
+      },
+      "orders": [
+        {
+          "id": "PO-1001",
+          "restaurantId": "restaurant-demo-1",
+          "supplierId": "Prime Foods",
+          "sourceDraftId": "draft-001",
+          "approvedVersion": 2,
+          "approvedLines": [
+            {
+              "ingredientId": "ing-001",
+              "unit": "kg",
+              "dailyDemand": 6,
+              "horizonDays": 2,
+              "forecastQty": 12,
+              "usableStock": 8,
+              "excludedStock": 0,
+              "exclusionNotes": [],
+              "suggestedQty": 4,
+              "managerQty": 5,
+              "unitCostCents": 1450
+            }
+          ],
+          "approvedBy": "manager-demo-1",
+          "approvedAt": "2026-10-21T09:16:42",
+          "sentAt": "2026-10-21T09:16:43",
+          "supplierStatus": "exception",
+          "fulfillmentStatus": "not_received",
+          "receivedQuantities": {},
+          "events": [
+            {
+              "kind": "approved",
+              "occurredAt": "2026-10-21T09:16:42",
+              "note": "Version 2 explicitly approved"
+            },
+            {
+              "kind": "sent",
+              "occurredAt": "2026-10-21T09:16:43",
+              "note": "Approved snapshot sent to simulated supplier"
+            },
+            {
+              "id": "event-confirmed",
+              "restaurantId": "restaurant-demo-1",
+              "transactionId": "PO-1001",
+              "kind": "confirmed",
+              "occurredAt": "2026-10-21T10:00:00",
+              "note": "Simulated supplier response",
+              "partnerType": "supplier",
+              "simulated": true
+            },
+            {
+              "id": "event-partial",
+              "restaurantId": "restaurant-demo-1",
+              "transactionId": "PO-1001",
+              "kind": "partial",
+              "occurredAt": "2026-10-21T11:00:00",
+              "note": "Simulated supplier response",
+              "partnerType": "supplier",
+              "simulated": true
+            },
+            {
+              "id": "event-delayed",
+              "restaurantId": "restaurant-demo-1",
+              "transactionId": "PO-1001",
+              "kind": "delayed",
+              "occurredAt": "2026-10-21T12:00:00",
+              "note": "Simulated supplier response",
+              "partnerType": "supplier",
+              "simulated": true
+            },
+            {
+              "id": "event-exception",
+              "restaurantId": "restaurant-demo-1",
+              "transactionId": "PO-1001",
+              "kind": "exception",
+              "occurredAt": "2026-10-21T13:00:00",
+              "note": "Simulated supplier response",
+              "partnerType": "supplier",
+              "simulated": true
+            }
+          ],
+          "latestSupplierAt": "2026-10-21T13:00:00",
+          "owner": "Manager",
+          "followUp": "Simulated supplier response"
+        }
+      ],
+      "stock": 8,
+      "partnerEvents": [
+        {
+          "id": "event-confirmed",
+          "restaurantId": "restaurant-demo-1",
+          "transactionId": "PO-1001",
+          "kind": "confirmed",
+          "occurredAt": "2026-10-21T10:00:00",
+          "note": "Simulated supplier response",
+          "partnerType": "supplier",
+          "simulated": true
+        },
+        {
+          "id": "event-partial",
+          "restaurantId": "restaurant-demo-1",
+          "transactionId": "PO-1001",
+          "kind": "partial",
+          "occurredAt": "2026-10-21T11:00:00",
+          "note": "Simulated supplier response",
+          "partnerType": "supplier",
+          "simulated": true
+        },
+        {
+          "id": "event-delayed",
+          "restaurantId": "restaurant-demo-1",
+          "transactionId": "PO-1001",
+          "kind": "delayed",
+          "occurredAt": "2026-10-21T12:00:00",
+          "note": "Simulated supplier response",
+          "partnerType": "supplier",
+          "simulated": true
+        },
+        {
+          "id": "event-exception",
+          "restaurantId": "restaurant-demo-1",
+          "transactionId": "PO-1001",
+          "kind": "exception",
+          "occurredAt": "2026-10-21T13:00:00",
+          "note": "Simulated supplier response",
+          "partnerType": "supplier",
+          "simulated": true
+        }
+      ]
+    }
+  },
+  "rejections": [
+    {
+      "name": "unapproved-send",
+      "ok": false,
+      "unchanged": true
+    },
+    {
+      "name": "negative-quantity",
+      "ok": false,
+      "unchanged": true
+    },
+    {
+      "name": "stale-approval",
+      "ok": false,
+      "unchanged": true
+    },
+    {
+      "name": "sent-edit",
+      "ok": false,
+      "unchanged": true
+    },
+    {
+      "name": "wrong-restaurant",
+      "ok": false,
+      "unchanged": true
+    }
+  ],
+  "rehydrated": {
+    "id": "PO-1001",
+    "restaurantId": "restaurant-demo-1",
+    "supplierId": "Prime Foods",
+    "sourceDraftId": "draft-001",
+    "approvedVersion": 2,
+    "approvedLines": [
+      {
+        "ingredientId": "ing-001",
+        "unit": "kg",
+        "dailyDemand": 6,
+        "horizonDays": 2,
+        "forecastQty": 12,
+        "usableStock": 8,
+        "excludedStock": 0,
+        "exclusionNotes": [],
+        "suggestedQty": 4,
+        "managerQty": 5,
+        "unitCostCents": 1450
+      }
+    ],
+    "approvedBy": "manager-demo-1",
+    "approvedAt": "2026-10-21T09:16:42",
+    "sentAt": "2026-10-21T09:16:43",
+    "supplierStatus": "exception",
+    "fulfillmentStatus": "not_received",
+    "receivedQuantities": {},
+    "events": [
+      {
+        "kind": "approved",
+        "occurredAt": "2026-10-21T09:16:42",
+        "note": "Version 2 explicitly approved"
+      },
+      {
+        "kind": "sent",
+        "occurredAt": "2026-10-21T09:16:43",
+        "note": "Approved snapshot sent to simulated supplier"
+      },
+      {
+        "id": "event-confirmed",
+        "restaurantId": "restaurant-demo-1",
+        "transactionId": "PO-1001",
+        "kind": "confirmed",
+        "occurredAt": "2026-10-21T10:00:00",
+        "note": "Simulated supplier response",
+        "partnerType": "supplier",
+        "simulated": true
+      },
+      {
+        "id": "event-partial",
+        "restaurantId": "restaurant-demo-1",
+        "transactionId": "PO-1001",
+        "kind": "partial",
+        "occurredAt": "2026-10-21T11:00:00",
+        "note": "Simulated supplier response",
+        "partnerType": "supplier",
+        "simulated": true
+      },
+      {
+        "id": "event-delayed",
+        "restaurantId": "restaurant-demo-1",
+        "transactionId": "PO-1001",
+        "kind": "delayed",
+        "occurredAt": "2026-10-21T12:00:00",
+        "note": "Simulated supplier response",
+        "partnerType": "supplier",
+        "simulated": true
+      },
+      {
+        "id": "event-exception",
+        "restaurantId": "restaurant-demo-1",
+        "transactionId": "PO-1001",
+        "kind": "exception",
+        "occurredAt": "2026-10-21T13:00:00",
+        "note": "Simulated supplier response",
+        "partnerType": "supplier",
+        "simulated": true
+      }
+    ],
+    "latestSupplierAt": "2026-10-21T13:00:00",
+    "owner": "Manager",
+    "followUp": "Simulated supplier response"
+  },
+  "scope": "Actual PANTRI_App.html core; prepared single-manager localStorage demo, not production IAM or physical receiving."
+}

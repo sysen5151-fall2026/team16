@@ -4,7 +4,9 @@ info:
   version: 1.0.0
   description: First-level contracts adapted from api-v1.json; PC-IF.01-03 from the
     2026-11-01 Innoslate snapshot. No HTTP service, durable storage or full component
-    conformance is asserted.
+    conformance is asserted. Primary product is now PANTRI_App.html. /product paths
+    document actual local function arguments, not deployed HTTP routes; earlier /internal
+    contracts remain reference-architecture evidence.
 paths:
   /internal/p-if-05:
     post:
@@ -747,3 +749,192 @@ paths:
       responses:
         '200':
           description: Design contract only; requires implementation verification
+  /product/editDraft:
+    post:
+      operationId: original_editDraft
+      summary: P-F.0.3.1 original App local transition
+      x-function-id: P-F.0.3.1
+      x-module: PANTRI_App.html#editDraft
+      x-decomposes: P-F.0.3
+      x-transport: Local immutable state transition, NOT an HTTP endpoint
+      x-internal-flow: PC-IF.01
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - state
+              - id
+              - version
+              - edits
+              properties:
+                state:
+                  type: object
+                  description: Restaurant-scoped immutable demo state; actual camelCase
+                    schema in PANTRI_App.html validateSaved.
+                id:
+                  type: string
+                version:
+                  type: integer
+                edits:
+                  type: array
+                  items:
+                    type: object
+      responses:
+        '200':
+          description: Actual local function result envelope
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - ok
+                properties:
+                  ok:
+                    type: boolean
+                  value:
+                    type: object
+                    description: New state on success
+                  message:
+                    type: string
+                    description: Reason on failure
+  /product/approveDraft:
+    post:
+      operationId: original_approveDraft
+      summary: P-F.0.3.2 original App local transition
+      x-function-id: P-F.0.3.2
+      x-module: PANTRI_App.html#approveDraft
+      x-decomposes: P-F.0.3
+      x-transport: Local immutable state transition, NOT an HTTP endpoint
+      x-internal-flow: PC-IF.02
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - state
+              - id
+              - version
+              - operationId
+              properties:
+                state:
+                  type: object
+                  description: Restaurant-scoped immutable demo state; actual camelCase
+                    schema in PANTRI_App.html validateSaved.
+                id:
+                  type: string
+                version:
+                  type: integer
+                operationId:
+                  type: string
+      responses:
+        '200':
+          description: Actual local function result envelope
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - ok
+                properties:
+                  ok:
+                    type: boolean
+                  value:
+                    type: object
+                    description: New state on success
+                  message:
+                    type: string
+                    description: Reason on failure
+  /product/sendApprovedOrder:
+    post:
+      operationId: original_sendApprovedOrder
+      summary: P-F.0.3.3 original App local transition
+      x-function-id: P-F.0.3.3
+      x-module: PANTRI_App.html#sendApprovedOrder
+      x-decomposes: P-F.0.3
+      x-transport: Local immutable state transition, NOT an HTTP endpoint
+      x-internal-flow: PC-IF.03
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - state
+              - id
+              - operationId
+              properties:
+                state:
+                  type: object
+                  description: Restaurant-scoped immutable demo state; actual camelCase
+                    schema in PANTRI_App.html validateSaved.
+                id:
+                  type: string
+                operationId:
+                  type: string
+      responses:
+        '200':
+          description: Actual local function result envelope
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - ok
+                properties:
+                  ok:
+                    type: boolean
+                  value:
+                    type: object
+                    description: New state on success
+                  message:
+                    type: string
+                    description: Reason on failure
+  /product/recordSupplierEvent:
+    post:
+      operationId: original_recordSupplierEvent
+      summary: P-F.0.3.4 original App local transition
+      x-function-id: P-F.0.3.4
+      x-module: PANTRI_App.html#recordSupplierEvent
+      x-decomposes: P-F.0.3
+      x-transport: Local immutable state transition, NOT an HTTP endpoint
+      x-internal-flow: Supplier event -> recorded order state
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - state
+              - event
+              properties:
+                state:
+                  type: object
+                  description: Restaurant-scoped immutable demo state; actual camelCase
+                    schema in PANTRI_App.html validateSaved.
+                event:
+                  type: object
+      responses:
+        '200':
+          description: Actual local function result envelope
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - ok
+                properties:
+                  ok:
+                    type: boolean
+                  value:
+                    type: object
+                    description: New state on success
+                  message:
+                    type: string
+                    description: Reason on failure

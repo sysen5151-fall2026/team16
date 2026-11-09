@@ -1,3 +1,23 @@
+# Primary entry-point audit: PANTRI_App.html
+
+Adopted from the actual Drive classroom product on 2026-11-08. This table supersedes the previous primary-product designation below; historical tables are retained as reference only.
+
+| Actual UI entry | Handler in PANTRI_App.html | Model use case | Function | Status |
+|---|---|---|---|---|
+| Inventory > Sliced beef details | getIngredientSummary / selectInventory | UC.2 | P-F.0.1 / P-F.0.5 supporting context | Implemented |
+| Purchasing > Review draft > Save changes | draft form submit -> editDraft | UC.1 | P-F.0.3.1 | Implemented; versioned, unapproved |
+| Review & approve > Approve & send (demo) | approve-send click -> approveDraft, then sendApprovedOrder in separate commits | UC.1 | P-F.0.3.2 and .3 | Implemented; snapshot saved before send attempt |
+| Orders > Simulate supplier response > Apply simulated response | supplier form submit -> recordSupplierEvent | UC.9 PANTRI boundary portion | P-F.0.3.4 | Implemented; simulated only; no stock receipt |
+| Record receiving | inventory-record form -> applyInventoryCommand(kind=receipt) | UC.5 | P-F.0.1 | Separate from confirmation; not used to pretend confirmation is delivery |
+| Demo tools > Download JSON | exportDemoState / download | Session evidence | Supporting control | Exports actual records and approved snapshots |
+| Demo tools > Reset demo | createDemoService.resetDemo | Demo setup | Supporting control | Isolated original dataset reset |
+
+No HTTP business routes or live supplier service are claimed. The test adapter runs the same embedded core as the browser. External interfaces and IAM remain prototype limitations.
+
+---
+
+## Previous product/reference entry tables
+
 # Entry point to use case audit
 
 Baseline read from Team 16 main commit 5e83b1fb66de4eb4f0338a164399fbb69af8af5a on 2026-10-23. The existing application is an offline HTML/JavaScript demo; it exposes no HTTP API endpoints. The list below includes its user controls and the new architecture demonstration.

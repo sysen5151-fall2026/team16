@@ -1,0 +1,92 @@
+- complementary:
+  - link "PANTRI overview":
+    - /url: "#overview"
+    - text: PANTRI
+    - generic: .
+  - generic: WORKSPACE
+  - navigation "Main navigation":
+    - button "Overview":
+      - generic: Overview
+    - button "Inventory":
+      - generic: Inventory
+    - button "Purchasing 2":
+      - generic: Purchasing
+      - generic: "2"
+    - button "Waste & recovery":
+      - generic: Waste & recovery
+    - button "Reports":
+      - generic: Reports
+- banner:
+  - strong: Demo Buffet Hot Pot
+  - generic: / Operations
+  - generic: DEMO DATA
+  - button "Demo tools":
+    - text: Demo tools
+  - generic "Manager MC": MC
+- main:
+  - generic: Restaurant / Purchasing
+  - heading "Purchasing" [level=1]
+  - paragraph: Review the recommendation. Make the final decision.
+  - button "Recalculate drafts":
+    - text: Recalculate drafts
+  - button "Recommendations & drafts 2"
+  - button "Orders 1"
+  - table:
+    - rowgroup:
+      - row "Order / Supplier Approved amount Supplier status Receiving Approved":
+        - columnheader "Order / Supplier"
+        - columnheader "Approved amount"
+        - columnheader "Supplier status"
+        - columnheader "Receiving"
+        - columnheader "Approved"
+        - columnheader
+    - rowgroup:
+      - row "PO-1001 Prime Foods 5 kg Confirmed Not received Oct 21 View order":
+        - cell "PO-1001 Prime Foods":
+          - strong: PO-1001
+          - generic: Prime Foods
+        - cell "5 kg"
+        - cell "Confirmed":
+          - generic: Confirmed
+        - cell "Not received":
+          - generic: Not received
+        - cell "Oct 21"
+        - cell "View order":
+          - button "View order":
+            - text: View order
+- dialog "PO-1001":
+  - banner:
+    - heading "PO-1001" [level=2]
+    - paragraph: Prime Foods
+    - button "Close dialog" [active]:
+  - generic: Supplier
+  - generic: Confirmed
+  - generic: Receiving
+  - generic: Not received
+  - heading "Approved snapshot v2" [level=3]:
+    - text: Approved snapshot
+    - generic: v2
+  - text: Sliced beef
+  - generic: Received 0 kg
+  - generic: 5 kg
+  - button "Record receiving":
+    - text: Record receiving
+  - generic "Simulate supplier response Demo control":
+    - text: Simulate supplier response
+    - generic: Demo control
+  - option "Confirm order" [selected]
+  - option "Partially confirm"
+  - option "Report delay"
+  - option "Report exception"
+  - button "Create follow-up draft":
+    - text: Create follow-up draft
+  - heading "Order timeline" [level=3]
+  - strong: Approved
+  - paragraph: Version 2 explicitly approved
+  - time: Oct 21 · 09:16:42
+  - strong: Sent
+  - paragraph: Approved snapshot sent to simulated supplier
+  - time: Oct 21 · 09:16:43
+  - strong: Confirmed Simulated
+  - paragraph: Supplier confirmed 5 kg
+  - time: Oct 21 · 09:16:44

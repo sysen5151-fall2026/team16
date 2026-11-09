@@ -1,3 +1,11 @@
+# 最新主产品选择：PANTRI_App.html
+
+2026-11-08：已读取并直接审查 Drive 原文件，课堂采购流程和原源码测试通过。后续使用原 App。仅添加功能/ICOM 注释，保留界面与业务逻辑，Drive 原件未修改。
+
+审查依据、原始文件指纹、浏览器数据和测试见 [ORIGINAL_APP_AUDIT_ZH.md](ORIGINAL_APP_AUDIT_ZH.md)、[主追溯表](traceability.md)、[主入口表](route-table.md)。PANTRI_PMC2.html 保留为参考，不再是主产品。下面是更早的独立界面准备记录，不应作为当前产品选择。
+
+---
+
 # PMC2 录制前交付与验收
 
 日期：2026-11-08。工作分支 pmc2-evidence-20261108；Draft PR #1，未合并。

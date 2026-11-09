@@ -1,3 +1,25 @@
+# Primary product: original PANTRI_App.html
+
+2026-11-08 review/adoption: this product is the classroom UI from Drive file 1SrqhizVi4SRNGfkZ9Xod9E2k0jVsW0tc. Its UI and business code are retained; only four PMC2_MODEL JSDoc comments were added. The provenance hash and contract test enforce this. PANTRI_PMC2.html and its orders.js table below are now reference evidence, NOT the primary product.
+
+| Function ID | Actual primary product implementation | Requirement ID | Python test in tests/test_functional_requirements.py |
+|---|---|---|---|
+| P-F.0.3.1 / PA.3.1 | PANTRI_App.html::editDraft(state,id,version,edits) | P-AFR.08; P-PCR.F.01 bounded behavior | OriginalAppRequirements.test_P_AFR_08_original_revision; test_P_AFR_08_original_invalid_quantity |
+| P-F.0.3.2 / PA.3.2 | PANTRI_App.html::approveDraft(state,id,version,operationId) | P-AFR.09; P-PCR.F.02 bounded behavior | OriginalAppRequirements.test_P_AFR_09_original_version_bound_snapshot; test_P_AFR_09_original_approval_survives_reload |
+| P-F.0.3.3 / PA.3.3 | PANTRI_App.html::sendApprovedOrder(state,id,operationId) | P-AFR.10; P-PCR.F.03 bounded behavior | OriginalAppRequirements.test_P_AFR_10_original_unchanged_send_and_one_commitment |
+| P-F.0.3.4 / PA.3.4 | PANTRI_App.html::recordSupplierEvent(state,event) | P-AFR.11; P-PCR.F.04 bounded behavior | OriginalAppRequirements.test_P_AFR_11_original_confirmation_is_not_receipt; test_P_AFR_11_original_alternate_states_and_scope |
+| P-F.0.3.1 | PANTRI_App.html::editDraft | P-PCR.IO.01 sent edit criterion | OriginalAppRequirements.test_P_PCR_IO_01_original_sent_edit_rejected |
+
+`tools/load_original_app.js` extracts and executes the actual embedded business layer for tests. The UI continues using those same embedded functions; the adapter is test-only, not a substituted product implementation. Function JSDoc in the HTML and adapter explain ICOM state inputs, control/version gates and outputs. The primary product exposes camelCase local state transitions; contracts/api-v1.yaml /product operations document those actual signatures. /internal paths describe the separate reference architecture, not messages emitted by the original UI.
+
+Original product amount: one Sliced beef line, 8 kg stock, 12 kg two-day demand, 4 kg suggested, revised to 5 kg v2 and $72.50. Do not use the reference CLI's three-ingredient fixture as a claim about this UI.
+
+Production authentication and full P-PCR.SW.02 percentage criteria are not established by a prepared manager demo. All model Draft/Planned states remain unchanged.
+
+---
+
+## Preserved reference architecture evidence (not primary UI)
+
 # PMC2 purchase coordination traceability
 
 Runtime base: function-architecture 62c3ad0. Model reference: 2026-11-01 local snapshot and 2026-11-03 online review; live model must be rechecked. Tests below call the real JS implementation from Python. They establish bounded prepared behavior, not full operational acceptance.
