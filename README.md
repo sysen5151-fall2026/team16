@@ -1,6 +1,28 @@
-# Primary PMC2 product: PANTRI_App.html
+# PANTRI — current classroom product (Lab 13 progress check, Nov 18 2026)
 
-Use **PANTRI_App.html** for the team video. This is the original classroom Drive app, reviewed directly on 2026-11-08. Its UI and business logic are unchanged; four function/ICOM comments were added for traceability. Open the HTML in a browser, with synthetic localStorage data and explicitly simulated supplier responses.
+**Open [`classroom-demo/PANTRI_Final.html`](classroom-demo/PANTRI_Final.html)** in Edge or Chrome. It is a standalone, offline app built from the Team 16 baseline at commit `8fa2706`, with five working pages: Overview, Inventory, Purchasing, Waste & recovery and Reports.
+
+Run it from this repository:
+
+```bash
+cd classroom-demo
+npm test     # rebuilds PANTRI_Final.html and runs 21 workflow checks
+npm start    # serves the app at http://127.0.0.1:5173
+```
+
+Before a demo, use **Demo tools → Reset demo → Reset demo** to load the synthetic restaurant data (demo date October 21, 2026). Supplier and recovery-partner responses are simulated locally. See [classroom-demo/README.md](classroom-demo/README.md) for the five-minute walkthrough, OpsCon status annotations (working / partial / not yet built) and verification notes.
+
+| OpsCon element | Status |
+| --- | --- |
+| Restaurant Manager, Restaurant Staff | Working |
+| PANTRI System, Ingredient Supplier, Recovery Partner | Partial (local demo data, simulated partners) |
+| PANTRI Staff, Diners | Not yet built |
+
+---
+
+## Previous PMC2 product: PANTRI_App.html (reference)
+
+**PANTRI_App.html** was used for the PMC2 team video. This is the original classroom Drive app, reviewed directly on 2026-11-08. Its UI and business logic are unchanged; four function/ICOM comments were added for traceability. Open the HTML in a browser, with synthetic localStorage data and explicitly simulated supplier responses.
 
 See [original App audit](docs/ORIGINAL_APP_AUDIT_ZH.md), [primary traceability](docs/traceability.md), and [primary entry points](docs/route-table.md). PANTRI_PMC2.html is retained as an alternative/reference and is not the primary demo.
 
