@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 
 const read = filename => readFileSync(new URL(filename, import.meta.url), 'utf8').trimEnd();
-const styles = ['base.css', 'presentation.css'].map(name => read('src/' + name)).join('\n\n');
+const styles = ['base.css', 'presentation.css', 'glass.css'].map(name => read('src/' + name)).join('\n\n');
 const scripts = ['domain.js', 'planning.js', 'views.js', 'pages.js', 'shell.js', 'controller.js']
   .map(name => read('src/' + name)).join('\n\n');
 const final = read('src/template.html')

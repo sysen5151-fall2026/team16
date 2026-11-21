@@ -19,7 +19,9 @@ npm start
 - Select a health segment or its legend item to highlight the ring. The link below the ring opens that primary status in Inventory. Select an ingredient category to open its filtered list, or open Inventory value for the breakdown by category.
 - Switch between **7 days** and **Today** on Overview or Reports. The same period applies in both places. Hover or focus a chart column for exact costs. Click to keep the amounts visible and press Escape to dismiss them.
 - Draft prices, on-hand stock after receiving, and stock available after reservation recalculate while you type. Save or submit the form to record the change.
-- All five pages share one interaction style: chart columns lift and show their values above the bar, action arrows and table-row chevrons turn into green circles on hover, single-action cards lift slightly, and drawers slide in over a softly blurred page. Motion is removed when the system asks for reduced motion.
+- All five pages use a green frosted-glass look (`src/glass.css`, loaded after the base styles). The sidebar is an icon rail that opens while the pointer rests on it and pushes the page aside; it stays open after choosing a page and closes once the pointer moves onto the page.
+- Changing pages is choreographed: the current blocks dissolve one after another, then the new blocks condense out of a blur left to right, the heading just after the first cards and large panels last. Headline numbers roll digit by digit like an odometer once their card has landed, and the Overview health ring draws its segments in order.
+- Dropdowns use the browser's customizable `<select>` (a glass picker with a check mark). Chart columns lift and show their values, action arrows turn into dark circles on hover, and drawers slide in with their action buttons kept at the bottom. Motion is removed when the system asks for reduced motion.
 
 ## Five-minute classroom walkthrough
 

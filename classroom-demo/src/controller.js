@@ -25,7 +25,7 @@ function focusDialog(hint) {
 }
 
 function openOverlay(overlay, back = null) {
-  const returnFocus = focusHint(document.activeElement);
+  const returnFocus = focusHint(focusedControl());
   const pageFocus = ui.overlay?.pageFocus ?? returnFocus;
   ui.overlay = { ...overlay, operationId: operation(), returnFocus, pageFocus, back };
   ui.error = '';
@@ -40,7 +40,7 @@ function closeOverlay(force = false) {
   if (!closing) return;
   if (ui.dirty && !force) {
     snapshotForm();
-    closing.editFocus = focusHint(document.activeElement);
+    closing.editFocus = focusHint(focusedControl());
     ui.discard = true;
     render();
     requestAnimationFrame(() => {
@@ -63,7 +63,20 @@ function closeOverlay(force = false) {
     });
   }
 }
-function navigate(page,filter){ui.page=page;ui.overlay=null;ui.error='';ui.dirty=false;ui.discard=false;if(page==='inventory'){ui.filter=filter??{};ui.pageNumber=1;}render();window.scrollTo({top:0,behavior:'instant'});}
+function navigate(page, filter) {
+  const go = () => {
+    ui.page = page; ui.overlay = null; ui.error = ''; ui.dirty = false; ui.discard = false;
+    if (page === 'inventory') { ui.filter = filter ?? {}; ui.pageNumber = 1; }
+    render();
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  };
+  // While the old page is still dissolving, a new choice simply replaces the destination.
+  if (ui.leaving) { ui.leaving = go; movePillTo(page); return; }
+  if (page === ui.page || ui.overlay || prefersReducedMotion()) { go(); return; }
+  ui.leaving = go;
+  movePillTo(page);
+  leavePage(() => { const next = ui.leaving; ui.leaving = null; next?.(); });
+}
 function commit(work, message) {
   ui.committing = true;
   let result;
@@ -121,7 +134,23 @@ root.addEventListener('change',e=>{const id=e.target.id;if(id==='category-filter
   render();
 }});
 root.addEventListener('submit',e=>{e.preventDefault();const form=e.target,kind=form.dataset.form;if(!kind)return;const values=Object.fromEntries(new FormData(form)),s=service.getSnapshot(),o=ui.overlay;try{if(kind==='inventory-record'){const i=s.ingredients.find(i=>i.id===values.ingredientId);const command={kind:o.kind,operationId:o.operationId,ingredientId:i.id,batchId:values.batchId,unit:i.unit,quantity:Number(values.quantity),countedQuantity:Number(values.countedQuantity),expiresOn:values.expiresOn||null,unitCostCents:values.unitCost?.trim()?Math.round(Number(values.unitCost)*100):null,orderId:o.orderId,reason:(values.reason??'')+(values.note?`: ${values.note}`:'')};if(commit(x=>applyInventoryCommand(x,command),'Inventory record saved.'))closeOverlay(true);}else if(kind==='draft'){const d=s.drafts.find(d=>d.id===o.id);commit(x=>editDraft(x,o.id,Number(values.version),d.lines.map(l=>({ingredientId:l.ingredientId,managerQty:Number(values['qty_'+l.ingredientId])}))),'Draft saved. Approval is still required.');}else if(kind==='supplier'){commit(x=>recordSupplierEvent(x,{id:o.operationId+'-'+operation(),restaurantId:s.restaurantId,transactionId:o.id,kind:values.kind,occurredAt:eventTime(s),note:values.note}),'Simulated supplier response recorded. Stock is unchanged.');}else if(kind==='recovery-request'){if(commit(x=>requestRecovery(x,{...values,quantity:Number(values.quantity)},o.operationId),'Recovery requested. Quantity is reserved.')){const id=service.getSnapshot().recoveries.at(-1).id;ui.wasteTab='recovery';ui.page='waste';openOverlay({type:'recovery',id});}}else if(kind==='recovery-response'){commit(x=>recordRecoveryEvent(x,{id:o.operationId+'-'+operation(),restaurantId:s.restaurantId,transactionId:o.id,kind:values.kind,occurredAt:eventTime(s),note:values.note}),'Simulated partner response recorded. Collection remains separate.');}}catch(error){snapshotForm();ui.error=error.message;render();}});
-document.addEventListener('keydown',e=>{if(!ui.overlay){if(e.key==='Escape'&&ui.chartDate&&root.querySelector('.paired-chart'))setChartDay(ui.chartDate);return;}if(e.key==='Escape'){e.preventDefault();closeOverlay();return;}if(e.key==='Tab'){const target=tabBoundaryTarget(dialogControls(root.querySelector('[role="dialog"]')),document.activeElement,e.shiftKey);if(target){e.preventDefault();target.focus();}}});
+document.addEventListener('keydown', e => {
+  // An open custom dropdown handles its own Escape/Tab; do not let them close the drawer.
+  if ((e.key === 'Escape' || e.key === 'Tab') && selectIsOpen()) return;
+  if (!ui.overlay) {
+    if (e.key === 'Escape' && ui.chartDate && root.querySelector('.paired-chart')) setChartDay(ui.chartDate);
+    return;
+  }
+  if (e.key === 'Escape') { e.preventDefault(); closeOverlay(); return; }
+  if (e.key === 'Tab') {
+    const target = tabBoundaryTarget(dialogControls(root.querySelector('[role="dialog"]')), focusedControl(), e.shiftKey);
+    if (target) { e.preventDefault(); target.focus(); }
+  }
+});
+window.addEventListener('resize', () => placeNavPill(false));
+// Any pointer movement decides the rail: inside the sidebar keeps it open, anywhere else closes it.
+root.addEventListener('mouseover', e => setRail(!!e.target.closest?.('.sidebar')));
+document.documentElement.addEventListener('mouseleave', () => setRail(false));
 window.addEventListener('storage',e=>{if(e.key===STORAGE_KEY)service.markExternalChange();});
 service.subscribe(() => { if (!ui.committing) render(); });
 render();

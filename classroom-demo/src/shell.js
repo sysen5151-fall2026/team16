@@ -1,7 +1,17 @@
+// When a custom <select> is open the focused element is one of its <option>s; treat the
+// <select> itself as the focused control so focus can be restored after a re-render.
+const focusedControl = () => {
+  const element = document.activeElement;
+  return element?.closest?.('select') ?? element;
+};
+const selectIsOpen = () => {
+  try { return !!root.querySelector('select:open'); } catch { return false; }
+};
+
 function render({ capture = true } = {}) {
   if (ui.dirty && capture) snapshotForm();
   const previousOverlay = ui.lastOverlay;
-  const active = document.activeElement;
+  const active = focusedControl();
   const hint = focusHint(active);
   const selection = [active?.selectionStart, active?.selectionEnd];
   const oldDialog = root.querySelector('.dialog-body');
@@ -28,17 +38,21 @@ function render({ capture = true } = {}) {
   ];
   const drafts = state.drafts.filter(draft => draft.status === 'draft').length;
   const problem = service.getProblem();
+  const navInner = (page, symbol, label, index) =>
+    `${icon(symbol)}<span class="nav-text" style="--n:${index}">${label}</span>${page === 'purchasing' && drafts ? `<span class="nav-count">${drafts}</span>` : ''}`;
   root.innerHTML = `
-    <div class="app-shell" ${ui.overlay ? 'inert' : ''}>
+    <div class="app-shell ${ui.railOpen ? 'rail-open' : ''}" ${ui.overlay ? 'inert' : ''}>
       <a class="skip-link" href="#main-content">Skip to content</a>
       <aside class="sidebar">
         <a class="brand" href="#overview" data-action="overview" aria-label="PANTRI overview">
-          <span class="brand-leaf"></span>pantri<span class="brand-period">.</span>
+          <span class="brand-leaf"></span><span class="brand-word">pantri<span class="brand-period">.</span></span>
         </a>
         <nav aria-label="Main navigation">
-          ${navigation.map(([page, symbol, label]) => `
-            <button type="button" class="nav-item ${ui.page === page ? 'active' : ''}" data-action="${page}" ${ui.page === page ? 'aria-current="page"' : ''}>
-              ${icon(symbol)}<span>${label}</span>${page === 'purchasing' && drafts ? `<span class="nav-count">${drafts}</span>` : ''}
+          <span class="nav-pill" aria-hidden="true"><span class="nav-pill-ink">${navigation.map(([page, symbol, label], index) =>
+            `<span class="nav-item">${navInner(page, symbol, label, index)}</span>`).join('')}</span></span>
+          ${navigation.map(([page, symbol, label], index) => `
+            <button type="button" class="nav-item ${ui.page === page ? 'active' : ''}" data-action="${page}" ${ui.page === page ? 'aria-current="page"' : ''} title="${label}">
+              ${navInner(page, symbol, label, index)}
             </button>`).join('')}
         </nav>
       </aside>
@@ -71,6 +85,13 @@ function render({ capture = true } = {}) {
   ui.periodChanged = false;
   document.body.classList.toggle('dialog-open', !!ui.overlay);
   renderToast();
+  placeNavPill(pageChanged);
+  if (pageChanged) {
+    const main = root.querySelector('main');
+    staggerCards(main);
+    rollNumbers(main);
+    animateHealthRing(main);
+  }
 
   if (detailsOpen) root.querySelector('.chart-details').open = true;
   const dialog = root.querySelector('[role="dialog"]');
@@ -87,6 +108,223 @@ function render({ capture = true } = {}) {
       target.setSelectionRange(...selection);
     }
   }
+}
+
+const prefersReducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// ---------- Page choreography ----------
+// Leave: the visible blocks of the current page dissolve one after another (bottom first,
+// 35 ms apart) before the next page is rendered.
+// Enter: the new blocks condense out of a blur left → right / top → bottom (55 ms apart);
+// the page heading arrives just after the first cards; large panels come last, from lower down;
+// numbers roll and the health ring draws only once their own card has landed.
+const ENTER_TARGETS = '.page-heading, .page-segments, .inventory-toolbar, .list-tools, .table-meta, .report-range, .notice, .metric, .card, .table-card, .overview-categories';
+const RISE_TARGETS = '.trend-card, .table-card, .planning-panel, .activity-card, .overview-categories';
+const ENTER_MS = 440;
+const RISE_MS = 520;
+
+function topLevelBlocks(scope) {
+  return [...scope.querySelectorAll(ENTER_TARGETS)].filter(element => !element.parentElement.closest(ENTER_TARGETS));
+}
+
+function staggerCards(scope) {
+  if (!scope || prefersReducedMotion()) return;
+  let index = 0;
+  for (const element of topLevelBlocks(scope)) {
+    const heading = element.matches('.page-heading');
+    const rise = element.matches(RISE_TARGETS);
+    let delay = heading ? 60 + 1.6 * 55 : 60 + Math.min(index++, 10) * 55;
+    if (rise) delay += 70;
+    element.dataset.enterDelay = String(Math.round(delay));
+    element.style.setProperty('--d', Math.round(delay) + 'ms');
+    element.classList.add('card-enter');
+    if (rise) element.classList.add('enter-rise');
+  }
+}
+
+function enterEnd(card) {
+  if (!card) return 300;
+  return Number(card.dataset.enterDelay) + (card.classList.contains('enter-rise') ? RISE_MS : ENTER_MS);
+}
+
+function leavePage(done) {
+  const main = root.querySelector('main');
+  if (!main || prefersReducedMotion()) { done(); return; }
+  const visible = topLevelBlocks(main)
+    .map(element => ({ element, rect: element.getBoundingClientRect() }))
+    .filter(({ rect }) => rect.bottom > 0 && rect.top < innerHeight)
+    .sort((a, b) => b.rect.top - a.rect.top || b.rect.left - a.rect.left);
+  visible.forEach(({ element }, order) => {
+    element.classList.remove('card-enter', 'enter-rise');
+    element.style.setProperty('--o', Math.min(order, 4) * 30 + 'ms');
+    element.classList.add('card-leave');
+  });
+  const total = visible.length ? 190 + Math.min(visible.length - 1, 4) * 30 + 20 : 0;
+  ui.leaveTimer = setTimeout(done, total);
+}
+
+// ---------- Health ring entrance ----------
+// Segments grow one after another from 12 o'clock (green, then orange, then red), each ending
+// with a small stroke "breath"; each legend row appears as its segment starts.
+function animateHealthRing(scope) {
+  const panel = scope?.querySelector('[data-inventory-health]');
+  if (!panel || prefersReducedMotion() || typeof panel.animate !== 'function') return;
+  let at = enterEnd(panel.closest('[data-enter-delay]')) - 60;
+  const legend = [...panel.querySelectorAll('.health-choice')];
+  [...panel.querySelectorAll('.health-segment')].forEach((segment, index) => {
+    const [length, gap] = (segment.getAttribute('stroke-dasharray') ?? '0 100').trim().split(/\s+/).map(Number);
+    const duration = Math.round(Math.max(280, Math.min(900, length * 10)));
+    segment.animate(
+      [{ strokeDasharray: `0 100` }, { strokeDasharray: `${length} ${gap}` }],
+      { duration, delay: at, easing: 'cubic-bezier(.3, .7, .2, 1)', fill: 'backwards' },
+    );
+    segment.animate(
+      [{ strokeWidth: '13px' }, { strokeWidth: '17px' }, { strokeWidth: '13px' }],
+      { duration: 320, delay: at + duration - 80, easing: 'ease-out' },
+    );
+    legend[index]?.animate(
+      [{ opacity: 0, transform: 'translateX(-8px)', filter: 'blur(4px)' }, { opacity: 1, transform: 'none', filter: 'blur(0)' }],
+      { duration: 340, delay: at, easing: 'cubic-bezier(.2, .8, .2, 1)', fill: 'backwards' },
+    );
+    at += duration - 40;
+  });
+}
+
+// ---------- Odometer roll ----------
+// Every digit is a clipped vertical strip of 0–9 (three cycles, drawn with ::before so no text is
+// added to the page). It starts on 0, so "$35,438.36" first reads "$00,000.00", then each strip
+// slides one full turn and lands on its digit. Symbols ($ , . % kg) never move. Digits start
+// left → right 35 ms apart, once their card has landed. Afterwards the original text node is
+// simply left visible again.
+const ROLL_TARGETS = '.metric-value, .health-center strong, .task-row > strong, .recovery-amount';
+const ROLL_MS = 1100;
+
+function rollNumbers(scope) {
+  if (!scope || prefersReducedMotion()) return;
+  const reels = [];
+  for (const element of scope.querySelectorAll(ROLL_TARGETS)) {
+    const card = element.closest('[data-enter-delay]');
+    const startAt = enterEnd(card) + 80;
+    let digitIndex = 0;
+    const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) if (/\d/.test(node.nodeValue)) nodes.push(node);
+    for (const node of nodes) {
+      // The original text node stays exactly where it is (only made transparent inside an inline
+      // span), so spacing, letter-spacing and the units after it never move. The reel is laid
+      // over it like a sticker.
+      const textColor = getComputedStyle(node.parentElement).color;
+      const wrapper = document.createElement('span');
+      wrapper.className = 'odo';
+      const reel = document.createElement('span');
+      reel.className = 'odo-reel';
+      reel.setAttribute('aria-hidden', 'true');
+      const strips = [];
+      for (const char of node.nodeValue) {
+        if (/\d/.test(char)) {
+          const column = document.createElement('span');
+          column.className = 'odo-col';
+          const strip = document.createElement('span');
+          strip.className = 'odo-strip';
+          strip.innerHTML = Array.from({ length: 30 }, (_, n) => `<span data-d="${n % 10}"></span>`).join('');
+          column.append(strip);
+          reel.append(column);
+          strips.push({ strip, digit: Number(char), delay: startAt + digitIndex++ * 35 });
+        } else {
+          const symbol = document.createElement('span');
+          symbol.className = 'odo-sym';
+          symbol.dataset.s = char;
+          reel.append(symbol);
+        }
+      }
+      node.replaceWith(wrapper);
+      wrapper.append(node, reel);
+      const box = wrapper.getClientRects()[0];
+      if (!box) { wrapper.replaceWith(node); continue; }   // not rendered (hidden or collapsed)
+      reel.style.color = textColor;
+      // Each digit window is the line height plus headroom (so bold glyphs are never clipped).
+      // A glyph is centred in its window, so shifting the reel up by half the difference between
+      // the window and the text's content area puts every digit exactly on the original glyph.
+      // The card may still be scaled by its entry animation, so divide that scale back out.
+      const style = getComputedStyle(wrapper);
+      const cardTransform = card ? getComputedStyle(card).transform : 'none';
+      const scale = cardTransform && cardTransform !== 'none' ? new DOMMatrix(cardTransform).a : 1;
+      const contentHeight = box.height / scale;
+      const lineHeight = style.lineHeight.endsWith('px') ? parseFloat(style.lineHeight) : contentHeight;
+      const step = lineHeight + 2 * Math.ceil(parseFloat(style.fontSize) * 0.2);
+      reel.style.setProperty('--h', step + 'px');
+      reel.style.top = -(step - contentHeight) / 2 + 'px';
+      reels.push({ wrapper, original: node, strips });
+    }
+  }
+  if (!reels.length) return;
+  void scope.offsetHeight;   // commit the "all zeros" start state so the transition has a starting point
+  for (const { strips } of reels) {
+    for (const { strip, digit, delay } of strips) {
+      strip.style.transition = `transform ${ROLL_MS}ms cubic-bezier(.16, 1, .3, 1) ${delay}ms`;
+      strip.style.transform = `translateY(calc(var(--h) * -${10 + digit}))`;
+    }
+  }
+  const longest = Math.max(...reels.flatMap(reel => reel.strips.map(strip => strip.delay)));
+  setTimeout(() => {
+    for (const { wrapper, original } of reels) if (wrapper.isConnected) wrapper.replaceWith(original);
+  }, longest + ROLL_MS + 80);
+}
+
+// ---------- Sidebar rail ----------
+// Open after the pointer rests in the rail for 90 ms, close 220 ms after it leaves. The state
+// lives in ui.railOpen, so re-rendering after a click keeps the rail open under the pointer.
+function setRail(open) {
+  clearTimeout(ui.railTimer);
+  if (ui.railOpen === open) return;
+  ui.railTimer = setTimeout(() => {
+    ui.railOpen = open;
+    root.querySelector('.app-shell')?.classList.toggle('rail-open', open);
+  }, open ? 90 : 220);
+}
+
+// ---------- Sidebar pill ----------
+// The pill only moves vertically; its width follows the rail through CSS (left/right), so it
+// stays correct while the rail expands or the window is resized. Inside it, an ink copy of the
+// menu moves the opposite way, keeping dark text exactly under the pill.
+function setPill(pill, y, height) {
+  pill.style.height = height + 'px';
+  pill.style.transform = `translateY(${y}px)`;
+  pill.firstElementChild.style.transform = `translateY(${-y}px)`;
+}
+
+function placeNavPill(animate) {
+  const nav = root.querySelector('.sidebar nav');
+  const pill = nav?.querySelector('.nav-pill');
+  if (!pill) return;
+  const active = nav.querySelector('.nav-item.active[data-action]');
+  if (!active) { pill.style.opacity = '0'; return; }
+  pill.style.opacity = '';
+  const ink = pill.firstElementChild;
+  const y = active.offsetTop;
+  if (animate && ui.navPillY != null && ui.navPillY !== y && !prefersReducedMotion()) {
+    pill.style.transition = ink.style.transition = 'none';
+    setPill(pill, ui.navPillY, active.offsetHeight);
+    void pill.offsetWidth;
+    pill.style.transition = ink.style.transition = '';
+  } else {
+    pill.style.transition = ink.style.transition = 'none';
+    setPill(pill, y, active.offsetHeight);
+    void pill.offsetWidth;
+    pill.style.transition = ink.style.transition = '';
+  }
+  setPill(pill, y, active.offsetHeight);
+  ui.navPillY = y;
+}
+
+// Start the pill on its way the moment a page is chosen, before the old page has left.
+function movePillTo(page) {
+  const nav = root.querySelector('.sidebar nav');
+  const pill = nav?.querySelector('.nav-pill');
+  const item = nav?.querySelector(`.nav-item[data-action="${page}"]`);
+  if (!pill || !item) return;
+  setPill(pill, item.offsetTop, item.offsetHeight);
+  ui.navPillY = item.offsetTop;
 }
 
 function setHealthRisk(risk) {
@@ -138,7 +376,7 @@ function setCostPeriod(period) {
   target.dataset.displayedCents = String(from);
   function step(now) {
     if (!target.isConnected) return;
-    const progress = Math.min(1, (now - start) / 380);
+    const progress = Math.min(1, Math.max(0, (now - start) / 380));
     const cents = Math.round(from + (to - from) * (1 - (1 - progress) ** 3));
     value.textContent = money(cents);
     target.dataset.displayedCents = String(cents);
