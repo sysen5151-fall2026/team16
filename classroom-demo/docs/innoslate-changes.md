@@ -4,7 +4,7 @@ Project [687, Pantri](https://cloud.innoslate.com/cornell/p/687/dashboard). All 
 
 ## Review basis and change record
 
-The archived read-only export `PANTRI_model_2026-11-22.xml` was generated on November 22, 2026 at 07:32:52 according to its XML header. It contains **672 entities** and **4,582 relationship records**. Its SHA-256, `5c022586c32548780773d729405c1377dbf4f8f4c70bff2e1abd61450338796a`, matches the [repository baseline](model-baseline.md). The archived export and the baseline's historical diagram readback are the before-state evidence below. The later browser check for Project 687 showed the Innoslate sign-in screen. An authenticated readback is required to detect teammates' changes since the export. The XML remains outside the repository.
+The archived export `PANTRI_model_2026-11-22.xml` was generated on November 22, 2026 at 07:32:52 according to its XML header. After sign-in, Project 687 produced a fresh read-only export, `PANTRI_model_live_2026-11-22.xml`, with header time 19:28:11 and SHA-256 `ebc10fc907c0c628e546cede9a93b258c267bd26d0c4a9ea61f2b1c8157768a4`. Its serialized database section matched the [repository baseline](model-baseline.md) export exactly. Both have **672 entities, 4,582 relationship records and 58 native diagram records**. The recent P-F.0.3.3 Hierarchy layout update is already present in both exports. The D.1 colors and diagram listings were also checked directly in the live project. Both XML files remain outside the repository.
 
 The numbers listed for existing entities are their model numbers. Parenthesized numbers are the internal Innoslate entity IDs. Names in the proposed rows are approval candidates. For new entities, the table or item shows the applicable numbering family where the archive establishes one. Confirm the free number or obtain the model owner's numbering decision in the live project before creation. Preserve every existing entity, relationship, number and name. Bring any conflicting live edit, change of authority, rename or removal to the model owner for a decision.
 
@@ -13,6 +13,8 @@ The project owner approves each item. The identified editor records the existing
 ## 1. Select and model one level-three functional decomposition
 
 **Archived before.** [P-F.0.5.1 Accept Information Tasks](https://cloud.innoslate.com/cornell/p/687/database/entity/269332) is an Action and leaf of P-F.0.5 (269331). PA.5.1 Information Request Module (297531) `performs` it, and the Action `satisfies` P-AFR.15 (269393). [P-F.0.3.3 Transmit Approved Purchase Orders](https://cloud.innoslate.com/cornell/p/687/database/entity/269325) is an Action and leaf of P-F.0.3 (269322). PA.3.3 Approved Order Gateway (297379) `performs` it. It already receives PC-IF.02 Retained Approval Reference (297382) and P-IF.21 Purchase Record Retention Result (269360), and generates PC-IF.03 Order Dispatch Outcome (297383). The archive contains no numbered third-level function.
+
+**Live check.** Both Actions remain leaves. P-F.0.3.3 has a [saved native Hierarchy layout](https://cloud.innoslate.com/cornell/p/687/diagrams/hierarchy/269325). Neither candidate has a saved third-level IDEF0 view.
 
 | Candidate | Proposed scope and diagram boundary |
 | --- | --- |
@@ -94,15 +96,15 @@ Confirm numbering within the existing architecture Input/Output (`P-IO`/`P-IF`) 
 
 ## 6. Review the D.1 OpsCon statuses
 
-**Archived before.** [D.1 PANTRI Universe Context](https://cloud.innoslate.com/cornell/p/687/diagrams/asset/198996) is an Asset (198996) with seven child Assets in XML. The before colors are from the historical live review documented in the repository baseline. Current colors need a fresh authorized readback.
+**Live before.** [D.1 PANTRI Universe Context](https://cloud.innoslate.com/cornell/p/687/diagrams/asset/198996) is an Asset (198996) with seven child Assets in XML. The current diagram showed the same colors as the baseline. Supplier and recovery were yellow for Partial, and PANTRI Staff was gray for Not yet built.
 
 | Asset | Baseline status | Proposed classroom status and basis |
 | --- | --- | --- |
 | 1.1 PANTRI System (198986) | Partial | Partial. Shared records, local model and workflows operate in a single synthetic restaurant. |
 | 1.2 Restaurant Manager (198989) | Working | Working. Review, approval, inventory, assistant and recovery coordination in the prepared workflow. |
 | 1.3 Diners (198990) | Not yet built | Not yet built. The prepared dataset supplies covers and availability observations. |
-| 1.4 Ingredient Supplier (198991) | Partial | Working for the classroom workflow. A Prime Foods portal confirmation was exercised. Check current Stage B evidence for the other seeded supplier organizations before recording broader demo coverage. |
-| 1.5 Recovery Partner (198992) | Partial | Working for the classroom workflow. Community Food Recovery acceptance and pickup were exercised. Check current evidence for registry validation and partner scope. |
+| 1.4 Ingredient Supplier (198991) | Partial | Working for the classroom workflow. Prime Foods, Fresh Fields Produce and Pantry Supply Co. each responded to its own order in the Windows verification. |
+| 1.5 Recovery Partner (198992) | Partial | Working for the classroom workflow. Windows verification covered selecting the registered Community Food Recovery partner, accepting the request and recording pickup. |
 | 1.6 PANTRI Staff (198994) | Not yet built | Partial. Support diagnostics operate. Manual reconciliation and the native recovery authority policy still require team handling. |
 | 1.8 Restaurant Staff (199005) | Working | Working. Receiving, waste, count correction and scoped assistant answers in the prepared workflow. |
 
@@ -155,16 +157,16 @@ Add a `relates` trace to SEQ.R01 and to adjacent UC.8 (199019) and UC.12 after o
 
 ## Model change record
 
-All rows await a live before-state comparison and individual approval. Record an item's changes here immediately after its approved edit and saved readback.
+The authenticated export and direct diagram checks establish the before-state. All nine items await individual approval. Record an item's changes here immediately after its approved edit and saved readback.
 
 | Item | Confirmed live before | Saved after and entity IDs | Timestamp with offset | Screenshot or export filename |
 | --- | --- | --- | --- | --- |
-| 1. Decomposition selection and views | Pending | Pending | Pending | Pending |
-| 2. Implementation assets | Pending | Pending | Pending | Pending |
-| 3. Exchanges and conduit | Pending | Pending | Pending | Pending |
-| 4. Grounding and verification | Pending | Pending | Pending | Pending |
-| 5. Model risk and Task 6 guard | Pending | Pending | Pending | Pending |
-| 6. D.1 statuses | Pending | Pending | Pending | Pending |
-| 7. UC.11 behavior views | Pending | Pending | Pending | Pending |
-| 8. UC.2 assistant path | Pending | Pending | Pending | Pending |
-| 9. Integration Action Diagram | Pending | Pending | Pending | Pending |
+| 1. Decomposition selection and views | Both are leaves. P-F.0.3.3 has a saved Hierarchy layout. | Pending | Pending | Pending |
+| 2. Implementation assets | Existing PA modules match the baseline. | Pending | Pending | Pending |
+| 3. Exchanges and conduit | Existing interface records match the baseline. | Pending | Pending | Pending |
+| 4. Grounding and verification | Existing requirements and verification anchors match the baseline. | Pending | Pending | Pending |
+| 5. Model risk and Task 6 guard | Nine risks. T6.R1 and T6.A.2 have no direct link. | Pending | Pending | Pending |
+| 6. D.1 statuses | Live colors match the baseline. | Pending | Pending | Pending |
+| 7. UC.11 behavior views | No child Actions or saved native views on UC.11. | Pending | Pending | Pending |
+| 8. UC.2 assistant path | Thirteen child Actions and three native views. | Pending | Pending | Pending |
+| 9. Integration Action Diagram | No matching native integration Action root identified. | Pending | Pending | Pending |

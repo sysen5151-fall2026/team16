@@ -312,7 +312,7 @@ The export shows T6.R1 under T6.RISK. It does not show a direct mitigated-by rel
 
 ## Post-integration comparison
 
-The post-sprint Windows product at `76392e1` was compared with the November 22 native export and the D.1 colors recorded above. The export contains 672 entities and 4,582 relationship records. The later browser check for Project 687 returned the Innoslate sign-in screen. An authenticated comparison and saved-model readback are pending. Suggested statuses apply to the classroom context and require team confirmation before updating the shared diagram.
+The post-sprint Windows product at `76392e1` was compared with the authenticated November 22 Project 687 readback. The live export `PANTRI_model_live_2026-11-22.xml` contains 672 entities, 4,582 relationship records and 58 native diagram records. Its database section matches the earlier export, and the D.1 colors recorded above were verified on the live diagram. Suggested statuses apply to the classroom context and require team confirmation before updating the shared diagram.
 
 | D.1 element | Proposed status | Release evidence |
 | --- | --- | --- |
@@ -324,4 +324,4 @@ The post-sprint Windows product at `76392e1` was compared with the November 22 n
 | PANTRI Staff | Partial | Read-only health, checkpoint and operation diagnostics, including assistant interpretation metadata. Manual reconciliation remains the team's responsibility. |
 | Diners | Not yet built | Covers and availability remain recorded inputs from the prepared dataset. |
 
-The nine-item change plan proposes the assistant I/O, implementation asset allocations, grounding verification, the missing T6.R1 mitigation link, the independent UC.11 diagrams, the UC.2 assistant path and the native integration Action Diagram. It recommends P-F.0.5.1 for the third-level decomposition and compares it with P-F.0.3.3. The export confirms that neither candidate had children and UC.11 had no child Actions. The native changes, D.1 colors and final readback await live access and team confirmation. [Innoslate change plan](innoslate-changes.md) · [Integration verification](../../docs/integration-verification.md)
+The nine-item change plan proposes the assistant I/O, implementation asset allocations, grounding verification, the missing T6.R1 mitigation link, the independent UC.11 diagrams, the UC.2 assistant path and the native integration Action Diagram. It recommends P-F.0.5.1 for the third-level decomposition and compares it with P-F.0.3.3. The live export confirms that neither candidate has children, P-F.0.3.3 has a saved Hierarchy layout, UC.11 has no child Actions or saved diagrams, and UC.2 has 13 child Actions and three saved diagrams. The native updates and post-change readback await confirmation of the plan. [Innoslate change plan](innoslate-changes.md) · [Integration verification](../../docs/integration-verification.md)

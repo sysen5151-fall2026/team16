@@ -226,6 +226,6 @@ OpenAPI 3.1 parsed with 29 unique operations and 481 resolved local references. 
 
 ### Remaining items in priority order
 
-1. **Submission evidence.** The live Project 687 read redirected to sign-in. The archived model comparison and nine-item approval plan are available. The shared native edits and authenticated Stage E readback remain open. [Innoslate change plan](../classroom-demo/docs/innoslate-changes.md) · [Post-integration comparison](../classroom-demo/docs/model-baseline.md#post-integration-comparison)
+1. **Submission evidence.** The authenticated Project 687 export matched the archived database. The live diagram list and D.1 colors were also checked. The nine-item plan awaits confirmation, after which the shared native edits and their Stage E readback can be completed. [Innoslate change plan](../classroom-demo/docs/innoslate-changes.md) · [Post-integration comparison](../classroom-demo/docs/model-baseline.md#post-integration-comparison)
 2. **Model coverage.** The 40-question interpretation dataset is fixed. Keyword support outside the listed English intents is limited. The published measurements describe this checkout and local hardware.
 3. **Deployment scope.** The verified release uses a local synthetic restaurant, process-local demo sessions and simulated partner activity. macOS verification belongs to the separate handover.
