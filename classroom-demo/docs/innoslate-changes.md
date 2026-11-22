@@ -1,6 +1,6 @@
 # PANTRI Innoslate change plan
 
-Project [687, Pantri](https://cloud.innoslate.com/cornell/p/687/dashboard). All nine items are proposed and awaiting individual confirmation. The model owner also needs to select the level-three decomposition in item 1.
+Project [687, Pantri](https://cloud.innoslate.com/cornell/p/687/dashboard). On November 22, 2026, the model owner approved items 1–9 and selected P-F.0.5.1. Use the next available model number in each established family. For UC.11 the Restaurant Manager initiates recovery, with SEQ.R01 and ADR 0003 preserved as a separate related scenario. In D.1 the approved statuses are Working for Ingredient Supplier and Recovery Partner and Partial for PANTRI Staff.
 
 ## Review basis and change record
 
@@ -157,16 +157,56 @@ Add a `relates` trace to SEQ.R01 and to adjacent UC.8 (199019) and UC.12 after o
 
 ## Model change record
 
-The authenticated export and direct diagram checks establish the before-state. All nine items await individual approval. Record an item's changes here immediately after its approved edit and saved readback.
+The authenticated export and direct diagram checks establish the before-state. Final live readback on 2026-11-22 after the edits: the project holds 719 entities, the 672 before-state entities plus the 47 new entities listed below, so no entity was removed. The pre-edit export `PANTRI_687_stageD_before_2026-11-22.xml` matched the preceding entity and relationship counts. D.1's modified timestamps refreshed, with the same layout and image. The project feed showed no intervening content edit.
 
 | Item | Confirmed live before | Saved after and entity IDs | Timestamp with offset | Screenshot or export filename |
 | --- | --- | --- | --- | --- |
-| 1. Decomposition selection and views | Both are leaves. P-F.0.3.3 has a saved Hierarchy layout. | Pending | Pending | Pending |
-| 2. Implementation assets | Existing PA modules match the baseline. | Pending | Pending | Pending |
-| 3. Exchanges and conduit | Existing interface records match the baseline. | Pending | Pending | Pending |
-| 4. Grounding and verification | Existing requirements and verification anchors match the baseline. | Pending | Pending | Pending |
-| 5. Model risk and Task 6 guard | Nine risks. T6.R1 and T6.A.2 have no direct link. | Pending | Pending | Pending |
-| 6. D.1 statuses | Live colors match the baseline. | Pending | Pending | Pending |
-| 7. UC.11 behavior views | No child Actions or saved native views on UC.11. | Pending | Pending | Pending |
-| 8. UC.2 assistant path | Thirteen child Actions and three native views. | Pending | Pending | Pending |
-| 9. Integration Action Diagram | No matching native integration Action root identified. | Pending | Pending | Pending |
+| 1. Decomposition selection and views | Both were leaves. P-F.0.3.3 had a saved Hierarchy layout. | P-F.0.5.1.1–.5 (319892–319896) `decompose` P-F.0.5.1 with their inputs, outputs, controls and performers. Hierarchy and IDEF0 layouts are saved on P-F.0.5.1 (269332). | 2026-11-22 15:15–15:46 −05:00 | Live readback of 269332 diagrams `LML_HIERARCHY` and `IDEF0_DIAGRAM` |
+| 2. Implementation assets | Existing PA modules match the baseline. | PA.2.5, PA.3.5, PA.4.4, PA.5.4 and PA.6.5–.8 (319897–319904) `decompose` their subsystems and each `performs` at least one function. | 2026-11-22 15:17–15:42 −05:00 | Live entity readback |
+| 3. Exchanges and conduit | Existing interface records match the baseline. | P-IO.18–.19 and P-IF.25–.31 (319905–319913), PA.2.6 Local Ollama Runtime (319914) and conduit P-C.2_5.2_6 (319915) carrying the four model messages. P-IO.18/.19 are transferred by P-CX.1 and P-CX.2. Open: P-IF.28 Local Model Advice Context has no generating or receiving Action yet, and P-IF.29 is received only by INT.01.4. | 2026-11-22 15:17–15:46 −05:00 | Live entity readback |
+| 4. Grounding and verification | Existing requirements and verification anchors match the baseline. | P-AFR.22 (319916) traced from SR.02 and satisfied by P-F.0.5.1, P-F.0.5.2, P-F.0.2.2 and the new assets. P-AVT.22–.24 (319917–319919) verify it together with P-AFR.15/.16/.05. | 2026-11-22 15:28–15:46 −05:00 | Live entity readback |
+| 5. Model risk and Task 6 guard | Nine risks. T6.R1 and T6.A.2 had no direct link. | T6.R1 (319807) `mitigated by` T6.A.2 (319822). New P-TR.05 Model Returns a Well-Formed Incorrect Reply (319920) `mitigated by` PA.5.1 and PA.2.5. | 2026-11-22 15:14 and 15:29 −05:00 | Live entity readback |
+| 6. D.1 statuses | Live colors match the baseline. | D.1 (198996) layout: 1.4 Ingredient Supplier and 1.5 Recovery Partner green (Working); 1.6 PANTRI Staff yellow (Partial); 1.1 yellow, 1.2 and 1.8 green, 1.3 gray unchanged. | 2026-11-22 15:32 −05:00 | Live readback of the D.1 `LML_ASSET` fills |
+| 7. UC.11 behavior views | No child Actions or saved native views on UC.11. | UC.11.1–.7 (319921–319927), including the decision UC.11.7 Was Collection Request Accepted?. Action and Activity layouts are saved on UC.11 (199022). The Sequence view is generated from these Actions and shows the Manager, Recovery Partner and PANTRI lifelines; its message labels overlap and the layout is not separately saved. UC.11 `relates` to INT.01.6, UC.8, UC.12 and SEQ.R01. | 2026-11-22 15:36–15:43 −05:00 | Live readback; Sequence view checked in the browser |
+| 8. UC.2 assistant path | Thirteen child Actions and three native views. | **Incomplete.** UC.2.12 Ask PANTRI About Inventory (319936), UC.2.13 Provide Grounded Inventory Answer (319937) and UC.2.15 Review Grounded Inventory Answer (319941) exist with performers and I/O, but they are not yet children of UC.2 or placed in its Action diagram. UC.2 (199013) itself is unchanged: version 43, last modified 2026-11-02 by its owner. Remaining edit for the UC owner: in the UC.2 Action diagram, insert an OR "Ask PANTRI About Inventory?" (number UC.2.14) on the Restaurant Manager lane between UC.2.5 and UC.2.6, place UC.2.12 → UC.2.13 → UC.2.15 on its Yes branch, leave No empty, and save. | — | — |
+| 9. Integration Action Diagram | No matching native integration Action root identified. | INT.01 PANTRI Classroom Integration Verification (319928) with INT.01.1–.7 (319929–319935) in execution order; Action layout saved. | 2026-11-22 15:41–15:44 −05:00 | Live readback of 319928 `LML_ACTION` |
+
+### Allocated model numbers
+
+| Item | Model number | Internal ID | Entity |
+| --- | --- | --- | --- |
+| 1 | P-F.0.5.1.1 | 319892 | Receive Natural-Language Question |
+| 1 | P-F.0.5.1.2 | 319893 | Interpret Information Question |
+| 1 | P-F.0.5.1.3 | 319894 | Validate Interpretation and Select Fallback |
+| 1 | P-F.0.5.1.4 | 319895 | Retrieve Authorized Answer Records |
+| 1 | P-F.0.5.1.5 | 319896 | Compose Grounded Information Answer |
+| 2 | PA.6.5 | 319897 | Node REST Service Boundary |
+| 2 | PA.6.6 | 319898 | JSON State Store with Prior Checkpoint |
+| 2 | PA.2.5 | 319899 | Local Language Model Adapter with Containment Checks |
+| 2 | PA.5.4 | 319900 | Ask PANTRI Assistant Panel |
+| 2 | PA.6.7 | 319901 | Demo Role Sessions |
+| 2 | PA.3.5 | 319902 | Supplier Portal |
+| 2 | PA.4.4 | 319903 | Recovery Portal |
+| 2 | PA.6.8 | 319904 | Support Console |
+| 3 | P-IO.18 | 319905 | Natural-Language Information Request |
+| 3 | P-IO.19 | 319906 | Grounded Information Answer |
+| 3 | P-IF.25 | 319907 | Interpreted Information Request |
+| 3 | P-IF.26 | 319908 | Local Model Interpretation Request |
+| 3 | P-IF.27 | 319909 | Local Model Interpretation Candidate |
+| 3 | P-IF.28 | 319910 | Local Model Advice Context |
+| 3 | P-IF.29 | 319911 | Local Model Advice Candidate |
+| 3 | P-IF.30 | 319912 | Validated Question and Scoped Revision |
+| 3 | P-IF.31 | 319913 | Scoped Answer Records |
+| 3 | PA.2.6 | 319914 | Local Ollama Runtime |
+| 3 | P-C.2_5.2_6 | 319915 | Local Model Exchange |
+| 4 | P-AFR.22 | 319916 | Ground model-assisted information in PANTRI records |
+| 4 | P-AVT.22 | 319917 | Verify Read-Only Grounded Assistant Answers |
+| 4 | P-AVT.23 | 319918 | Verify Model Interpretation Containment and Fallback |
+| 4 | P-AVT.24 | 319919 | Verify Calculated Quantities with Checked Model Advice |
+| 5 | P-TR.05 | 319920 | Model Returns a Well-Formed Incorrect Reply |
+| 7 | UC.11.1–UC.11.7 | 319921–319927 | Prepare Authorized Collection Request; Review Assigned Collection Request; Record Collection Response; Report and Resolve Collection Exception; Record Physical Pickup; Review Retained Collection Status; Was Collection Request Accepted? |
+| 9 | INT.01 | 319928 | PANTRI Classroom Integration Verification |
+| 9 | INT.01.1–INT.01.7 | 319929–319935 | Initialize and Inspect Seeded State; Verify Retained Approval and Dispatch; Quarantine Contradictory Saved Approval; Contain Well-Formed Incorrect Model Reply; Exercise Scoped Sessions and Receiving; Reserve, Accept and Record Pickup; Display Inventory and Reporting Evidence |
+| 8 | UC.2.12 | 319936 | Ask PANTRI About Inventory |
+| 8 | UC.2.13 | 319937 | Provide Grounded Inventory Answer |
+| 8 | UC.2.15 | 319941 | Review Grounded Inventory Answer (UC.2.14 is reserved for the OR decision still to be added) |
