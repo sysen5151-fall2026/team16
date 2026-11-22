@@ -150,6 +150,16 @@ export function buildAnswer(question, state, role, result) {
   const ingredient = state.ingredients.find(item => item.id === ingredientId);
   const suggestions = assistantExamples(role);
   if (denied) return { answer: answer(denied + ' are available to the restaurant manager.'), suggestions };
+  // Nothing was understood, but the question may name an ingredient with a spelling error ("slcied beef").
+  if (intent === 'out_of_scope' && result.understoodBy === 'none') {
+    const closeNames = similarIngredients(question, state.ingredients, { includePartial: false });
+    if (closeNames.length) {
+      return {
+        answer: answer('I could not understand the question. If you meant one of these ingredients, choose a question below.'),
+        suggestions: closeNames.map(name => 'How much ' + name + ' do we have?'),
+      };
+    }
+  }
   if (intent === 'stock_level' && !ingredient) return missingIngredient(question, state, role, result);
   if (['expiring', 'purchase_suggestion', 'order_status', 'waste_summary'].includes(intent) && !ingredient) {
     const closeNames = similarIngredients(question, state.ingredients, { includePartial: false });

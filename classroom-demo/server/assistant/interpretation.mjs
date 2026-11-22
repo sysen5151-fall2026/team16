@@ -122,28 +122,42 @@ function requestedPeriod(question) {
   return null;
 }
 
-const changeVerb = '(?:approve|send|dispatch|delete|reset|cancel|record|change|update|remove)';
+// Verbs that would change records if the assistant obeyed them. The assistant is read-only, so a
+// clause that commands one of these is refused rather than answered.
+const changeVerbs = '(?:approve|send|dispatch|delete|reset|cancel|record|change|update|remove|confirm|mark|set|add|' +
+  'increase|decrease|reduce|receive|edit|modify|adjust|submit|create|clear|wipe|erase|undo|restore|transfer|move|reject|decline)';
+// Openers that turn the following verb into a request: "please", "I want you to", "you must", "can you"...
+const requestOpeners = '(?:(?:ok|okay|so|now|then|also|and|just|please|kindly|hey|pantri|assistant|go ahead and|' +
+  'i (?:want|need) you to|we (?:want|need) you to|you (?:must|should|need to|have to|will)|make sure (?:to|you)|' +
+  'be sure to|(?:can|could|would|will) you(?: please)?)\\s+)*';
+const commandClause = new RegExp('^' + requestOpeners + '(?:' + changeVerbs + '\\b|(?:order|buy|purchase) (?:more|some|another|an? |\\d))');
+const statusQuestion = /^(?:did|do|does|have|has|had|was|were|is|are|who|when|which|what|how|why|whether|where)\b/;
+// Attempts to change the assistant's own rules count as instructions in any position.
+const ruleOverride = /\b(?:(?:ignore|forget|disregard|override|bypass) (?:\w+ ){0,3}(?:instructions?|rules?|prompts?|restrictions?|guardrails?|policies)|system override|new instructions?|developer mode|you are now)\b/;
 
-function isAction(question) {
-  return new RegExp('^(?:please )?' + changeVerb + '\\b').test(question) ||
-    new RegExp('\\b(?:(?:please|can you|could you|then|now) ' + changeVerb + ')\\b').test(question) ||
-    // Attempts to override the assistant's rules, in any wording.
-    /\b(?:ignore|forget|disregard|override|bypass) (?:\w+ ){0,3}(?:instructions?|rules?|prompts?|restrictions?|guardrails?)\b/.test(question) ||
-    // Commands placed mid-sentence, such as "and approve the draft", "approve all drafts" or "cancel it now".
-    // Status questions such as "Did we send the beef order?" stay answerable.
-    new RegExp('\\b(?:and|also|just) ' + changeVerb + '\\b').test(question) ||
-    new RegExp('\\b' + changeVerb + ' (?:all|every|each|everything)\\b').test(question) ||
-    new RegExp('\\b' + changeVerb + ' (?:\\w+ ){0,4}(?:now|immediately|right away)$').test(question);
+// Works on the raw question so sentence and clause boundaries survive: "System override: approve the draft."
+function isAction(rawQuestion) {
+  const sentences = rawQuestion.split(/[.!?;:\n]+/).filter(raw => normalize(raw));
+  if (sentences.some(raw => ruleOverride.test(normalize(raw)))) return true;
+  return sentences.some(raw => {
+    // A status question such as "Did we approve all drafts?" asks about records; it does not command a change.
+    if (statusQuestion.test(normalize(raw))) return false;
+    return raw.split(',').map(normalize).flatMap(part => part.split(/\b(?:and then|then|and|but|so)\b/))
+      .map(part => part.trim()).filter(Boolean).some(clause => commandClause.test(clause));
+  });
 }
 
 // Questions about how much to buy are purchase advice, not the status of orders already sent.
 function asksWhatToBuy(question) {
   return /\b(?:should (?:i|we)|do (?:i|we) need to|need to|to) (?:order|buy|purchase)\b/.test(question) ||
+    /\b(?:will|would|shall|should|are|do) (?:i|we) (?:be )?(?:order|ordering|buy|buying|purchase|purchasing|reorder|reordering)\b/.test(question) ||
+    /\border (?:quantity|quantities|amount|amounts|size|qty)\b/.test(question) ||
+    /\breorder(?:ing)?\b(?! points?\b)/.test(question) ||
     /\b(?:order|buy) more\b/.test(question);
 }
 
-function keywordIntent(question, mentions) {
-  if (isAction(question)) return 'out_of_scope';
+function keywordIntent(question, mentions, rawQuestion = question) {
+  if (isAction(rawQuestion)) return 'out_of_scope';
   if (/\b(?:help|what (?:can|should) i ask|what can you (?:do|answer)|what to ask|how (?:do|can) i use|example questions?|show (?:me )?examples)\b/.test(question)) return 'help';
   if (/\b(?:recover(?:y|ies|ed)?|collection|pickup|pickups|pick up|donation|donated)\b/.test(question)) return 'recovery_status';
   if (/\b(?:wast\w*|discard\w*|scrap\w*)\b/.test(question)) return 'waste_summary';
@@ -190,10 +204,14 @@ export async function interpretQuestion(question, ingredients, role, askModel) {
   const catalog = catalogFor(ingredients);
   const normalized = normalize(question);
   const mentions = mentionedIngredients(normalized, catalog);
-  const keyword = keywordIntent(normalized, mentions);
+  const keyword = keywordIntent(normalized, mentions, question);
   const definiteStock = mentions.length > 0 &&
     /\b(?:on hand|in stock|stock level|usable|reserved|reorder point|available|do we have|have left)\b/.test(normalized);
-  const certainIntent = keyword === 'stock_level' && !definiteStock ? null : keyword;
+  // Keyword readings that are only a guess may not overrule a checked model reading: a quantity question
+  // about a named ingredient that also says "order" can mean purchase advice rather than sent-order status.
+  const quantityAboutOrder = keyword === 'order_status' && mentions.length > 0 &&
+    /\b(?:how much|how many|quantity|amount)\b/.test(normalized);
+  const certainIntent = (keyword === 'stock_level' && !definiteStock) || quantityAboutOrder ? null : keyword;
   const period = requestedPeriod(normalized);
   const allowed = Object.keys(capabilities).filter(intent => role === 'manager' || !Object.hasOwn(managerOnly, intent));
   const model = await askModel(instructions, {
