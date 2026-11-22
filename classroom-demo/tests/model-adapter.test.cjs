@@ -7,7 +7,7 @@ const adapterModule = import('../server/model-adapter/index.mjs');
 
 const draft = {
   kind: 'draft',
-  summary: 'Sliced beef has 8 kg of usable stock against 12 kg of forecast demand. The pack-rounded recommendation is 4 kg.',
+  summary: 'Sliced beef: 8 kg usable stock against 12 kg forecast demand. The pack-rounded recommendation is 4 kg.',
   facts: {
     ingredient: 'Sliced beef',
     purchaseBasis: 'forecast demand exceeds usable stock',

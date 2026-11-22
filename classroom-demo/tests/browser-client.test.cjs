@@ -16,8 +16,8 @@ function browserSource(...extra) {
 
 function loadBrowserFunctions() {
   return vm.runInNewContext(
-    browserSource() + '\n' +
-      '({ createPantriApi, createSeed, approveDraft, sendApprovedOrder, getIngredientSummary, renderAccountCards, workspaceNavigation, renderStaffReceipts, supplierOrderOverlay, recoveryPartnerOverlay, renderSupportPage, explanationBlock, orderOverlay, recoveryOverlay, ingredientDetails, draftOverlay, renderReportsPage })',
+    browserSource('shell.js') + '\n' +
+      '({ createPantriApi, createSeed, approveDraft, sendApprovedOrder, getIngredientSummary, renderAccountCards, workspaceNavigation, renderStaffReceipts, supplierOrderOverlay, recoveryPartnerOverlay, renderSupportPage, explanationBlock, orderOverlay, recoveryOverlay, ingredientDetails, draftOverlay, renderReportsPage, renderOverlay })',
     { AbortSignal, structuredClone, TextEncoder, crypto: require('node:crypto').webcrypto },
   );
 }
@@ -159,10 +159,13 @@ test('an expired session is cleared and anonymous health checks carry no token',
 
 test('role navigation and staff receipts expose only scoped workflows', () => {
   const { renderAccountCards, workspaceNavigation, renderStaffReceipts } = loadBrowserFunctions();
-  const cards = renderAccountCards([manager, supplier, recovery]);
+  const cards = renderAccountCards([manager, supplier, recovery,
+    { ...supplier, id: 'second-supplier', name: 'Another supplier' }]);
   assert.match(cards, /Restaurant Manager/);
   assert.match(cards, /Prime Foods/);
   assert.match(cards, /Community Food Recovery/);
+  assert.match(cards, /<h2>Suppliers<\/h2>/);
+  assert.match(cards, /data-id="second-supplier"/);
   const ids = role => Array.from(workspaceNavigation(role), ([page]) => page);
   assert.deepEqual(ids('manager'), ['overview', 'inventory', 'purchasing', 'waste', 'reports']);
   assert.deepEqual(ids('staff'), ['inventory']);
@@ -187,17 +190,25 @@ test('external workspaces render their own actions and model explanations safely
   assert.match(supplierBody, /Report delay/);
   assert.match(supplierBody, /Report exception/);
   assert.doesNotMatch(supplierBody, /simulate|approve-send|receive-order/);
+  const confirmed = supplierOrderOverlay({ orders: [{ ...order, supplierStatus: 'confirmed' }], ingredients: [ingredient] },
+    { id: order.id, values: { kind: 'confirmed' } });
+  assert.doesNotMatch(confirmed.body, /Confirm order/);
+  assert.match(confirmed.body, /Report delay/);
+  assert.match(confirmed.body, /Report exception/);
+  assert.match(confirmed.body, /Choose a response/);
+  assert.match(confirmed.actions, /form="dialog-form".*Send response/);
 
   const request = {
     id: 'REC-100', partnerId: recovery.name, requestedWindow: 'Today, 14:00–16:00', status: 'requested',
     lines: [{ ingredientId: ingredient.id, batchId: 'batch-001', quantity: 1, unit: 'kg' }], events: [],
   };
-  const body = status => recoveryPartnerOverlay({ recoveries: [{ ...request, status }], ingredients: [ingredient] }, { id: request.id }).body;
-  assert.match(body('requested'), /Accept request/);
-  assert.match(body('requested'), /Decline request/);
-  assert.doesNotMatch(body('requested'), /Record pickup|Cancel request/);
-  assert.match(body('accepted'), /Record pickup/);
-  assert.doesNotMatch(body('collected'), /Record pickup|Cancel request/);
+  const actions = status => recoveryPartnerOverlay({ recoveries: [{ ...request, status }], ingredients: [ingredient] },
+    { id: request.id }).actions ?? '';
+  assert.match(actions('requested'), /form="dialog-form".*Accept request/);
+  assert.match(actions('requested'), /Decline request/);
+  assert.doesNotMatch(actions('requested'), /Record pickup|Cancel request/);
+  assert.match(actions('accepted'), /Record pickup/);
+  assert.doesNotMatch(actions('collected'), /Record pickup|Cancel request/);
 
   const support = renderSupportPage(null, {
     support: {
@@ -218,6 +229,18 @@ test('external workspaces render their own actions and model explanations safely
   assert.match(modelBlock, /Suggestion from the local model<\/strong><p>&lt;check prep&gt;<\/p>/);
 });
 
+test('drawer forms keep their actions after the scroll region and use registered recovery accounts', () => {
+  const render = loadBrowserFunctions();
+  const state = render.createSeed();
+  const html = render.renderOverlay(state, { type: 'new-recovery' }, '', false, { accounts: [manager, recovery] });
+  assert.match(html, /<select name="partnerId"[^>]*><option value="Community Food Recovery" selected>/);
+  assert.doesNotMatch(html, /<input[^>]*name="partnerId"/);
+  assert.match(html, /<\/form>\s*<\/div>\s*<footer class="dialog-actions">/);
+  assert.match(html, /form="dialog-form"[^>]*>Create request/);
+  const draft = render.renderOverlay(state, { type: 'draft', id: state.drafts[0].id });
+  assert.match(draft, /<footer class="dialog-actions">[\s\S]*form="dialog-form"[^>]*>Save changes/);
+});
+
 test('manager handoffs point to the real portals and explanations have independent update regions', () => {
   const { createSeed, orderOverlay, recoveryOverlay, ingredientDetails, draftOverlay, renderReportsPage } = loadBrowserFunctions();
   const state = createSeed();
@@ -230,10 +253,10 @@ test('manager handoffs point to the real portals and explanations have independe
   assert.match(purchase, /supplier portal/);
   assert.match(purchase, /data-action="switch-role"/);
   assert.doesNotMatch(purchase, /Apply simulated response/);
-  const pickup = recoveryOverlay(state, { id: 'REC-100' }).body;
-  assert.match(pickup, /recovery portal/);
-  assert.match(pickup, /Cancel request/);
-  assert.doesNotMatch(pickup, /Apply simulated response|data-action="collect"/);
+  const pickup = recoveryOverlay(state, { id: 'REC-100' });
+  assert.match(pickup.body, /recovery portal/);
+  assert.match(pickup.actions, /Cancel request/);
+  assert.doesNotMatch(pickup.body + pickup.actions, /Apply simulated response|data-action="collect"/);
   assert.match(draftOverlay(state, { id: 'draft-001' }).body, /data-explanation-scope="draft:draft-001"/);
   assert.match(renderReportsPage(state, { reportPeriod: 'today' }), /data-explanation-scope="reports:today"/);
 
@@ -454,7 +477,7 @@ test('browser controls complete shared purchasing and recovery against the real 
     await waitFor(() => browser.ui.account?.role === role && !browser.ui.sessionBusy, role + ' workspace');
     assert.equal(browser.ui.workspaceError, '');
   };
-  await waitFor(() => browser.ui.accounts.length === 5, 'all demo accounts');
+  await waitFor(() => browser.ui.accounts.length === 7, 'all demo accounts');
   await selectRole('manager');
   assert.equal(onHand(), 8);
   browser.click('purchasing');

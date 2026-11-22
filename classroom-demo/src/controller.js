@@ -53,7 +53,7 @@ async function loadAccounts() {
   if (ui.accountsLoading) return;
   ui.accountsLoading = true;
   ui.accountError = '';
-  if (!ui.account || ui.overlay?.type === 'switch-role') render();
+  if (!ui.account || ['switch-role', 'new-recovery'].includes(ui.overlay?.type)) render();
   try {
     ({ accounts: ui.accounts } = await api.accounts());
     if (!ui.accounts.length) ui.accountError = 'No demo accounts are available. Retry to load them.';
@@ -61,7 +61,7 @@ async function loadAccounts() {
     ui.accountError = error.message;
   } finally {
     ui.accountsLoading = false;
-    if (!ui.account || ui.overlay?.type === 'switch-role') render();
+    if (!ui.account || ['switch-role', 'new-recovery'].includes(ui.overlay?.type)) render();
   }
 }
 
@@ -268,6 +268,7 @@ function markRequestBusy(busy) {
   if (busy) region?.setAttribute('aria-busy', 'true');
   else region?.removeAttribute('aria-busy');
   region?.querySelector('form')?.toggleAttribute('inert', busy);
+  region?.querySelector('.dialog-actions')?.toggleAttribute('inert', busy);
 }
 
 function requestFailure(error, focus) {

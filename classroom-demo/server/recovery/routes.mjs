@@ -3,16 +3,18 @@ import { cancelRecovery, eventTime, qty, recordCollection, recordRecoveryEvent, 
 import { requirePartner, scopedState } from '../continuity/access.mjs';
 import { check, fields, findRecord, identifier, oneOf, route, text } from '../validation.mjs';
 
-function newRequest({ body, state, op, commit, present }) {
+function newRequest({ body, state, sessions, op, commit, present }) {
   fields(body, ['batchId', 'quantity', 'partnerId', 'requestedWindow', 'note', 'operationId']);
+  const { partnerId } = body;
+  check(sessions.accounts.some(account => account.role === 'recovery' && account.name === partnerId),
+    'Choose a registered recovery partner.');
   const batchId = identifier(body.batchId, 'Batch');
   const batch = findRecord(state.batches, batchId, 'Batch');
   const ingredient = findRecord(state.ingredients, batch.ingredientId, 'Ingredient');
   check(validQuantity(body.quantity, ingredient.unit) && body.quantity === qty(body.quantity),
     'Provide a valid quantity in the ingredient’s stock unit.');
   const input = {
-    batchId, quantity: body.quantity,
-    partnerId: text(body.partnerId, 'Recovery partner', 120),
+    batchId, quantity: body.quantity, partnerId,
     requestedWindow: text(body.requestedWindow, 'Pickup window', 120),
     note: text(body.note, 'Note', 500, { optional: true, allowEmpty: true }),
   };

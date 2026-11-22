@@ -40,12 +40,13 @@ async function fixture(t) {
       });
       return { status: response.status, json: await response.json() };
     }
-    async function signIn(accountId) {
+    async function signIn(accountId, role = accountId) {
       const response = await send('/api/sessions', {
         method: 'POST', body: { accountId, operationId: randomUUID() },
       });
       assert.equal(response.status, 201, JSON.stringify(response.json));
-      assert.equal(response.json.account.role, accountId);
+      assert.equal(response.json.account.id, accountId);
+      assert.equal(response.json.account.role, role);
       return response.json.token;
     }
     async function write(token, path, body, method = 'POST') {
@@ -258,7 +259,7 @@ test('health and sign-in are usable from a fresh seeded directory', async t => {
   assert.equal(health.json.model.status, 'disabled');
   const accounts = await api.send('/api/accounts');
   assert.deepEqual(accounts.json.accounts.map(account => account.role), [
-    'manager', 'staff', 'supplier', 'recovery', 'support',
+    'manager', 'staff', 'supplier', 'supplier', 'supplier', 'recovery', 'support',
   ]);
   const signIn = { method: 'POST', body: { accountId: 'manager', operationId: 'sign-in' } };
   const login = await api.send('/api/sessions', signIn);
@@ -357,6 +358,9 @@ test('purchase, receiving, waste and collection preserve the classroom quantitie
 
   await api.close();
   const restarted = await env.start();
+  const stale = await restarted.send('/api/snapshot', { token: manager });
+  assert.equal(stale.status, 401);
+  assert.equal(stale.json.code, 'SESSION_REQUIRED');
   const nextManager = await restarted.signIn('manager');
   assert.equal((await restarted.send(ingredientPath, { token: nextManager })).json.item.onHand, 11);
   assert.equal(stateOf(await restarted.send('/api/snapshot', { token: nextManager })).orders[0].fulfillmentStatus, 'received');
@@ -386,17 +390,91 @@ test('sessions restrict both reads and writes to the authorized scope', async t 
   assert.equal((await api.write(manager, '/api/orders/' + otherOrder + '/supplier-events', { kind: 'confirmed' })).status, 403);
   stateOf(await api.write(manager, '/api/orders/' + otherOrder + '/supplier-events', { kind: 'confirmed', simulate: true }));
 
-  const item = (await api.send('/api/inventory/ing-001', { token: manager })).json.item;
-  const otherPartner = await api.write(manager, '/api/recoveries', {
-    batchId: item.batches[0].id, quantity: 1, partnerId: 'Another Recovery Partner', requestedWindow: 'Today',
-  });
-  stateOf(otherPartner);
-  assert.deepEqual((await api.send('/api/recoveries', { token: recovery })).json.recoveries, []);
-  assert.equal((await api.write(recovery, '/api/recoveries/' + otherPartner.json.recordId + '/partner-events', { kind: 'accepted' })).status, 403);
   const diagnostics = await api.send('/api/support', { token: support });
   assert.equal(diagnostics.status, 200);
   assert.ok(diagnostics.json.logs.some(entry => entry.outcome === 'rejected'));
   assert.equal(JSON.stringify(diagnostics.json).includes(manager), false);
+});
+
+test('each seed supplier account can see and respond only to its own sent orders', async t => {
+  const api = await (await fixture(t)).start();
+  const manager = await api.signIn('manager');
+  const suppliers = [
+    { accountId: 'supplier', name: 'Prime Foods', draft: 'draft-001' },
+    { accountId: 'supplier-fresh-fields', name: 'Fresh Fields Produce', draft: 'draft-002' },
+    { accountId: 'supplier-pantry-supply', name: 'Pantry Supply Co.', draft: 'draft-003' },
+  ];
+  const seed = stateOf(await api.send('/api/snapshot', { token: manager }));
+  assert.deepEqual(new Set(suppliers.map(({ name }) => name)),
+    new Set(seed.ingredients.map(({ defaultSupplierId }) => defaultSupplierId)));
+  const { accounts } = (await api.send('/api/accounts')).json;
+  assert.deepEqual(accounts.filter(({ role }) => role === 'supplier').map(({ id, name }) => [id, name]),
+    suppliers.map(({ accountId, name }) => [accountId, name]));
+
+  for (const supplier of suppliers) {
+    supplier.token = await api.signIn(supplier.accountId, 'supplier');
+    supplier.order = await approve(api, manager, supplier.draft, 1);
+    const orders = await api.send('/api/orders', { token: supplier.token });
+    assert.equal(orders.status, 200);
+    assert.deepEqual(orders.json.orders, []);
+    stateOf(await api.write(manager, '/api/orders/' + supplier.order + '/dispatch', {}));
+  }
+
+  for (const { token, order, name } of suppliers) {
+    const orders = await api.send('/api/orders', { token });
+    assert.equal(orders.status, 200);
+    assert.deepEqual(orders.json.orders.map(({ id, supplierId }) => [id, supplierId]), [[order, name]]);
+    assert.deepEqual(stateOf(await api.send('/api/snapshot', { token })).orders, orders.json.orders);
+    for (const other of suppliers.filter(supplier => supplier.order !== order)) {
+      const forbidden = await api.write(token, '/api/orders/' + other.order + '/supplier-events', { kind: 'confirmed' });
+      assert.equal(forbidden.status, 403);
+    }
+    const own = stateOf(await api.write(token, '/api/orders/' + order + '/supplier-events', { kind: 'confirmed' }));
+    assert.equal(own.orders[0].supplierStatus, 'confirmed');
+  }
+  assert.equal(stateOf(await api.send('/api/snapshot', { token: manager })).partnerEvents.length, suppliers.length);
+});
+
+test('new recovery requests reject unregistered partner names without a revision change', async t => {
+  const env = await fixture(t);
+  const api = await env.start();
+  const manager = await api.signIn('manager');
+  const before = stateOf(await api.send('/api/snapshot', { token: manager }));
+  const saved = await readFile(env.dataFile, 'utf8');
+  for (const partnerId of ['Another Recovery Partner', 'Prime Foods', 'community food recovery']) {
+    const response = await api.write(manager, '/api/recoveries', {
+      batchId: 'batch-001', quantity: 1, partnerId, requestedWindow: 'Today',
+    });
+    assert.equal(response.status, 400);
+    assert.equal(response.json.code, 'INVALID_REQUEST');
+  }
+  assert.deepEqual(stateOf(await api.send('/api/snapshot', { token: manager })), before);
+  assert.equal(await readFile(env.dataFile, 'utf8'), saved);
+});
+
+test('a saved legacy recovery request remains available to the manager', async t => {
+  const { createSeed, requestRecovery, serializeState } = await import('../src/domain.js');
+  const env = await fixture(t);
+  const legacy = requestRecovery(createSeed(), {
+    batchId: 'batch-001', quantity: 1, partnerId: 'Another Recovery Partner', requestedWindow: 'Today',
+  }, 'legacy-request');
+  assert.equal(legacy.ok, true);
+  const [request] = legacy.value.recoveries;
+  const saved = serializeState(legacy.value);
+  await writeFile(env.dataFile, saved, 'utf8');
+
+  const api = await env.start();
+  const manager = await api.signIn('manager');
+  const recovery = await api.signIn('recovery');
+  const snapshot = await api.send('/api/snapshot', { token: manager });
+  assert.equal(snapshot.json.storage.status, 'ready');
+  assert.deepEqual(stateOf(snapshot).recoveries, [request]);
+  assert.deepEqual((await api.send('/api/recoveries', { token: recovery })).json.recoveries, []);
+  const action = await api.write(recovery, '/api/recoveries/' + request.id + '/partner-events', { kind: 'accepted' });
+  assert.equal(action.status, 403);
+  assert.equal(await readFile(env.dataFile, 'utf8'), saved);
+  const cancelled = stateOf(await api.write(manager, '/api/recoveries/' + request.id + '/cancellation', {}));
+  assert.equal(cancelled.recoveries[0].status, 'cancelled');
 });
 
 test('malformed inputs and version conflicts leave the saved transaction intact', async t => {
@@ -462,11 +540,16 @@ test('an unavailable language model leaves the draft available with a calculated
   const api = await env.start();
   const manager = await api.signIn('manager');
   const before = stateOf(await api.send('/api/snapshot', { token: manager }));
-  const draft = await api.send('/api/drafts/draft-001/explanation', { token: manager });
-  assert.equal(draft.status, 200);
-  assert.equal(draft.json.explanation.source, 'calculated');
-  assert.match(draft.json.explanation.text, /Sliced beef/);
-  assert.equal(draft.json.revision, before.revision);
+  for (const [id, basis] of [
+    ['draft-001', 'Sliced beef: 8 kg usable stock against 12 kg forecast demand.'],
+    ['draft-002', 'Red onions: 2 kg usable stock against 6 kg forecast demand.'],
+  ]) {
+    const draft = await api.send('/api/drafts/' + id + '/explanation', { token: manager });
+    assert.equal(draft.status, 200);
+    assert.equal(draft.json.explanation.source, 'calculated');
+    assert.ok(draft.json.explanation.text.startsWith(basis + ' The pack-rounded recommendation is 4 kg.'));
+    assert.equal(draft.json.revision, before.revision);
+  }
   assert.deepEqual(stateOf(await api.send('/api/snapshot', { token: manager })), before);
 });
 

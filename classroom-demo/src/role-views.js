@@ -17,12 +17,23 @@ function workspaceNavigation(role) {
 }
 
 function renderAccountCards(accounts, busy = false) {
-  return `<div class="account-grid">${accounts.map(account => `
+  const cards = entries => entries.map(account => `
     <button class="card account-card" type="button" data-action="sign-in" data-id="${esc(account.id)}" ${busy ? 'disabled' : ''}>
       <span class="item-icon">${icon(workspaceNavigation(account.role)[0]?.[1] ?? 'home')}</span>
-      <span><strong>${esc(account.label)}</strong><small>${esc(account.name)}</small></span>
+      <span><strong>${esc(account.role === 'supplier' ? account.name : account.label)}</strong>
+        ${account.role !== 'supplier' ? `<small>${esc(account.name)}</small>` : ''}</span>
       ${icon('chevron')}
-    </button>`).join('')}</div>`;
+    </button>`).join('');
+  const groups = [
+    ['Restaurant', accounts.filter(account => ['manager', 'staff'].includes(account.role))],
+    ['Suppliers', accounts.filter(account => account.role === 'supplier')],
+    ['Recovery and support', accounts.filter(account => ['recovery', 'support'].includes(account.role))],
+  ];
+  return groups.filter(([, entries]) => entries.length).map(([label, entries]) => `
+    <section class="account-group" aria-label="${label}">
+      <h2>${label}</h2>
+      <div class="account-grid ${label === 'Suppliers' ? 'supplier-accounts' : ''}">${cards(entries)}</div>
+    </section>`).join('');
 }
 
 function accountChoices(ui) {
@@ -51,6 +62,7 @@ function roleSwitchOverlay(ui) {
     title: 'Switch role',
     sub: 'Demo sign-in, no real authentication',
     center: true,
+    modalClass: 'account-modal',
     body: accountChoices(ui) + (ui.sessionBusy ? '<p class="quiet-state" role="status">Signing in…</p>' : ''),
   };
 }
@@ -108,9 +120,12 @@ const supplierResponses = [
 function supplierOrderOverlay(state, overlay) {
   const order = state.orders.find(order => order.id === overlay.id);
   if (!order) return missingTransaction('Purchase order');
+  const responses = supplierResponses.filter(response => response.value !== order.supplierStatus);
+  const followUp = order.supplierStatus !== 'awaiting_confirmation';
   return {
     title: order.id,
     sub: order.supplierId,
+    actions: '<button class="btn primary" type="submit" form="dialog-form">' + icon('send') + 'Send response</button>',
     body: `<div class="status-pair">
       <div><small>Supplier response</small>${badge(order.supplierStatus)}</div>
       <div><small>Receiving</small>${badge(order.fulfillmentStatus)}</div></div>
@@ -118,10 +133,11 @@ function supplierOrderOverlay(state, overlay) {
       <div class="approved-lines">${order.approvedLines.map(line => `<div>
         <span>${esc(ingredientName(state, line.ingredientId))}</span><b>${amount(line.managerQty)} ${esc(line.unit)}</b>
       </div>`).join('')}</div>
-      <form data-form="supplier-response">
-        ${selectField(overlay, 'kind', 'Response', supplierResponses, 'confirmed')}
+      <form id="dialog-form" data-form="supplier-response">
+        ${selectField(overlay, 'kind', followUp ? 'Follow-up response' : 'Response',
+          followUp ? [{ value: '', label: 'Choose a response' }, ...responses] : responses,
+          followUp ? '' : 'confirmed', { required: true })}
         ${noteField(overlay, 'note', 'Response note (optional)')}
-        <div class="form-footer"><button class="btn primary" type="submit">${icon('send')}Send response</button></div>
       </form>
       <h3 class="section-heading">Order timeline</h3>${timeline(order.events ?? [])}`,
   };
@@ -149,21 +165,22 @@ function recoveryPartnerOverlay(state, overlay) {
   const request = state.recoveries.find(request => request.id === overlay.id);
   if (!request) return missingTransaction('Recovery request');
   const active = !['collected', 'cancelled'].includes(request.status);
+  const actions = active ? [
+    request.status !== 'exception' ? '<button class="btn secondary" type="submit" form="dialog-form" name="kind" value="exception">Decline request</button>' : '',
+    request.status === 'accepted' ? button('Record pickup', 'partner-pickup', `data-id="${esc(request.id)}"`, 'primary', 'check')
+      : '<button class="btn primary" type="submit" form="dialog-form" name="kind" value="accepted">Accept request</button>',
+  ].join('') : '';
   return {
     title: request.id,
     sub: request.partnerId,
+    actions,
     body: `<div class="status-pair"><div><small>Request status</small>${recoveryStatus(request.status)}</div></div>
       <div class="batch-card"><p>Pickup window <span>${esc(request.requestedWindow)}</span></p>
         ${request.followUp ? `<p>Latest note <span>${esc(request.followUp)}</span></p>` : ''}</div>
       <h3 class="section-heading">${active ? 'Reserved for pickup' : 'Pickup quantities'}</h3>
       <div class="approved-lines">${request.lines.map(line => `<div><span>${esc(ingredientName(state, line.ingredientId))}<small class="block muted">${esc(line.batchId)}</small></span><b>${amount(line.quantity)} ${esc(line.unit)}</b></div>`).join('')}</div>
-      ${active ? `<form data-form="partner-response">
+      ${active ? `<form id="dialog-form" data-form="partner-response">
         ${noteField(overlay, 'note', 'Response note (optional)')}
-        <div class="drawer-actions">
-          ${request.status !== 'accepted' ? '<button class="btn primary" type="submit" name="kind" value="accepted">Accept request</button>' : ''}
-          ${request.status !== 'exception' ? '<button class="btn secondary" type="submit" name="kind" value="exception">Decline request</button>' : ''}
-          ${request.status === 'accepted' ? button('Record pickup', 'partner-pickup', `data-id="${esc(request.id)}"`, 'primary', 'check') : ''}
-        </div>
       </form>` : ''}
       <h3 class="section-heading">Request timeline</h3>
       ${timeline((request.events ?? []).map(event => event.kind === 'exception' ? { ...event, kind: 'Declined' } : event))}`,
@@ -212,11 +229,12 @@ function simulationOverlay(state, overlay) {
   return {
     title,
     sub: 'Demo tools',
-    body: choices.length ? `<form data-form="${form}">
+    actions: choices.length ? button('Back to Demo tools', 'close-overlay') +
+      `<button class="btn primary" type="submit" form="dialog-form">${pickup ? 'Record simulated pickup' : 'Apply simulated response'}</button>` : '',
+    body: choices.length ? `<form id="dialog-form" data-form="${form}">
       ${selectField(overlay, 'transactionId', supplier ? 'Sent order' : 'Recovery request', choices, choices[0].value)}
       ${pickup ? '<p class="field-help">Recording pickup deducts the reserved quantity from on-hand inventory.</p>'
         : selectField(overlay, 'kind', 'Response', responses, responses[0].value) + noteField(overlay, 'note', 'Response note (optional)')}
-      <div class="form-footer">${button('Back to Demo tools', 'close-overlay')}<button class="btn primary" type="submit">${pickup ? 'Record simulated pickup' : 'Apply simulated response'}</button></div>
     </form>` : '<p class="quiet-state">There are no eligible transactions.</p>',
   };
 }

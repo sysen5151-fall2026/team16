@@ -5,6 +5,8 @@ const accounts = Object.freeze([
   Object.freeze({ id: 'manager', role: 'manager', label: 'Restaurant Manager', name: 'Demo Manager' }),
   Object.freeze({ id: 'staff', role: 'staff', label: 'Restaurant Staff', name: 'Demo Staff' }),
   Object.freeze({ id: 'supplier', role: 'supplier', label: 'Ingredient Supplier', name: 'Prime Foods' }),
+  Object.freeze({ id: 'supplier-fresh-fields', role: 'supplier', label: 'Ingredient Supplier', name: 'Fresh Fields Produce' }),
+  Object.freeze({ id: 'supplier-pantry-supply', role: 'supplier', label: 'Ingredient Supplier', name: 'Pantry Supply Co.' }),
   Object.freeze({ id: 'recovery', role: 'recovery', label: 'Recovery Partner', name: 'Community Food Recovery' }),
   Object.freeze({ id: 'support', role: 'support', label: 'PANTRI Staff', name: 'PANTRI Support' }),
 ]);

@@ -81,7 +81,14 @@ function costChart(series, activeDate, animate = false) {
 function renderInventory(s,ui){const f=ui.filter,all=selectInventory(s,f),size=ui.pageSize;ui.pageNumber=Math.max(1,Math.min(ui.pageNumber,Math.ceil(all.length/size)||1));const start=(ui.pageNumber-1)*size,rows=all.slice(start,start+size),categories=[...new Set(s.ingredients.map(i=>i.category))];const active=!!(f.query||f.category||f.risk);return heading('','Inventory','Search ingredients, check batches and record stock movements.',button('Record receiving','record','data-kind="receipt"','primary','plus'))+(ui.account?.role==='staff'?renderStaffReceipts(s):'')+`<div class="inventory-toolbar"><label class="search-field">${icon('search')}<input id="inventory-search" data-focus="inventory-search" type="search" placeholder="Search ingredients or categories…" value="${esc(f.query??'')}" aria-label="Search ingredients"></label><select id="category-filter" aria-label="Category"><option value="">All categories</option>${categories.map(c=>`<option ${f.category===c?'selected':''}>${esc(c)}</option>`).join('')}</select><select id="risk-filter" aria-label="Status"><option value="">All statuses</option>${Object.entries(riskLabels).map(([v,l])=>`<option value="${v}" ${f.risk===v?'selected':''}>${l}</option>`).join('')}</select>${active?button('Clear filters','clear-filters','','ghost','close'):''}</div><div class="table-meta"><span><b>${all.length}</b> of ${s.ingredients.length} ingredients ${f.risk?`<span class="filter-pill">${f.primaryRisk ? 'Primary status · ' : ''}${riskLabels[f.risk]}</span>`:''}</span><span>Recorded stock · ${prettyDate(s.demoDate)}</span></div><div class="table-card"><div class="table-scroll"><table><thead><tr><th>Ingredient</th><th>Category</th><th class="num">On hand</th><th>Unit</th><th>Nearest expiration</th><th>Status</th><th>Updated</th><th></th></tr></thead><tbody>${rows.map(i=>`<tr><td><button type="button" class="ingredient-button" data-action="ingredient" data-id="${i.id}"><span class="item-icon">${icon(categoryIcon(i.category))}</span><span><strong>${esc(i.name)}</strong><small>${i.batches.length} batch${i.batches.length===1?'':'es'} · ${esc(i.id.toUpperCase())}</small></span></button></td><td>${esc(i.category)}</td><td class="num stock-quantity">${amount(i.onHand)}</td><td>${esc(i.unit)}</td><td>${i.risks.includes('unknown')?'<span class="muted">Unknown date present</span>':fullDate(i.nearest)}</td><td>${badge(i.status)}${i.risks.length>1?`<small class="more-risks" title="${esc(i.risks.map(r=>riskLabels[r]).join(', '))}">+${i.risks.length-1}</small>`:''}</td><td>${fullDate(i.updatedAt)}</td><td>${button(icon('chevron'),'ingredient',`data-id="${i.id}" aria-label="Open ${esc(i.name)}"`,'icon-button')}</td></tr>`).join('')}</tbody></table></div>${rows.length?'':empty('No matching ingredients','Try a different search, category or status.',button('Clear filters','clear-filters','','secondary'))}<div class="pagination"><span>${all.length?start+1:0}–${Math.min(start+size,all.length)} of ${all.length}</span><div><label>Rows <select id="page-size" aria-label="Rows per page">${[12,24,48].map(n=>`<option ${size===n?'selected':''}>${n}</option>`).join('')}</select></label>${button('Previous','prev',ui.pageNumber===1?'disabled':'','mini') }<span class="page-index">${ui.pageNumber} / ${Math.ceil(all.length/size)||1}</span>${button('Next','next',start+size>=all.length?'disabled':'','mini')}</div></div></div>`;}
 
 const field=(o,name,label,value='',type='text',attrs='')=>`<label class="field"><span>${label}</span><input name="${name}" id="field-${name}" type="${type}" value="${esc(o.values?.[name]??value)}" ${attrs}></label>`;
-const selectField=(o,name,label,options,defaultValue='')=>{const v=o.values?.[name]??defaultValue;return`<label class="field"><span>${label}</span><select name="${name}" id="field-${name}">${options.map(x=>{const value=typeof x==='object'?x.value:x,text=typeof x==='object'?x.label:x;return`<option value="${esc(value)}" ${String(v)===String(value)?'selected':''}>${esc(text)}</option>`}).join('')}</select></label>`;};
+function selectField(overlay, name, label, options, defaultValue = '', { required = false } = {}) {
+  const selected = overlay.values?.[name] ?? defaultValue;
+  return `<label class="field"><span>${label}</span><select name="${name}" id="field-${name}"${required ? ' required' : ''}>${
+    options.map(option => {
+      const { value, label } = typeof option === 'object' ? option : { value: option, label: option };
+      return `<option value="${esc(value)}" ${String(selected) === String(value) ? 'selected' : ''}>${esc(label)}</option>`;
+    }).join('')}</select></label>`;
+}
 const noteField=(o,name,label,value='',required=false)=>`<label class="field"><span>${label}</span><textarea name="${name}" id="field-${name}" rows="3" ${required?'required':''}>${esc(o.values?.[name]??value)}</textarea></label>`;
 const timeline=events=>`<div class="timeline">${[...events].sort((a,b)=>a.occurredAt.localeCompare(b.occurredAt)).map(e=>`<div class="timeline-event"><span>${icon('check')}</span><div><strong>${esc(stateLabels[e.kind]??e.kind)}${e.simulated?' <small class="sim-label">Simulated</small>':''}</strong><p>${esc(e.note??e.reason??'')}</p><time>${fullDate(e.occurredAt)} · ${e.occurredAt.slice(11,19)}</time></div></div>`).join('')}</div>`;
 function recordOverlay(state, overlay) {
@@ -111,7 +118,9 @@ function recordOverlay(state, overlay) {
   return {
     title,
     sub: order ? order.id + ' · Record actual quantities received' : item.name,
-    body: `<form data-form="inventory-record">
+    actions: button('Cancel', 'close-overlay') +
+      `<button class="btn primary" type="submit" form="dialog-form" ${receipt || batch ? '' : 'disabled'}>${icon('check')}Save ${receipt ? 'receiving' : count ? 'count' : overlay.kind}</button>`,
+    body: `<form id="dialog-form" data-form="inventory-record">
       <div class="form-intro">${icon(symbol)}<p>${instructions}</p></div>
       ${selectField(overlay, 'ingredientId', 'Ingredient', ingredients.map(ingredient => ({ value: ingredient.id, label: ingredient.name })), item.id)}
       ${!receipt && !batch ? '<p class="notice compact">This ingredient has no recorded batches.</p>' : ''}
@@ -131,16 +140,12 @@ function recordOverlay(state, overlay) {
         : noteField(overlay, 'reason', count ? 'Reason for correction' : 'Reason / receiving note',
           receipt ? 'Delivery recorded' : count ? 'Physical count' : 'Service usage', !receipt)}
       ${waste ? noteField(overlay, 'note', 'Additional note (optional)') : ''}
-      <div class="form-footer">
-        ${button('Cancel', 'close-overlay')}
-        <button class="btn primary" type="submit" ${receipt || batch ? '' : 'disabled'}>${icon('check')}Save ${receipt ? 'receiving' : count ? 'count' : overlay.kind}</button>
-      </div>
     </form>`,
   };
 }
 function draftOverlay(s,o){const d=s.drafts.find(x=>x.id===o.id);
-const recentWaste=new Map(selectWastePlanning(s,reportRange(s,'week')).map(signal=>[signal.ingredientId,signal]));return{title:'Review purchase draft',sub:`${d.supplierId} · ${d.id.toUpperCase()} · Version ${d.version}`,body:`<div class="notice compact">${icon('info')}<span>Demo forecast: recorded daily demand × the planning window. The recommendation stays a draft until you approve it.</span></div><form data-form="draft"><input type="hidden" name="version" value="${d.version}">${d.lines.map(l=>{const i=s.ingredients.find(i=>i.id===l.ingredientId);return`<h3 class="section-heading">${esc(i.name)}</h3><div class="math-list"><div><span>Expected demand · ${l.horizonDays} days</span><b>${amount(l.forecastQty)} ${l.unit}</b></div><div><span>Usable recorded stock</span><b>${amount(l.usableStock)} ${l.unit}</b></div><div><span>Excluded from planning</span><b>${amount(l.excludedStock)} ${l.unit}</b></div><div class="math-total"><span>Suggested purchase</span><b>${amount(l.suggestedQty)} ${l.unit}</b></div></div>${l.exclusionNotes.length?`<p class="field-help">${esc(l.exclusionNotes.join('; '))}</p>`:''}${field(o,'qty_'+i.id,`Manager quantity (${l.unit})`,l.managerQty,'number',`data-draft-price="${Number.isFinite(l.unitCostCents) ? l.unitCostCents : ''}" required min="0" step="${l.unit==='kg'?.001:1}"`)}<p class="field-help">Pack size ${i.packSize} ${i.unit}. You can revise the suggested amount before approving.</p>${draftWasteContext(recentWaste.get(i.id),s.demoDate)}`}).join('')}${explanationBlock(null, 'draft:' + d.id)}<div class="live-preview"><div><strong>Estimated order total</strong><small>At recorded unit costs</small></div><output data-draft-estimate aria-live="polite">${purchaseEstimate(d.lines)}</output></div><div class="inline-actions"><button type="submit" class="btn secondary">Save changes</button>${button('Refresh recommendation','refresh-draft',`data-id="${d.id}"`,'ghost','refresh')}</div></form><div class="approval-callout"><div><strong>Ready to approve?</strong><p>Review the final quantities in a separate confirmation.</p></div>${button('Review & approve','review-approval',`data-id="${d.id}"`,'primary','arrow')}</div>`};}
-function approvalOverlay(s,o){const d=s.drafts.find(x=>x.id===o.id);return{title:'Approve final purchase',sub:`${d.supplierId} · Version ${d.version}`,center:true,body:`<div class="confirmation-icon">${icon('file')}</div><p class="confirmation-intro">You are approving the exact quantities below. Sending will use this approved snapshot.</p><div class="approved-lines">${d.lines.filter(l=>l.managerQty>0).map(l=>`<div><span>${esc(s.ingredients.find(i=>i.id===l.ingredientId).name)}<small class="block muted">${l.unitCostCents===null?'Unit cost unknown':money(l.unitCostCents)+' / '+l.unit}</small></span><b>${amount(l.managerQty)} ${l.unit}</b></div>`).join('')}</div><div class="math-list"><div><span>Estimated total</span><b>${purchaseEstimate(d.lines)}</b></div></div><p class="field-help">The approved order will appear in the supplier portal.</p><div class="form-footer">${button('Back to draft','back-draft',`data-id="${d.id}"`,'secondary')}${button('Approve & send (demo)','approve-send',`data-id="${d.id}" data-version="${d.version}"`,'primary','send')}</div>`};}
+const recentWaste=new Map(selectWastePlanning(s,reportRange(s,'week')).map(signal=>[signal.ingredientId,signal]));return{title:'Review purchase draft',sub:`${d.supplierId} · ${d.id.toUpperCase()} · Version ${d.version}`,actions:`<button type="submit" form="dialog-form" class="btn secondary">Save changes</button>${button('Refresh recommendation','refresh-draft',`data-id="${d.id}"`,'ghost','refresh')}${button('Review & approve','review-approval',`data-id="${d.id}"`,'primary','arrow')}`,body:`<div class="notice compact">${icon('info')}<span>Demo forecast: recorded daily demand × the planning window. The recommendation stays a draft until you approve it.</span></div><form id="dialog-form" data-form="draft"><input type="hidden" name="version" value="${d.version}">${d.lines.map(l=>{const i=s.ingredients.find(i=>i.id===l.ingredientId);return`<h3 class="section-heading">${esc(i.name)}</h3><div class="math-list"><div><span>Expected demand · ${l.horizonDays} days</span><b>${amount(l.forecastQty)} ${l.unit}</b></div><div><span>Usable recorded stock</span><b>${amount(l.usableStock)} ${l.unit}</b></div><div><span>Excluded from planning</span><b>${amount(l.excludedStock)} ${l.unit}</b></div><div class="math-total"><span>Suggested purchase</span><b>${amount(l.suggestedQty)} ${l.unit}</b></div></div>${l.exclusionNotes.length?`<p class="field-help">${esc(l.exclusionNotes.join('; '))}</p>`:''}${field(o,'qty_'+i.id,`Manager quantity (${l.unit})`,l.managerQty,'number',`data-draft-price="${Number.isFinite(l.unitCostCents) ? l.unitCostCents : ''}" required min="0" step="${l.unit==='kg'?.001:1}"`)}<p class="field-help">Pack size ${i.packSize} ${i.unit}. You can revise the suggested amount before approving.</p>${draftWasteContext(recentWaste.get(i.id),s.demoDate)}`}).join('')}${explanationBlock(null, 'draft:' + d.id)}<div class="live-preview"><div><strong>Estimated order total</strong><small>At recorded unit costs</small></div><output data-draft-estimate aria-live="polite">${purchaseEstimate(d.lines)}</output></div></form>`};}
+function approvalOverlay(s,o){const d=s.drafts.find(x=>x.id===o.id);return{title:'Approve final purchase',sub:`${d.supplierId} · Version ${d.version}`,center:true,actions:`${button('Back to draft','back-draft',`data-id="${d.id}"`,'secondary')}${button('Approve & send (demo)','approve-send',`data-id="${d.id}" data-version="${d.version}"`,'primary','send')}`,body:`<div class="confirmation-icon">${icon('file')}</div><p class="confirmation-intro">You are approving the exact quantities below. Sending will use this approved snapshot.</p><div class="approved-lines">${d.lines.filter(l=>l.managerQty>0).map(l=>`<div><span>${esc(s.ingredients.find(i=>i.id===l.ingredientId).name)}<small class="block muted">${l.unitCostCents===null?'Unit cost unknown':money(l.unitCostCents)+' / '+l.unit}</small></span><b>${amount(l.managerQty)} ${l.unit}</b></div>`).join('')}</div><div class="math-list"><div><span>Estimated total</span><b>${purchaseEstimate(d.lines)}</b></div></div><p class="field-help">The approved order will appear in the supplier portal.</p>`};}
 function orderOverlay(state, overlay) {
   const order = state.orders.find(order => order.id === overlay.id);
   if (!order) return missingTransaction('Purchase order');
@@ -152,15 +157,13 @@ function orderOverlay(state, overlay) {
   return {
     title: order.id,
     sub: order.supplierId,
+    actions: button('Create follow-up draft', 'new-draft-from-order', `data-id="${esc(order.id)}"`, 'secondary', 'plus') + actions,
     body: `<div class="status-pair"><div><small>Supplier</small>${badge(order.supplierStatus)}</div>
       <div><small>Receiving</small>${badge(order.fulfillmentStatus)}</div></div>
       <h3 class="section-heading">Approved snapshot <span>v${order.approvedVersion}</span></h3>
       <div class="approved-lines">${order.approvedLines.map(line => `<div><span>${esc(ingredientName(state, line.ingredientId))}
         <small class="block muted">Received ${amount(order.receivedQuantities[line.ingredientId] ?? 0)} ${esc(line.unit)}</small></span>
         <b>${amount(line.managerQty)} ${esc(line.unit)}</b></div>`).join('')}</div>
-      <div class="drawer-actions">${actions}
-        ${button('Create follow-up draft', 'new-draft-from-order', `data-id="${esc(order.id)}"`, 'secondary', 'plus')}
-      </div>
       ${order.sentAt ? `<div class="tool-row"><div><strong>Supplier handoff</strong><p>Use the supplier portal to respond to this order.</p></div>
         ${button('Switch role', 'switch-role', '', 'secondary', 'arrow')}</div>` : ''}
       <h3 class="section-heading">Order timeline</h3>${timeline(allEvents)}`,
@@ -174,6 +177,7 @@ function recoveryOverlay(state, overlay) {
   return {
     title: request.id,
     sub: request.partnerId,
+    actions: active ? button('Cancel request', 'cancel-recovery', `data-id="${esc(request.id)}"`, 'secondary') : '',
     body: `<div class="drawer-summary">
       <div><small>${esc(ingredientName(state, line.ingredientId))}</small><b>${amount(line.quantity)} <em>${esc(line.unit)}</em></b></div>
       ${badge(request.status)}</div>
@@ -183,8 +187,7 @@ function recoveryOverlay(state, overlay) {
         <p>Responsible owner <span>${esc(request.owner)}</span></p>
         <p>Follow-up <span>${esc(request.followUp || 'No open follow-up')}</span></p>
       </div>
-      ${active ? `<div class="drawer-actions">${button('Cancel request', 'cancel-recovery', `data-id="${esc(request.id)}"`, 'secondary')}</div>
-        ${request.status === 'exception' ? '<p class="field-help">Cancel the request to release its reservation.</p>' : ''}
+      ${active ? `${request.status === 'exception' ? '<p class="field-help">Cancel the request to release its reservation.</p>' : ''}
         <div class="tool-row"><div><strong>Partner handoff</strong><p>Use the recovery portal to respond and record pickup.</p></div>
           ${button('Switch role', 'switch-role', '', 'secondary', 'arrow')}</div>` : ''}
       <h3 class="section-heading">Request timeline</h3>${timeline(request.events)}`,
@@ -246,9 +249,9 @@ function renderOverlay(state, overlay, error = '', discard = false, ui) {
   };
   const content = overlay.type === 'switch-role' ? roleSwitchOverlay(ui)
     : overlay.type === 'reset' ? resetOverlay()
-    : state && renderers[overlay.type] ? renderers[overlay.type](state, overlay) : missingTransaction('Workspace');
+    : state && renderers[overlay.type] ? renderers[overlay.type](state, overlay, ui) : missingTransaction('Workspace');
   return `<div class="overlay-backdrop" data-action="backdrop">
-    <section class="${content.center ? 'modal' : 'drawer'}" role="dialog" aria-modal="true" aria-labelledby="dialog-title" tabindex="-1">
+    <section class="${content.center ? 'modal' : 'drawer'}${content.modalClass ? ' ' + content.modalClass : ''}" role="dialog" aria-modal="true" aria-labelledby="dialog-title" tabindex="-1">
       <header class="dialog-header"><div><h2 id="dialog-title">${esc(content.title)}</h2><p>${esc(content.sub)}</p></div>
         ${button(icon('close'), 'close-overlay', 'aria-label="Close dialog"', 'icon-button')}</header>
       <div class="dialog-body">
@@ -257,6 +260,7 @@ function renderOverlay(state, overlay, error = '', discard = false, ui) {
           ${button('Keep editing', 'keep-editing')}${button('Discard changes', 'discard', '', 'danger')}</div></div>` : ''}
         ${content.body}
       </div>
+      ${content.actions ? `<footer class="dialog-actions">${content.actions}</footer>` : ''}
     </section>
   </div>`;
 }

@@ -18,8 +18,8 @@ export function purchaseExplanation(state, draft, insights, ingredientId) {
   const ingredient = findRecord(state.ingredients, line.ingredientId, 'Ingredient');
   const signal = recent(insights, ingredient.id);
   const { unit, forecastQty, usableStock, suggestedQty } = line;
-  const basis = ingredient.name + ' has ' + usableStock + ' ' + unit + ' of usable stock against ' +
-    forecastQty + ' ' + unit + ' of forecast demand. The pack-rounded recommendation is ' + suggestedQty + ' ' + unit + '.';
+  const basis = ingredient.name + ': ' + usableStock + ' ' + unit + ' usable stock against ' +
+    forecastQty + ' ' + unit + ' forecast demand. The pack-rounded recommendation is ' + suggestedQty + ' ' + unit + '.';
   const waste = signal
     ? 'Recent records show ' + signal.quantity + ' ' + unit + ' of waste for this ingredient.'
     : 'No waste for this ingredient was recorded in the current seven-day period.';

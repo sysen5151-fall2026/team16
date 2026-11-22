@@ -363,14 +363,17 @@ select:focus-visible { outline: 2px solid var(--skin-hero-top); outline-offset: 
 .drawer { margin: 10px; height: calc(100dvh - 20px); border-radius: 26px; box-shadow: -20px 0 50px -20px rgba(8, 40, 22, .35), inset 0 1px 0 #fff; }
 .modal { border-radius: 26px; box-shadow: 0 30px 70px -24px rgba(8, 40, 22, .45), inset 0 1px 0 #fff; }
 .dialog-header { border-bottom-color: rgba(19, 41, 28, .08); }
-.dialog-body { scrollbar-width: thin; scrollbar-color: rgba(19, 41, 28, .25) transparent; }
-/* Keep the form's buttons reachable at the bottom of a long drawer */
-.dialog-body .form-footer {
-  position: sticky; bottom: 0; z-index: 3;
-  margin-top: 20px; padding: 14px 0 18px;
+.dialog-body { min-height: 0; scrollbar-width: thin; scrollbar-color: rgba(19, 41, 28, .25) transparent; }
+.dialog-actions {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px clamp(14px, 3vw, 23px) 16px;
   border-top: 1px solid rgba(19, 41, 28, .08);
-  background: linear-gradient(180deg, rgba(250, 253, 251, .86), rgba(250, 253, 251, .98));
-  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border-radius: 0 0 26px 26px;
+  background: var(--skin-glass-solid);
 }
 .drawer .batch-card { background: #fff; border-radius: 16px; }
 .toast { background: var(--skin-glass-strong); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 16px; }

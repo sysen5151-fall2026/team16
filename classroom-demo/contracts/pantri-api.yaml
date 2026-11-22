@@ -63,6 +63,10 @@ paths:
       tags: [Service Continuity]
       summary: List selectable synthetic accounts
       security: []
+      description: >-
+        Account IDs identify login choices independently of their roles. The supplier accounts
+        are supplier (Prime Foods), supplier-fresh-fields (Fresh Fields Produce), and
+        supplier-pantry-supply (Pantry Supply Co.).
       responses:
         '200':
           description: Demo accounts
@@ -367,7 +371,7 @@ paths:
       x-demo-roles: [manager, staff, supplier]
       description: >-
         Managers see retained orders, including approvals awaiting dispatch. Staff see sent
-        orders for receiving. The supplier sees only orders sent to Prime Foods.
+        orders for receiving. Each supplier account sees only its own sent orders.
       responses:
         '200':
           description: Orders within role scope
@@ -489,7 +493,8 @@ paths:
       description: >-
         Requires known nonexpired stock and sufficient unreserved quantity. An open
         reservation reduces availability. The recorded on-hand quantity changes when pickup
-        is recorded.
+        is recorded. Use the exact name of a recovery-role account from GET /api/accounts.
+        Previously saved requests retain their original partner names.
       requestBody:
         required: true
         content:
@@ -1024,7 +1029,10 @@ components:
       required: [id, role, label, name]
       additionalProperties: false
       properties:
-        id: { $ref: '#/components/schemas/Role' }
+        id:
+          $ref: '#/components/schemas/Identifier'
+          description: Stable demo account identifier, distinct from the role.
+          examples: [supplier, supplier-fresh-fields, supplier-pantry-supply]
         role: { $ref: '#/components/schemas/Role' }
         label: { type: string }
         name: { type: string }
@@ -1044,7 +1052,7 @@ components:
         accountId:
           $ref: '#/components/schemas/Identifier'
           description: One of the account IDs from GET /api/accounts.
-          examples: [manager]
+          examples: [manager, supplier, supplier-fresh-fields, supplier-pantry-supply]
         operationId: { $ref: '#/components/schemas/OperationId' }
     Session:
       type: object
@@ -1206,10 +1214,8 @@ components:
         quantity: { $ref: '#/components/schemas/PositiveQuantity' }
         partnerId:
           type: string
-          minLength: 1
-          maxLength: 120
-          pattern: '\S'
-          description: Community Food Recovery is the configured recovery portal.
+          enum: [Community Food Recovery]
+          description: Exact registered recovery account name from GET /api/accounts.
         requestedWindow:
           type: string
           minLength: 1

@@ -499,32 +499,32 @@ function eligibleRecoveryBatches(state, ingredientId) {
     batch.quantity > reservedForBatch(state, batch.id));
 }
 
-function recoveryForm(state, overlay) {
+function recoveryForm(state, overlay, ui) {
   const ingredientId = overlay.values?.ingredientId ?? overlay.ingredientId ?? state.ingredients[0].id;
   const item = state.ingredients.find(ingredient => ingredient.id === ingredientId);
   const batches = eligibleRecoveryBatches(state, item.id);
   const selected = batches.find(batch => batch.id === overlay.values?.batchId) ?? batches[0];
   const maximum = selected ? qty(selected.quantity - reservedForBatch(state, selected.id)) : 0;
   const step = item.unit === 'kg' ? 0.001 : 1;
+  const partners = ui.accounts.filter(account => account.role === 'recovery').map(account => account.name);
   return {
     title: 'New recovery request',
     sub: 'Arrange pickup for a usable surplus batch',
-    body: `<form data-form="recovery-request">
+    actions: button('Cancel', 'close-overlay') +
+      `<button type="submit" form="dialog-form" class="btn primary" ${selected && partners.length ? '' : 'disabled'}>Create request</button>`,
+    body: `<form id="dialog-form" data-form="recovery-request">
       ${selectField(overlay, 'ingredientId', 'Ingredient', state.ingredients.map(ingredient => ({ value: ingredient.id, label: ingredient.name })), item.id)}
       ${selected ? `${selectField(overlay, 'batchId', 'Batch', batches.map(batch => ({
         value: batch.id, label: `${batch.id} · ${amount(qty(batch.quantity - reservedForBatch(state, batch.id)))} ${item.unit} available`,
       })), selected.id)}
         ${field(overlay, 'quantity', `Quantity (${item.unit})`, Math.min(1, maximum), 'number', `required min="${step}" max="${maximum}" step="${step}"`)}`
         : '<p class="notice compact">This ingredient has no unreserved stock in a known, unexpired batch.</p>'}
-      ${field(overlay, 'partnerId', 'Recovery partner', 'Community Food Recovery', 'text', 'required maxlength="120"')}
+      ${partners.length ? selectField(overlay, 'partnerId', 'Recovery partner', partners, partners[0])
+        : '<p class="notice compact">No recovery partners are available. Reopen this request after accounts load.</p>'}
       ${field(overlay, 'requestedWindow', 'Pickup window', 'Today, 14:00–16:00', 'text', 'required maxlength="120"')}
       ${noteField(overlay, 'note', 'Coordination notes', '', false)}
       ${selected ? stockPreview('Available after reservation', maximum, item.unit, -1) : ''}
       <p class="field-help">The request reserves the entered quantity. Record collection after pickup.</p>
-      <div class="form-footer">
-        ${button('Cancel', 'close-overlay')}
-        <button type="submit" class="btn primary" ${selected ? '' : 'disabled'}>Create request</button>
-      </div>
     </form>`,
   };
 }
