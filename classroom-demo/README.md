@@ -15,6 +15,8 @@ npm.cmd start --prefix classroom-demo
 
 For a pre-merge review, add --branch final-integration to the clone command.
 
+The verified direct launch runs node classroom-demo/build.mjs followed by node classroom-demo/serve.mjs from the repository root.
+
 Open [PANTRI](http://127.0.0.1:5173) and choose **Restaurant Manager**. The seed is for Demo Buffet Hot Pot on October 21, 2026. It begins with 132 tracked ingredients, 3 drafts, 7 ingredients with a primary Low stock status, and 8 kg of Sliced beef on hand. On first start, PANTRI seeds the data file automatically if it is missing.
 
 All five demo accounts access one data file at classroom-demo/data/pantri-state.json. **Switch role** opens the account selection screen. **Demo tools → Reset demo** resets the shared data for another run. Run the seed command with the app stopped when recreating data from PowerShell. Sign in again after restarting the service to view the retained data.

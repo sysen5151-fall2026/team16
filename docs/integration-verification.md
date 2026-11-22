@@ -102,3 +102,31 @@ node classroom-demo/study/model-timing.mjs
 ~~~
 
 The working tree run reported **64/64** classroom checks and **54/54** repository checks, zero failures. The classroom run retains the 23 pre-integration checks. The release sign-in, active model, unreachable model and clean-checkout setup results are recorded below.
+
+## Clean Windows checkout
+
+A new temporary Windows checkout cloned the final-integration branch at implementation commit 1b0db40. No node_modules or data file was copied. The seed command created the ignored JSON, the classroom tests rebuilt the HTML and both test suites passed. A generated-file line-ending rule kept the checkout clean after rebuilding.
+
+~~~text
+git clone --no-local --single-branch --branch final-integration <repository> <new-directory>
+npm.cmd run seed --prefix classroom-demo
+Seeded the PANTRI classroom dataset at <new-directory>\classroom-demo\data\pantri-state.json
+npm.cmd test --prefix classroom-demo
+tests 64, pass 64, fail 0
+npm.cmd test
+tests 54, pass 54, fail 0
+git status --porcelain
+<empty>
+~~~
+
+The desktop command runner declined the npm start wrapper. The clean checkout directly ran the exact package-script steps: node classroom-demo/build.mjs followed by node classroom-demo/serve.mjs. The service returned HTML and JSON at the default port. The first run pointed the adapter at an unused loopback port to exercise an unreachable Ollama endpoint. The second run restarted PANTRI with the actual local Ollama endpoint and the same saved data file.
+
+~~~text
+Built PANTRI_Final.html
+PANTRI demo at http://127.0.0.1:5173
+Unreachable Ollama: model unavailable (service-unavailable); draft and report source calculated; Sliced beef 7 kg; revision 1
+PANTRI demo at http://127.0.0.1:5173
+Live Ollama after restart: qwen2.5:3b ready; draft and report source model; Sliced beef 7 kg; revision 1
+~~~
+
+One deliberate 1 kg waste entry reduced the fresh fixture from 8 kg to 7 kg. Its stock, report and revision survived the restart. Native model work remains as listed in the model baseline. The Phase E live model page requested reauthentication, so its post-build comparison used the dated export. The macOS handoff has its own validation scope.
