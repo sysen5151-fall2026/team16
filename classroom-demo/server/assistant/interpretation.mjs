@@ -122,9 +122,24 @@ function requestedPeriod(question) {
   return null;
 }
 
+const changeVerb = '(?:approve|send|dispatch|delete|reset|cancel|record|change|update|remove)';
+
 function isAction(question) {
-  return /^(?:please )?(?:approve|send|dispatch|delete|reset|cancel|record|change|update|remove)\b/.test(question) ||
-    /\b(?:ignore (?:your |the |all |previous )*instructions|(?:please|can you|could you|then) (?:approve|send|dispatch|delete|reset|cancel|record|change|update|remove))\b/.test(question);
+  return new RegExp('^(?:please )?' + changeVerb + '\\b').test(question) ||
+    new RegExp('\\b(?:(?:please|can you|could you|then|now) ' + changeVerb + ')\\b').test(question) ||
+    // Attempts to override the assistant's rules, in any wording.
+    /\b(?:ignore|forget|disregard|override|bypass) (?:\w+ ){0,3}(?:instructions?|rules?|prompts?|restrictions?|guardrails?)\b/.test(question) ||
+    // Commands placed mid-sentence, such as "and approve the draft", "approve all drafts" or "cancel it now".
+    // Status questions such as "Did we send the beef order?" stay answerable.
+    new RegExp('\\b(?:and|also|just) ' + changeVerb + '\\b').test(question) ||
+    new RegExp('\\b' + changeVerb + ' (?:all|every|each|everything)\\b').test(question) ||
+    new RegExp('\\b' + changeVerb + ' (?:\\w+ ){0,4}(?:now|immediately|right away)$').test(question);
+}
+
+// Questions about how much to buy are purchase advice, not the status of orders already sent.
+function asksWhatToBuy(question) {
+  return /\b(?:should (?:i|we)|do (?:i|we) need to|need to|to) (?:order|buy|purchase)\b/.test(question) ||
+    /\b(?:order|buy) more\b/.test(question);
 }
 
 function keywordIntent(question, mentions) {
@@ -134,6 +149,7 @@ function keywordIntent(question, mentions) {
   if (/\b(?:wast\w*|discard\w*|scrap\w*)\b/.test(question)) return 'waste_summary';
   if (/\b(?:drafts?|recommend\w*|suggest\w*|purchas\w*)\b/.test(question) &&
       !/\bpurchase orders?\b/.test(question)) return 'purchase_suggestion';
+  if (asksWhatToBuy(question)) return 'purchase_suggestion';
   if (/\b(?:charg(?:e|es|ing)|pric(?:e|es|ing)|quotes?)\b/.test(question) && mentions.length) return 'purchase_suggestion';
   const receipt = /\b(?:deliver\w*|receiv\w*|receipts?|supplier status|order status|orders?)\b/.test(question);
   if (receipt && /\b(?:cost\w*|price\w*|dollars|estimate\w*|spend)\b/.test(question)) return 'purchase_suggestion';
