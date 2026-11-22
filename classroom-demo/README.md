@@ -63,13 +63,13 @@ flowchart LR
   HTTP --> Access["Service continuity<br/>demo role authorization"]
   Access --> Work["Operational records, ingredient planning,<br/>purchase and recovery coordination,<br/>decision presentation"]
   Work -->|"validate and atomically replace"| Store["JSON current state and prior checkpoint"]
-  Work -->|"bounded facts and candidates"| Ollama["Local Ollama"]
-  Ollama -->|"validate facts and text"| Work
+  Work -->|"qualitative facts, no numbers"| Ollama["Local Ollama"]
+  Ollama -->|"advice checked before display"| Work
 ~~~
 
 The browser and server use the same domain and planning source. Manager approval persists the approved version before the dispatch request. Staff records physical receiving independently of supplier confirmation. A recovery reservation deducts available stock and a recorded pickup deducts on-hand stock.
 
-The model selects a grounded English explanation from server-supplied candidates. The server checks all returned facts and compares the text to the accepted candidates before displaying it. Purchase quantities, approvals and inventory updates use deterministic domain functions. [HTTP contract](contracts/pantri-api.yaml) · [Model baseline](docs/model-baseline.md) · [Verification record](../docs/integration-verification.md)
+PANTRI writes the calculated summary with every number. The local model adds one or two sentences of advice from qualitative facts only. The server rejects advice that contains a number, names another ingredient, instructs an order action or is too long, and then shows PANTRI's calculated guidance instead. Purchase quantities, approvals and inventory updates use deterministic domain functions. [HTTP contract](contracts/pantri-api.yaml) · [Model baseline](docs/model-baseline.md) · [Verification record](../docs/integration-verification.md)
 
 ## Verify
 

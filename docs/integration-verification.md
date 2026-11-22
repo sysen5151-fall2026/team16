@@ -59,17 +59,17 @@ Inventory read probe on the 132-item post-run state returned 76,983 bytes. The 3
 
 ## Model containment and timing
 
-The adapter used a nonstreaming JSON schema with exact structured facts and approved English candidates. Independent validation rejected structurally valid responses with a wrong monetary amount, a quantity typed as text, an incorrect nested date, an invented ingredient and unapproved prose. It also rejected malformed JSON, missing or extra fields, a redirect, a stalled body and an unavailable endpoint. No model input or output changes inventory, approval or transmission. The interface exposes the calculated summary on fallback and records a reason in the support log.
+The adapter sends only qualitative facts and accepts a nonstreaming JSON reply with exactly one `advice` field. Independent validation rejected structurally valid replies that contained a wrong quantity, a wrong date, a spelled-out number, a different known ingredient, an order instruction or rambling text. It also rejected malformed JSON, missing or extra fields, empty advice, a redirect, a stalled body and an unavailable endpoint. A live run of 60 calls across the three seeded drafts and the top three waste insights accepted all 60 replies after the instructions were narrowed to the supplied facts. In the timing runs below the containment check also rejected live warm replies that contained a number, and the interface showed PANTRI's calculated guidance instead. No model input or output changes inventory, approval or transmission. The interface exposes the calculated summary on fallback and records a reason in the support log.
 
-Windows 11, Node v24.14.1, Ollama 0.40.16, Core i9-13900K, RTX 4090, qwen2.5:3b Q4_K_M. Run node classroom-demo/study/model-timing.mjs with the selected model installed. The cold trials confirm the runner is absent before each call. The daemon had already run earlier requests. Each result used the existing Sliced beef draft and returned validated model text.
+Windows 11, Node v24.14.1, Ollama 0.40.16, Core i9-13900K, RTX 4090, qwen2.5:3b Q4_K_M. Run node classroom-demo/study/model-timing.mjs with the selected model installed. The cold trials confirm the runner is absent before each call. The daemon had already run earlier requests. Each result used the existing Sliced beef draft. A `calculated` result means the live advice failed a check and the fallback was shown.
 
 | Trial | Cold after runner unload, ms | Warm after preheat, ms |
 | --- | ---: | ---: |
-| 1 | 2,388 | 582 |
-| 2 | 2,364 | 565 |
-| 3 | 2,341 | 563 |
-| 4 | 2,374 | 567 |
-| 5 | 2,366 | 567 |
+| 1 | 1,926 | 161 |
+| 2 | 1,948 | 172 |
+| 3 | 1,946 | 150 |
+| 4 | 1,933 | 155 |
+| 5 | 1,971 | 170 (calculated, contains-number) |
 
 On the initial host run, all 5 cold foreground calls hit the original 8 s limit. A direct minimal request took 40.69 s once, including 20.77 s reported load and 18.50 s prompt evaluation. The final adapter gives background warmup a 60 s minimum, holds the loaded model for 10 minutes and preserves the 8 s foreground fallback. These results do not establish a general cold startup guarantee.
 

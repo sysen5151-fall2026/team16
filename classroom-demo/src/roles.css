@@ -90,6 +90,7 @@
 .model-explanation { margin-top: 15px; }
 .model-explanation:empty { display: none; }
 .model-explanation p { white-space: pre-line; }
+.model-explanation p + strong { display: block; margin-top: 10px; }
 
 @media (max-width: 580px) {
   .sign-in-card .account-grid { grid-template-columns: 1fr; }

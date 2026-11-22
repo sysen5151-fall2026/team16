@@ -7,19 +7,17 @@ const adapterModule = import('../server/model-adapter/index.mjs');
 
 const draft = {
   kind: 'draft',
+  summary: 'Sliced beef has 8 kg of usable stock against 12 kg of forecast demand. The pack-rounded recommendation is 4 kg.',
   facts: {
     ingredient: 'Sliced beef',
-    orderQuantity: 4,
-    unit: 'kg',
-    costCents: 5800,
-    waste: [{ date: '2026-10-21', quantity: 1, reason: 'Overproduction' }],
+    purchaseBasis: 'forecast demand exceeds usable stock',
+    recentWaste: 'recorded in the last seven days, reasons: Overproduction',
   },
-  candidates: [
-    'The calculated purchase is 4 kg of Sliced beef. Review the recent overproduction before approving.',
-    'PANTRI recommends 4 kg of Sliced beef at $58.00. Check the 1 kg wasted on October 21 before approving.',
-  ],
-  fallback: 'PANTRI calculated 4 kg of Sliced beef at $58.00.',
+  knownNames: ['Sliced beef', 'Beef brisket', 'Pork belly', 'Red onions'],
+  fallback: 'PANTRI calculated 4 kg of Sliced beef. Compare prepared quantities with recorded usage.',
 };
+const goodAdvice = 'Review sliced beef prep against recorded usage to curb overproduction before the next order.';
+const good = { advice: goodAdvice };
 
 function sendChat(response, content) {
   response.writeHead(200, { 'Content-Type': 'application/json' });
@@ -63,24 +61,15 @@ function verifyLog(entry, { event = 'explanation', fallback = false, reason = nu
   assert.deepEqual(entry, { type: 'model', event, elapsedMs: entry.elapsedMs, fallback, reason, model });
 }
 
-test('accepts a supplied paragraph with the exact facts', async t => {
+test('adds checked model advice after the calculated summary', async t => {
   const { createModelAdapter } = await adapterModule;
-  const content = JSON.stringify({
-    facts: {
-      waste: [{ reason: 'Overproduction', quantity: 1, date: '2026-10-21' }],
-      costCents: 5800,
-      unit: 'kg',
-      orderQuantity: 4,
-      ingredient: 'Sliced beef',
-    },
-    text: draft.candidates[1],
-  });
+  const content = JSON.stringify(good);
   const model = await startModel(t, response => sendChat(response, content));
   const events = [];
   const explain = createModelAdapter({ baseUrl: model.baseUrl, log: entry => events.push(entry) });
 
   assert.deepEqual(explain.health(), { name: 'qwen2.5:3b', status: 'warming', reason: null });
-  assert.deepEqual(await explain(draft), { source: 'model', text: draft.candidates[1] });
+  assert.deepEqual(await explain(draft), { source: 'model', text: draft.summary, advice: goodAdvice });
   assert.deepEqual(explain.health(), { name: 'qwen2.5:3b', status: 'ready', reason: null });
   assert.equal(model.requests.length, 1);
   const [{ method, path, body }] = model.requests;
@@ -92,32 +81,31 @@ test('accepts a supplied paragraph with the exact facts', async t => {
   assert.equal(request.keep_alive, '10m');
   if (request.format !== 'json') {
     assert.equal(request.format.type, 'object');
-    assert.deepEqual(request.format.required, ['facts', 'text']);
+    assert.deepEqual(request.format.required, ['advice']);
     assert.equal(request.format.additionalProperties, false);
   }
   const userMessage = request.messages.find(message => message.role === 'user');
-  assert.deepEqual(JSON.parse(userMessage.content), { kind: 'draft', facts: draft.facts, candidates: draft.candidates });
+  assert.deepEqual(JSON.parse(userMessage.content), { kind: 'draft', facts: draft.facts });
+  assert.ok(!/\d/.test(JSON.stringify(draft.facts)), 'the model is given no quantities');
   assert.equal(events.length, 1);
   verifyLog(events[0]);
 });
 
 test('falls back when an Ollama reply fails validation', async t => {
   const { createModelAdapter } = await adapterModule;
-  const correct = { facts: draft.facts, text: draft.candidates[0] };
   const invalidReplies = [
     ['non-JSON HTTP body', 'invalid-json', response => response.end('Plain text from Ollama')],
     ['non-JSON assistant content', 'invalid-json', response => sendChat(response, 'Buy a little more.')],
-    ['missing field', 'invalid-response', response => sendChat(response, JSON.stringify({ facts: draft.facts }))],
-    ['extra field', 'invalid-response', { ...correct, extra: 'unexpected' }],
-    ['wrong cents', 'facts-mismatch', { ...correct, facts: { ...draft.facts, costCents: 5801 } }],
-    ['quantity as a string', 'facts-mismatch', { ...correct, facts: { ...draft.facts, orderQuantity: '4' } }],
-    ['wrong nested date', 'facts-mismatch', {
-      ...correct,
-      facts: { ...draft.facts, waste: [{ date: '2026-10-22', quantity: 1, reason: 'Overproduction' }] },
-    }],
-    ['invented ingredient in facts', 'facts-mismatch', { ...correct, facts: { ...draft.facts, ingredient: 'Lobster' } }],
-    ['invented ingredient in prose', 'untrusted-text', { ...correct, text: 'Order 4 kg of Lobster.' }],
-    ['unapproved prose', 'untrusted-text', { ...correct, text: `${correct.text} Approve before noon.` }],
+    ['missing field', 'invalid-response', response => sendChat(response, JSON.stringify({ text: goodAdvice }))],
+    ['extra field', 'invalid-response', { ...good, extra: 'unexpected' }],
+    ['empty advice', 'invalid-response', { advice: '   ' }],
+    ['advice as a number', 'invalid-response', { advice: 4 }],
+    ['well-formed but wrong quantity', 'contains-number', { advice: 'Order 6 kg of sliced beef instead of 4 kg.' }],
+    ['wrong date', 'contains-number', { advice: 'Overproduction peaked on Oct 22, so review prep.' }],
+    ['spelled-out number', 'contains-number', { advice: 'Prepare two fewer trays of sliced beef.' }],
+    ['different known ingredient', 'unknown-ingredient', { advice: 'Review pork belly prep instead.' }],
+    ['order instruction', 'order-instruction', { advice: 'Approve the sliced beef draft before noon.' }],
+    ['rambling advice', 'too-long', { advice: Array(60).fill('review').join(' ') }],
   ];
 
   for (const [name, reason, reply] of invalidReplies) {
@@ -169,10 +157,7 @@ test('uses calculated text when the configured model is missing', async t => {
 
 test('uses calculated text when the loopback service stops', async t => {
   const { createModelAdapter } = await adapterModule;
-  const model = await startModel(t, response => sendChat(response, JSON.stringify({
-    facts: draft.facts,
-    text: draft.candidates[0],
-  })));
+  const model = await startModel(t, response => sendChat(response, JSON.stringify(good)));
   const events = [];
   const explain = createModelAdapter({ baseUrl: model.baseUrl, log: entry => events.push(entry) });
 
@@ -194,10 +179,7 @@ test('rejects a non-loopback or non-HTTP base URL', async () => {
 
 test('rejects Ollama cloud model tags before connecting', async t => {
   const { createModelAdapter } = await adapterModule;
-  const model = await startModel(t, response => sendChat(response, JSON.stringify({
-    facts: draft.facts,
-    text: draft.candidates[0],
-  })));
+  const model = await startModel(t, response => sendChat(response, JSON.stringify(good)));
   for (const name of ['gemma4:cloud', 'qwen3-coder:480b-cloud']) {
     const explain = createModelAdapter({ baseUrl: model.baseUrl, model: name });
     assert.deepEqual(await explain(draft), { source: 'calculated', text: draft.fallback });
@@ -212,7 +194,7 @@ test('ignores redirects from the loopback service', async t => {
     if (call === 1) {
       response.writeHead(307, { Location: '/forwarded' }).end();
     } else {
-      sendChat(response, JSON.stringify({ facts: draft.facts, text: draft.candidates[0] }));
+      sendChat(response, JSON.stringify(good));
     }
   });
   const explain = createModelAdapter({ baseUrl: model.baseUrl });
@@ -221,24 +203,23 @@ test('ignores redirects from the loopback service', async t => {
   assert.equal(model.requests.length, 1);
 });
 
-test('warmup checks a fixed reply and can recover after failure', async t => {
+test('warmup checks the reply shape and can recover after failure', async t => {
   const { createModelAdapter } = await adapterModule;
-  const model = await startModel(t, (response, call) => sendChat(response, JSON.stringify({
-    facts: { status: 'ready' },
-    text: call === 1 ? 'Incorrect warmup reply.' : 'PANTRI model ready.',
-  })));
+  const model = await startModel(t, (response, call) => sendChat(response, JSON.stringify(
+    call === 1 ? { status: 'ready' } : { advice: 'PANTRI model ready.' },
+  )));
   const events = [];
   const explain = createModelAdapter({ baseUrl: model.baseUrl, log: entry => events.push(entry) });
 
   const first = await explain.warmup();
-  assert.deepEqual(first, { name: 'qwen2.5:3b', status: 'unavailable', reason: 'untrusted-text' });
+  assert.deepEqual(first, { name: 'qwen2.5:3b', status: 'unavailable', reason: 'invalid-response' });
   assert.deepEqual(explain.health(), first);
   const second = await explain.warmup();
   assert.deepEqual(second, { name: 'qwen2.5:3b', status: 'ready', reason: null });
   assert.deepEqual(explain.health(), second);
   assert.deepEqual(model.requests.map(request => request.path), ['/api/chat', '/api/chat']);
   assert.equal(events.length, 2);
-  verifyLog(events[0], { event: 'warmup', fallback: true, reason: 'untrusted-text' });
+  verifyLog(events[0], { event: 'warmup', fallback: true, reason: 'invalid-response' });
   verifyLog(events[1], { event: 'warmup' });
 });
 
@@ -246,8 +227,8 @@ test('startup warmup can outlast the explanation deadline', { timeout: 3000 }, a
   const { createModelAdapter } = await adapterModule;
   const model = await startModel(t, (response, call) => {
     const content = call === 1
-      ? { facts: { status: 'ready' }, text: 'PANTRI model ready.' }
-      : { facts: draft.facts, text: draft.candidates[0] };
+      ? { advice: 'PANTRI model ready.' }
+      : good;
     const timer = setTimeout(() => sendChat(response, JSON.stringify(content)), 300);
     response.once('close', () => clearTimeout(timer));
   });
@@ -263,10 +244,7 @@ test('startup warmup can outlast the explanation deadline', { timeout: 3000 }, a
 
 test('disabled adapters return calculated text without connecting', async t => {
   const { createModelAdapter } = await adapterModule;
-  const model = await startModel(t, response => sendChat(response, JSON.stringify({
-    facts: draft.facts,
-    text: draft.candidates[0],
-  })));
+  const model = await startModel(t, response => sendChat(response, JSON.stringify(good)));
   const events = [];
   const explain = createModelAdapter({ baseUrl: model.baseUrl, enabled: false, log: entry => events.push(entry) });
 

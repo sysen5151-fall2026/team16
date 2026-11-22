@@ -165,6 +165,9 @@ test('external workspaces render their own actions and model explanations safely
   assert.doesNotMatch(support, /<invalid>|Reset demo|Record receiving/);
   assert.match(explanationBlock({ source: 'calculated', text: '<review>' }), /Showing PANTRI's calculated summary/);
   assert.match(explanationBlock({ source: 'calculated', text: '<review>' }), /&lt;review&gt;/);
+  const modelBlock = explanationBlock({ source: 'model', text: 'PANTRI numbers.', advice: '<check prep>' });
+  assert.match(modelBlock, /PANTRI calculation<\/strong><p>PANTRI numbers\.<\/p>/);
+  assert.match(modelBlock, /Suggestion from the local model<\/strong><p>&lt;check prep&gt;<\/p>/);
 });
 
 test('manager handoffs point to the real portals and explanations have independent update regions', () => {

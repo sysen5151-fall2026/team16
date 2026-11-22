@@ -25,7 +25,7 @@ export const presentationRoutes = [
   }),
   route('GET', '/api/reports/waste-insights', ['manager'], async ({ state, query, explain }) => {
     const { range, insights } = scopedReport(state, query);
-    const context = wasteExplanation(insights[0], range);
+    const context = wasteExplanation(state, insights[0]);
     return { revision: state.revision, insights, explanation: context ? await explain(context) : null };
   }),
   route('GET', '/api/drafts/:id/explanation', ['manager'], async ({ state, id, query, explain }) => {

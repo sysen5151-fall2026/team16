@@ -1,6 +1,14 @@
 import { findRecord } from '../validation.mjs';
 
+// Each explanation has three parts:
+//   summary  - PANTRI's own sentence with every number (always shown first, never written by the model)
+//   facts    - qualitative facts the local model may use for its advice (no quantities)
+//   fallback - the full calculated text shown when the model is unavailable or its advice fails checks
+// knownNames lets the adapter reject advice that mentions any other ingredient.
+
 const recent = (insights, ingredientId) => insights.find(item => item.ingredientId === ingredientId);
+const reasonsOf = signal => (signal?.reasons ?? []).map(entry => (Array.isArray(entry) ? entry[0] : entry));
+const namesOf = state => state.ingredients.map(item => item.name);
 
 export function purchaseExplanation(state, draft, insights, ingredientId) {
   const line = ingredientId === null ? draft.lines[0] : findRecord(
@@ -9,39 +17,44 @@ export function purchaseExplanation(state, draft, insights, ingredientId) {
   if (!line) return null;
   const ingredient = findRecord(state.ingredients, line.ingredientId, 'Ingredient');
   const signal = recent(insights, ingredient.id);
-  const { unit, forecastQty, usableStock, suggestedQty, managerQty, unitCostCents } = line;
+  const { unit, forecastQty, usableStock, suggestedQty } = line;
   const basis = ingredient.name + ' has ' + usableStock + ' ' + unit + ' of usable stock against ' +
     forecastQty + ' ' + unit + ' of forecast demand. The pack-rounded recommendation is ' + suggestedQty + ' ' + unit + '.';
   const waste = signal
     ? 'Recent records show ' + signal.quantity + ' ' + unit + ' of waste for this ingredient.'
     : 'No waste for this ingredient was recorded in the current seven-day period.';
-  const alternate = 'The purchase recommendation for ' + ingredient.name + ' is ' + suggestedQty + ' ' + unit +
-    ' after comparing ' + forecastQty + ' ' + unit + ' of forecast demand with ' + usableStock + ' ' + unit + ' of usable stock.';
+  const guidance = signal
+    ? signal.guidance
+    : 'Check that the forecast still matches expected service before setting the final quantity.';
   return {
     kind: 'draft',
-    facts: { ingredientId: ingredient.id, ingredient: ingredient.name, demoDate: state.demoDate,
-      draftVersion: draft.version, unit, forecastQty, usableStock, suggestedQty, managerQty, unitCostCents,
-      latestWasteOn: signal?.latest.slice(0, 10) ?? null, recentWasteQty: signal?.quantity ?? 0 },
-    fallback: basis + ' ' + waste,
-    candidates: [alternate + ' ' + waste, waste + ' ' + basis],
+    summary: basis + ' ' + waste,
+    facts: {
+      ingredient: ingredient.name,
+      purchaseBasis: suggestedQty > 0 ? 'forecast demand exceeds usable stock' : 'usable stock covers forecast demand',
+      recentWaste: signal
+        ? 'recorded in the last seven days, reasons: ' + reasonsOf(signal).join(', ')
+        : 'none recorded in the last seven days',
+      decision: 'the restaurant manager sets and approves the final quantity',
+    },
+    knownNames: namesOf(state),
+    fallback: basis + ' ' + waste + ' ' + guidance,
   };
 }
 
-export function wasteExplanation(insight, range) {
+export function wasteExplanation(state, insight) {
   if (!insight) return null;
   const recorded = 'Recorded waste for ' + insight.name + ' was ' + insight.quantity + ' ' + insight.unit +
-    ' in the selected period.';
-  const review = insight.guidance;
-  const focus = 'Consider reviewing prep or order quantities for ' + insight.name + ' against the ' +
-    insight.quantity + ' ' + insight.unit + ' of recorded waste.';
+    ' across ' + insight.count + (insight.count === 1 ? ' record' : ' records') + ' in the selected period.';
   return {
     kind: 'waste',
+    summary: recorded,
     facts: {
-      ingredientId: insight.ingredientId, ingredient: insight.name, quantity: insight.quantity,
-      unit: insight.unit, recordCount: insight.count, latestWasteOn: insight.latest.slice(0, 10),
-      from: range.start, through: range.end,
+      ingredient: insight.name,
+      wasteReasons: reasonsOf(insight),
+      pattern: insight.count > 1 ? 'repeated in the period' : 'recorded once in the period',
     },
-    fallback: recorded + ' ' + review,
-    candidates: [recorded + ' ' + review, focus + ' ' + review],
+    knownNames: namesOf(state),
+    fallback: recorded + ' ' + insight.guidance,
   };
 }

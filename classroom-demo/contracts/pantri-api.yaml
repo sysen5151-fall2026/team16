@@ -1695,8 +1695,19 @@ components:
         source:
           type: string
           enum: [model, calculated]
-          description: A validated local-model selection or a deterministic PANTRI summary.
-        text: { type: string, minLength: 1 }
+          description: >-
+            model when the local model's advice passed every containment check; calculated when
+            PANTRI's own guidance is shown because the model was unavailable or its advice was rejected.
+        text:
+          type: string
+          minLength: 1
+          description: PANTRI's calculated summary. Every number in it comes from PANTRI, never from the model.
+        advice:
+          type: string
+          minLength: 1
+          description: >-
+            Present only when source is model. One or two sentences of number-free advice written by
+            the local model after the structure, length, number, ingredient and order-action checks.
     NullableExplanation:
       anyOf:
         - $ref: '#/components/schemas/Explanation'

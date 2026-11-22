@@ -257,8 +257,11 @@ function renderSupportPage(state, ui) {
 
 function explanationCopy(explanation) {
   if (!explanation?.text) return '';
-  const label = explanation.source === 'calculated' ? "Showing PANTRI's calculated summary" : 'Local model explanation';
-  return `<strong>${label}</strong><p>${esc(explanation.text)}</p>`;
+  if (explanation.source === 'model' && explanation.advice) {
+    return `<strong>PANTRI calculation</strong><p>${esc(explanation.text)}</p>` +
+      `<strong>Suggestion from the local model</strong><p>${esc(explanation.advice)}</p>`;
+  }
+  return `<strong>Showing PANTRI's calculated summary</strong><p>${esc(explanation.text)}</p>`;
 }
 
 function explanationBlock(explanation, scope = '') {
