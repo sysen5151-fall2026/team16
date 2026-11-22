@@ -123,7 +123,7 @@ test('Full waste and movement histories remain reachable beyond the old limits',
   });
   assert.match(html, /31–45 of 45/);
   assert.match(html, /History record 1/);
-  assert.match(pantri.ingredientDetails(state, { id: ingredient, page: 4 }).body, /Opening demo inventory/);
+  assert.match(pantri.ingredientDetails(state, { id: ingredient, page: 4 }).body, /Opening inventory/);
   assert.equal(pantri.paginate([1, 2, 3], 99, 2).page, 2);
 });
 

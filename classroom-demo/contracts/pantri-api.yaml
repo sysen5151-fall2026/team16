@@ -1,0 +1,1850 @@
+openapi: 3.1.0
+info:
+  title: PANTRI classroom demo API
+  version: 1.0.0
+  description: |
+    Same-origin JSON API for one synthetic restaurant on one local service process.
+    Select a demo account to obtain a process-local bearer token. Sign in again if
+    a service restart invalidates a session. The service checks the selected role
+    and record scope on each protected request. A supplied browser Origin must match
+    the service origin. Snapshot and list responses carry the full role-scoped demo
+    data. The starting catalog has 132 ingredients.
+
+    Send POST and PATCH bodies as application/json, at most 32,768 bytes.
+    For a state-changing request or demo sign-in, repeat the same operationId on the same account, action
+    and target resource. The server applies an accepted operation once in the
+    retained demo run. Use a fresh operationId for a new intent. Draft edits,
+    refresh and approval require the version currently under review. Reload after a version conflict
+    and review the latest quantities before issuing a new command.
+
+    Quantities use the recorded ingredient's unit. Kilograms use up to three
+    decimal places. Bags, bottles and trays use whole quantities. Currency uses
+    USD cents. Null expiration dates and unit costs mean unknown. Business event
+    timestamps use the synthetic clock and have no timezone offset.
+
+    Use storage status to distinguish authoritative saved state from the diagnostic
+    view during quarantine. The two explanation reads may wait for the local model
+    deadline, eight seconds by default. They use calculated fallback text on an
+    unavailable or rejected model result. Responses use application/json and include
+    a machine-readable code and an English message for API errors.
+servers:
+  - url: http://127.0.0.1:5173
+    description: Default loopback classroom service
+security:
+  - demoSession: []
+tags:
+  - name: Operational Records
+  - name: Ingredient Planning
+  - name: Purchase Coordination
+  - name: Recovery Coordination
+  - name: Decision Presentation
+  - name: Service Continuity
+paths:
+  /api/health:
+    get:
+      operationId: getHealth
+      tags: [Service Continuity]
+      summary: Read public service health
+      security: []
+      description: >-
+        Reports process, storage and local-model status. Poll without a demo session.
+      responses:
+        '200':
+          description: Current service health
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Health' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /api/accounts:
+    get:
+      operationId: listDemoAccounts
+      tags: [Service Continuity]
+      summary: List selectable synthetic accounts
+      security: []
+      description: >-
+        Account IDs identify login choices independently of their roles. The supplier accounts
+        are supplier (Prime Foods), supplier-fresh-fields (Fresh Fields Produce), and
+        supplier-pantry-supply (Pantry Supply Co.).
+      responses:
+        '200':
+          description: Demo accounts
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Accounts' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /api/sessions:
+    post:
+      operationId: createDemoSession
+      tags: [Service Continuity]
+      summary: Select a demo account and create its session
+      security: []
+      description: >-
+        Sign-in is passwordless. A session can last up to eight hours in the current
+        process. Retrying the same account and operation ID returns its existing
+        session while it remains active.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SessionRequest' }
+      responses:
+        '201':
+          description: Opaque demo token and account
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Session' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/MissingResource' }
+        '413': { $ref: '#/components/responses/TooLarge' }
+        '415': { $ref: '#/components/responses/WrongMediaType' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /api/snapshot:
+    get:
+      operationId: getSnapshot
+      tags: [Service Continuity]
+      summary: Read the latest role-scoped snapshot
+      x-demo-roles: [manager, staff, supplier, recovery, support]
+      description: >-
+        Use this route for refresh and role switching. Storage diagnostics are available
+        during quarantine. Support receives null for the business state. A manager may
+        explicitly reload and validate the current saved file for reconciliation.
+      parameters:
+        - name: reloadSaved
+          in: query
+          description: Revalidate the server file when the manager selects Reload saved data.
+          schema: { type: string, const: '1' }
+      responses:
+        '200':
+          description: Role-scoped state and storage diagnostics
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Snapshot' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '401': { $ref: '#/components/responses/InvalidSession' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /api/support:
+    get:
+      operationId: getSupportDiagnostics
+      tags: [Service Continuity]
+      summary: Read support diagnostics
+      x-demo-roles: [support]
+      description: >-
+        Returns up to 100 recent process-local operation and model outcomes, most
+        recent first. Entries contain diagnostic metadata.
+      responses:
+        '200':
+          description: Storage, model and recent operation diagnostics
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SupportDiagnostics' }
+        '401': { $ref: '#/components/responses/InvalidSession' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /api/inventory:
+    get:
+      operationId: listInventory
+      tags: [Operational Records]
+      summary: List scoped inventory summaries
+      x-demo-roles: [manager, staff]
+      description: >-
+        Combines supplied filters. The query matches ingredient name or category without
+        regard to case.
+      parameters:
+        - $ref: '#/components/parameters/Risk'
+        - $ref: '#/components/parameters/CategoryFilter'
+        - $ref: '#/components/parameters/InventoryQuery'
+      responses:
+        '200':
+          description: Matching ingredient summaries
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/InventoryList' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '401': { $ref: '#/components/responses/InvalidSession' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /api/inventory/{id}:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    get:
+      operationId: getInventoryItem
+      tags: [Operational Records]
+      summary: Read an ingredient and its recorded movements
+      x-demo-roles: [manager, staff]
+      responses:
+        '200':
+          description: Ingredient summary and its movement history
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/InventoryDetail' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '401': { $ref: '#/components/responses/InvalidSession' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/MissingResource' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /api/inventory/records:
+    post:
+      operationId: recordInventoryMovement
+      tags: [Operational Records]
+      summary: Record a receipt, usage, count or waste movement
+      x-demo-roles: [manager, staff]
+      description: >-
+        A count sets an absolute batch quantity and keeps prior and revised values. A
+        receipt can reference one sent order and may not exceed the remaining approved line
+        quantity. Usage, counts and waste preserve active recovery reservations.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/InventoryRecord' }
+      responses:
+        '200': { $ref: '#/components/responses/CommandCompleted' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '401': { $ref: '#/components/responses/InvalidSession' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/MissingResource' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '413': { $ref: '#/components/responses/TooLarge' }
+        '415': { $ref: '#/components/responses/WrongMediaType' }
+        '500': { $ref: '#/components/responses/InternalError' }
+        '503': { $ref: '#/components/responses/StorageUnavailable' }
+
+  /api/drafts:
+    get:
+      operationId: listDrafts
+      tags: [Ingredient Planning]
+      summary: List purchase drafts
+      x-demo-roles: [manager]
+      responses:
+        '200':
+          description: Purchase drafts
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/DraftList' }
+        '401': { $ref: '#/components/responses/InvalidSession' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /api/drafts/{id}:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    get:
+      operationId: getDraft
+      tags: [Ingredient Planning]
+      summary: Read a purchase draft and its planning basis
+      x-demo-roles: [manager]
+      responses:
+        '200':
+          description: Purchase draft and current version
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/DraftDetail' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '401': { $ref: '#/components/responses/InvalidSession' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/MissingResource' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    patch:
+      operationId: editDraft
+      tags: [Purchase Coordination]
+      summary: Save manager quantities to the reviewed draft version
+      x-demo-roles: [manager]
+      description: >-
+        Only the current editable draft version accepts a new edit. The next version
+        requires renewed review.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/DraftEdit' }
+      responses:
+        '200': { $ref: '#/components/responses/CommandCompleted' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '401': { $ref: '#/components/responses/InvalidSession' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/MissingResource' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '413': { $ref: '#/components/responses/TooLarge' }
+        '415': { $ref: '#/components/responses/WrongMediaType' }
+        '500': { $ref: '#/components/responses/InternalError' }
+        '503': { $ref: '#/components/responses/StorageUnavailable' }
+
+  /api/drafts/{id}/refresh:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    post:
+      operationId: refreshDraft
+      tags: [Ingredient Planning]
+      summary: Recalculate the current draft from recorded facts
+      x-demo-roles: [manager]
+      description: >-
+        Uses the shared planning and stock selectors and advances the draft version.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/VersionCommand' }
+      responses:
+        '200': { $ref: '#/components/responses/CommandCompleted' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '401': { $ref: '#/components/responses/InvalidSession' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/MissingResource' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '413': { $ref: '#/components/responses/TooLarge' }
+        '415': { $ref: '#/components/responses/WrongMediaType' }
+        '500': { $ref: '#/components/responses/InternalError' }
+        '503': { $ref: '#/components/responses/StorageUnavailable' }
+
+  /api/drafts/{id}/approval:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    post:
+      operationId: approveDraft
+      tags: [Purchase Coordination]
+      summary: Retain explicit approval of the exact draft version
+      x-demo-roles: [manager]
+      description: >-
+        Commits the current approved quantities and version as a new order. Dispatch is a
+        subsequent command on the returned order ID. A changed planning basis or version
+        requires fresh review.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/VersionCommand' }
+      responses:
+        '200': { $ref: '#/components/responses/ApprovalCompleted' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '401': { $ref: '#/components/responses/InvalidSession' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/MissingResource' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '413': { $ref: '#/components/responses/TooLarge' }
+        '415': { $ref: '#/components/responses/WrongMediaType' }
+        '500': { $ref: '#/components/responses/InternalError' }
+        '503': { $ref: '#/components/responses/StorageUnavailable' }
+
+  /api/drafts/{id}/explanation:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    get:
+      operationId: explainDraft
+      tags: [Ingredient Planning]
+      summary: Explain a recorded purchase recommendation
+      x-demo-roles: [manager]
+      description: >-
+        Uses the draft line's deterministic data and seven-day waste context. A bounded
+        local-model request may add latency. A calculated fallback leaves the recommendation
+        unchanged. The browser can compare the returned revision with its displayed
+        snapshot.
+      parameters:
+        - $ref: '#/components/parameters/ExplanationIngredient'
+      responses:
+        '200':
+          description: Revision and draft explanation
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/DraftExplanation' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '401': { $ref: '#/components/responses/InvalidSession' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/MissingResource' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /api/orders:
+    get:
+      operationId: listOrders
+      tags: [Purchase Coordination]
+      summary: List orders within the current role's scope
+      x-demo-roles: [manager, staff, supplier]
+      description: >-
+        Managers see retained orders, including approvals awaiting dispatch. Staff see sent
+        orders for receiving. Each supplier account sees only its own sent orders.
+      responses:
+        '200':
+          description: Orders within role scope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/OrderList' }
+        '401': { $ref: '#/components/responses/InvalidSession' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /api/orders/{id}/dispatch:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    post:
+      operationId: dispatchApprovedOrder
+      tags: [Purchase Coordination]
+      summary: Dispatch a retained approved order
+      x-demo-roles: [manager]
+      description: >-
+        Run after approval succeeds. Sends the retained quantities into the supplier portal.
+        A repeat dispatch preserves the original sent event.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/OperationCommand' }
+      responses:
+        '200': { $ref: '#/components/responses/CommandCompleted' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '401': { $ref: '#/components/responses/InvalidSession' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/MissingResource' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '413': { $ref: '#/components/responses/TooLarge' }
+        '415': { $ref: '#/components/responses/WrongMediaType' }
+        '500': { $ref: '#/components/responses/InternalError' }
+        '503': { $ref: '#/components/responses/StorageUnavailable' }
+
+  /api/orders/{id}/follow-up-drafts:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    post:
+      operationId: createFollowUpDraft
+      tags: [Purchase Coordination]
+      summary: Create a fresh draft for an order's ingredients
+      x-demo-roles: [manager]
+      description: >-
+        Recalculates a separate draft from current records. The approved order retains its
+        approved lines.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/OperationCommand' }
+      responses:
+        '200': { $ref: '#/components/responses/CommandCompleted' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '401': { $ref: '#/components/responses/InvalidSession' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/MissingResource' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '413': { $ref: '#/components/responses/TooLarge' }
+        '415': { $ref: '#/components/responses/WrongMediaType' }
+        '500': { $ref: '#/components/responses/InternalError' }
+        '503': { $ref: '#/components/responses/StorageUnavailable' }
+
+  /api/orders/{id}/supplier-events:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    post:
+      operationId: recordSupplierEvent
+      tags: [Purchase Coordination]
+      summary: Record a supplier response to a sent order
+      x-demo-roles: [supplier, manager]
+      description: >-
+        A supplier can respond to its own sent order. A manager can use this route with
+        simulate set to true through Data tools. A confirmation changes recorded supplier
+        status. Physical receiving is a separate inventory command. An older valid response
+        can remain in history without replacing the latest status.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SupplierEventRequest' }
+      responses:
+        '200': { $ref: '#/components/responses/CommandCompleted' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '401': { $ref: '#/components/responses/InvalidSession' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/MissingResource' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '413': { $ref: '#/components/responses/TooLarge' }
+        '415': { $ref: '#/components/responses/WrongMediaType' }
+        '500': { $ref: '#/components/responses/InternalError' }
+        '503': { $ref: '#/components/responses/StorageUnavailable' }
+
+  /api/recoveries:
+    get:
+      operationId: listRecoveryRequests
+      tags: [Recovery Coordination]
+      summary: List recovery requests within role scope
+      x-demo-roles: [manager, recovery]
+      description: >-
+        The recovery demo account sees the requests assigned to Community Food Recovery.
+      responses:
+        '200':
+          description: Recovery requests within role scope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RecoveryList' }
+        '401': { $ref: '#/components/responses/InvalidSession' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    post:
+      operationId: createRecoveryRequest
+      tags: [Recovery Coordination]
+      summary: Reserve a batch quantity for requested pickup
+      x-demo-roles: [manager]
+      description: >-
+        Requires known nonexpired stock and sufficient unreserved quantity. An open
+        reservation reduces availability. The recorded on-hand quantity changes when pickup
+        is recorded. Use the exact name of a recovery-role account from GET /api/accounts.
+        Previously saved requests retain their original partner names.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RecoveryRequest' }
+      responses:
+        '200': { $ref: '#/components/responses/CommandCompleted' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '401': { $ref: '#/components/responses/InvalidSession' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/MissingResource' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '413': { $ref: '#/components/responses/TooLarge' }
+        '415': { $ref: '#/components/responses/WrongMediaType' }
+        '500': { $ref: '#/components/responses/InternalError' }
+        '503': { $ref: '#/components/responses/StorageUnavailable' }
+
+  /api/recoveries/{id}/partner-events:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    post:
+      operationId: recordRecoveryPartnerEvent
+      tags: [Recovery Coordination]
+      summary: Record recovery partner acceptance or exception
+      x-demo-roles: [recovery, manager]
+      description: >-
+        The assigned partner can respond to its own active request. A manager can apply a
+        simulated response with simulate set to true. A decline is recorded as an exception
+        and holds the reservation while the manager resolves the request.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RecoveryPartnerEventRequest' }
+      responses:
+        '200': { $ref: '#/components/responses/CommandCompleted' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '401': { $ref: '#/components/responses/InvalidSession' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/MissingResource' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '413': { $ref: '#/components/responses/TooLarge' }
+        '415': { $ref: '#/components/responses/WrongMediaType' }
+        '500': { $ref: '#/components/responses/InternalError' }
+        '503': { $ref: '#/components/responses/StorageUnavailable' }
+
+  /api/recoveries/{id}/collection:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    post:
+      operationId: recordRecoveryCollection
+      tags: [Recovery Coordination]
+      summary: Record pickup against an accepted request
+      x-demo-roles: [recovery, manager]
+      description: >-
+        The assigned partner records pickup after collection. Data tools requires simulate
+        set to true for a manager. A successful pickup records the stock movement, consumes
+        the reservation and closes the request.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CollectionRequest' }
+      responses:
+        '200': { $ref: '#/components/responses/CommandCompleted' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '401': { $ref: '#/components/responses/InvalidSession' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/MissingResource' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '413': { $ref: '#/components/responses/TooLarge' }
+        '415': { $ref: '#/components/responses/WrongMediaType' }
+        '500': { $ref: '#/components/responses/InternalError' }
+        '503': { $ref: '#/components/responses/StorageUnavailable' }
+
+  /api/recoveries/{id}/cancellation:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    post:
+      operationId: cancelRecoveryRequest
+      tags: [Recovery Coordination]
+      summary: Cancel an active request and release its reservation
+      x-demo-roles: [manager]
+      description: >-
+        Cancellation releases the reserved quantity. On-hand stock remains at the recorded
+        physical quantity.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/OperationCommand' }
+      responses:
+        '200': { $ref: '#/components/responses/CommandCompleted' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '401': { $ref: '#/components/responses/InvalidSession' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/MissingResource' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '413': { $ref: '#/components/responses/TooLarge' }
+        '415': { $ref: '#/components/responses/WrongMediaType' }
+        '500': { $ref: '#/components/responses/InternalError' }
+        '503': { $ref: '#/components/responses/StorageUnavailable' }
+
+  /api/reports:
+    get:
+      operationId: getReports
+      tags: [Decision Presentation]
+      summary: Read deterministic performance measures and waste signals
+      x-demo-roles: [manager]
+      parameters:
+        - $ref: '#/components/parameters/Period'
+      responses:
+        '200':
+          description: Report and recorded waste insights
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Reports' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '401': { $ref: '#/components/responses/InvalidSession' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /api/reports/waste-insights:
+    get:
+      operationId: getWasteInsights
+      tags: [Decision Presentation]
+      summary: Read recorded waste signals with a guarded explanation
+      x-demo-roles: [manager]
+      description: >-
+        Returns the calculation revision alongside the insights. An eligible local-model
+        request has a bounded deadline and falls back to calculated text. A period with no
+        applicable evidence may have a null explanation.
+      parameters:
+        - $ref: '#/components/parameters/Period'
+      responses:
+        '200':
+          description: Revision, waste insights and explanation
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/WasteInsights' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '401': { $ref: '#/components/responses/InvalidSession' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /api/assistant/questions:
+    post:
+      operationId: askPantri
+      tags: [Decision Presentation]
+      summary: Answer a read-only English question about restaurant records
+      x-demo-roles: [manager, staff]
+      description: |
+        Uses the role-scoped snapshot captured when the question enters the handler.
+        Ollama may classify the question within the standard model deadline, eight
+        seconds by default. PANTRI checks the classification independently and
+        falls back to keywords or help. PANTRI computes all facts and quantities.
+        This request has no operationId and cannot modify business records.
+        Staff receiving answers cover sent orders still awaiting stock receipt.
+        Unavailable capabilities and ambiguous ingredients receive explanatory
+        answers without restricted data. An unspecified waste period uses the last
+        seven synthetic calendar days. Raw questions are excluded from diagnostics.
+        The service declines to answer while saved data is quarantined.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AssistantQuestion' }
+      responses:
+        '200':
+          description: Snapshot revision, interpretation source and grounded answer
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AssistantResponse' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '401': { $ref: '#/components/responses/InvalidSession' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '413': { $ref: '#/components/responses/TooLarge' }
+        '415': { $ref: '#/components/responses/WrongMediaType' }
+        '500': { $ref: '#/components/responses/InternalError' }
+        '503': { $ref: '#/components/responses/StorageUnavailable' }
+
+  /api/demo/reset:
+    post:
+      operationId: resetClassroomDemo
+      tags: [Service Continuity]
+      summary: Reset the active synthetic restaurant to the classroom seed
+      x-demo-roles: [manager]
+      description: >-
+        Reset explicitly replaces the shared synthetic state and clears the previous
+        checkpoint. This is available during quarantine when the saved record is
+        unchanged and writable. Request a fresh snapshot after reset.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/OperationCommand' }
+      responses:
+        '200': { $ref: '#/components/responses/CommandCompleted' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '401': { $ref: '#/components/responses/InvalidSession' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '413': { $ref: '#/components/responses/TooLarge' }
+        '415': { $ref: '#/components/responses/WrongMediaType' }
+        '500': { $ref: '#/components/responses/InternalError' }
+        '503': { $ref: '#/components/responses/StorageUnavailable' }
+
+  /api/checkpoints/previous:
+    get:
+      operationId: getPreviousCheckpoint
+      tags: [Service Continuity]
+      summary: Read the most recent independently verified prior checkpoint
+      x-demo-roles: [manager]
+      description: >-
+        Supports manual reconciliation. The read leaves the active state intact.
+      responses:
+        '200':
+          description: Previous verified operational snapshot
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Checkpoint' }
+        '401': { $ref: '#/components/responses/InvalidSession' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/MissingResource' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /api/storage/raw:
+    get:
+      operationId: getRawRecoveryRecord
+      tags: [Service Continuity]
+      summary: Read the exact saved text held for recovery diagnostics
+      x-demo-roles: [manager]
+      description: >-
+        The saved file is available whenever a readable record exists. This includes
+        the raw file held for reconciliation after a parsing or integrity fault.
+      responses:
+        '200':
+          description: Retained raw saved-file text
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RawRecord' }
+        '401': { $ref: '#/components/responses/InvalidSession' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/MissingResource' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+components:
+  securitySchemes:
+    demoSession:
+      type: http
+      scheme: bearer
+      description: Opaque passwordless demo token issued by POST /api/sessions.
+
+  parameters:
+    ResourceId:
+      name: id
+      in: path
+      required: true
+      schema: { $ref: '#/components/schemas/Identifier' }
+    ExplanationIngredient:
+      name: ingredientId
+      in: query
+      description: Select a specific ingredient line of the draft.
+      schema: { $ref: '#/components/schemas/Identifier' }
+    Risk:
+      name: risk
+      in: query
+      schema:
+        type: string
+        enum: [attention, healthy, expired, unknown, low, expiring]
+    CategoryFilter:
+      name: category
+      in: query
+      description: Match the stored ingredient category.
+      schema: { type: string, maxLength: 80 }
+    InventoryQuery:
+      name: query
+      in: query
+      description: Search an ingredient name or category.
+      schema: { type: string, maxLength: 120 }
+    Period:
+      name: period
+      in: query
+      schema:
+        type: string
+        enum: [week, today]
+        default: week
+      description: Seven synthetic calendar days through the demo date, or that date alone.
+
+  responses:
+    CommandCompleted:
+      description: The command was accepted. The response includes the current role-scoped snapshot and a record ID when applicable.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/CommandResult' }
+    ApprovalCompleted:
+      description: Approval was persisted. The record ID identifies the approved order for the dispatch command.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ApprovalResult' }
+    InvalidRequest:
+      description: Malformed JSON, malformed path or query, or invalid request fields.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    InvalidSession:
+      description: Missing or invalid demo bearer token.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Forbidden:
+      description: Browser origin, role or record scope does not permit this operation.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    MissingResource:
+      description: The resource or requested recovery artifact is absent.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Conflict:
+      description: Stale draft version, changed planning basis, or invalid transaction state.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    TooLarge:
+      description: The JSON body exceeds 32,768 bytes.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    WrongMediaType:
+      description: The command requires application/json.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    InternalError:
+      description: An unexpected error prevented the API from completing the request.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    StorageUnavailable:
+      description: Storage is unavailable or quarantined.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+
+  schemas:
+    AssistantQuestion:
+      type: object
+      required: [question]
+      additionalProperties: false
+      properties:
+        question: { type: string, minLength: 1, maxLength: 300, pattern: '\S' }
+    AssistantIntent:
+      type: string
+      enum: [stock_level, low_stock, expiring, purchase_suggestion, order_status, waste_summary, recovery_status, help, out_of_scope]
+    AssistantSource:
+      type: string
+      enum: [model, keywords, none]
+    AssistantResponse:
+      type: object
+      required: [revision, understoodBy, interpretation, answer, suggestions]
+      additionalProperties: false
+      properties:
+        revision: { $ref: '#/components/schemas/Whole' }
+        understoodBy: { $ref: '#/components/schemas/AssistantSource' }
+        interpretation:
+          type: object
+          required: [intent, ingredientId, period]
+          additionalProperties: false
+          properties:
+            intent: { $ref: '#/components/schemas/AssistantIntent' }
+            ingredientId:
+              anyOf:
+                - $ref: '#/components/schemas/Identifier'
+                - type: 'null'
+            period: { enum: ['today', 'week', 'all', null] }
+        answer:
+          type: object
+          required: [text, items, total]
+          additionalProperties: false
+          properties:
+            text: { type: string }
+            items:
+              type: array
+              maxItems: 5
+              items: { $ref: '#/components/schemas/AssistantAnswerItem' }
+            total:
+              $ref: '#/components/schemas/Whole'
+              description: Total matching items before truncation.
+        suggestions:
+          type: array
+          minItems: 1
+          maxItems: 4
+          items: { type: string }
+    AssistantAnswerItem:
+      type: object
+      description: Fields vary by intent and role. Staff order items omit supplier status.
+      additionalProperties: false
+      properties:
+        id: { $ref: '#/components/schemas/Identifier' }
+        ingredientId: { $ref: '#/components/schemas/Identifier' }
+        name: { type: string }
+        unit: { $ref: '#/components/schemas/Unit' }
+        text: { type: string }
+        status: { type: string }
+        onHand: { type: number, minimum: 0 }
+        usableStock: { type: number, minimum: 0 }
+        reserved: { type: number, minimum: 0 }
+        reorderPoint: { $ref: '#/components/schemas/Quantity' }
+        nearest: { $ref: '#/components/schemas/NullableDate' }
+        expiresOn: { $ref: '#/components/schemas/Date' }
+        quantity: { type: number, minimum: 0 }
+        suggestedQty: { type: number, minimum: 0 }
+        managerQty: { $ref: '#/components/schemas/Quantity' }
+        estimateCents: { type: [integer, 'null'], minimum: 0 }
+        supplierId: { type: string }
+        supplierStatus: { type: string }
+        fulfillmentStatus: { type: string }
+        partnerId: { type: string }
+        count: { $ref: '#/components/schemas/Whole' }
+        mainReason: { type: string }
+    Identifier:
+      type: string
+      minLength: 1
+      maxLength: 96
+      pattern: '^[A-Za-z0-9][A-Za-z0-9_.:-]{0,95}$'
+    OperationId:
+      $ref: '#/components/schemas/Identifier'
+      description: Stable ASCII identifier scoped to the account, command and target.
+    Whole:
+      type: integer
+      minimum: 0
+    Version:
+      type: integer
+      minimum: 1
+    Quantity:
+      type: number
+      minimum: 0
+      maximum: 1000000000
+      description: Up to three decimal places for kg and a whole number for count-based units.
+    PositiveQuantity:
+      $ref: '#/components/schemas/Quantity'
+      exclusiveMinimum: 0
+    Unit:
+      type: string
+      enum: [kg, bag, bottle, tray]
+    Category:
+      type: string
+      enum: [Produce, Proteins, Dry goods, Seafood, Dairy & eggs, Other]
+    Date:
+      type: string
+      format: date
+    NullableDate:
+      anyOf:
+        - $ref: '#/components/schemas/Date'
+        - type: 'null'
+    LocalTime:
+      type: string
+      pattern: '^\d{4}-\d{2}-\d{2}T(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d$'
+      description: Demo local timestamp in YYYY-MM-DDTHH:mm:ss. Calendar dates must be valid.
+    NullableLocalTime:
+      anyOf:
+        - $ref: '#/components/schemas/LocalTime'
+        - type: 'null'
+    UnitCost:
+      type: [integer, 'null']
+      minimum: 0
+      maximum: 1000000000
+      description: USD cents per original stock unit. Null represents an unknown cost.
+    Role:
+      type: string
+      enum: [manager, staff, supplier, recovery, support]
+    Note:
+      type: string
+      maxLength: 500
+    Reason:
+      type: string
+      minLength: 1
+      maxLength: 600
+      pattern: '\S'
+    Simulate:
+      const: true
+      description: Manager demo actions require true. Partner portals omit this field.
+    StorageStatus:
+      type: string
+      enum: [ready, quarantined]
+    Error:
+      type: object
+      required: [code, message]
+      additionalProperties: false
+      properties:
+        code: { type: string, minLength: 1 }
+        message: { type: string, minLength: 1, description: Human-readable English error. }
+
+    ModelStatus:
+      type: object
+      required: [name, status, reason]
+      additionalProperties: false
+      properties:
+        name: { type: string, examples: ['qwen2.5:3b'] }
+        status:
+          type: string
+          enum: [disabled, warming, ready, unavailable]
+        reason: { type: [string, 'null'] }
+    StorageMetadata:
+      type: object
+      required: [status, problem, hasCheckpoint, hasRaw, revision, checkpointRevision]
+      additionalProperties: false
+      properties:
+        status: { $ref: '#/components/schemas/StorageStatus' }
+        problem: { type: [string, 'null'] }
+        hasCheckpoint: { type: boolean }
+        hasRaw: { type: boolean }
+        revision: { $ref: '#/components/schemas/Whole' }
+        checkpointRevision: { type: [integer, 'null'], minimum: 0 }
+    Health:
+      type: object
+      required: [status, storage, model]
+      additionalProperties: false
+      properties:
+        status: { type: string, enum: [ok, degraded] }
+        storage:
+          type: object
+          required: [status]
+          additionalProperties: false
+          properties:
+            status: { $ref: '#/components/schemas/StorageStatus' }
+        model: { $ref: '#/components/schemas/ModelStatus' }
+    Account:
+      type: object
+      required: [id, role, label, name]
+      additionalProperties: false
+      properties:
+        id:
+          $ref: '#/components/schemas/Identifier'
+          description: Stable demo account identifier, distinct from the role.
+          examples: [supplier, supplier-fresh-fields, supplier-pantry-supply]
+        role: { $ref: '#/components/schemas/Role' }
+        label: { type: string }
+        name: { type: string }
+    Accounts:
+      type: object
+      required: [accounts]
+      additionalProperties: false
+      properties:
+        accounts:
+          type: array
+          items: { $ref: '#/components/schemas/Account' }
+    SessionRequest:
+      type: object
+      required: [accountId, operationId]
+      additionalProperties: false
+      properties:
+        accountId:
+          $ref: '#/components/schemas/Identifier'
+          description: One of the account IDs from GET /api/accounts.
+          examples: [manager, supplier, supplier-fresh-fields, supplier-pantry-supply]
+        operationId: { $ref: '#/components/schemas/OperationId' }
+    Session:
+      type: object
+      required: [token, account]
+      additionalProperties: false
+      properties:
+        token: { type: string, minLength: 1 }
+        account: { $ref: '#/components/schemas/Account' }
+    SupportDiagnostics:
+      type: object
+      required: [storage, model, logs]
+      additionalProperties: false
+      properties:
+        storage: { $ref: '#/components/schemas/StorageMetadata' }
+        model: { $ref: '#/components/schemas/ModelStatus' }
+        logs:
+          type: array
+          maxItems: 100
+          items: { $ref: '#/components/schemas/DiagnosticEvent' }
+    DiagnosticEvent:
+      type: object
+      required: [type, event, at, outcome, elapsedMs]
+      additionalProperties: false
+      properties:
+        type: { type: string, enum: [operation, model, assistant] }
+        event: { type: string }
+        at: { type: string, format: date-time }
+        outcome: { type: string, enum: [ok, rejected, fallback, model, keywords, none] }
+        role: { $ref: '#/components/schemas/Role' }
+        elapsedMs: { type: number, minimum: 0 }
+        code: { type: string }
+        fallback: { type: boolean }
+        reason: { type: [string, 'null'] }
+        model: { type: string }
+        intent: { $ref: '#/components/schemas/AssistantIntent' }
+        understoodBy: { $ref: '#/components/schemas/AssistantSource' }
+
+    OperationCommand:
+      type: object
+      required: [operationId]
+      additionalProperties: false
+      properties:
+        operationId: { $ref: '#/components/schemas/OperationId' }
+    VersionCommand:
+      type: object
+      required: [operationId, version]
+      additionalProperties: false
+      properties:
+        operationId: { $ref: '#/components/schemas/OperationId' }
+        version: { $ref: '#/components/schemas/Version' }
+    DraftEdit:
+      type: object
+      required: [operationId, version, edits]
+      additionalProperties: false
+      properties:
+        operationId: { $ref: '#/components/schemas/OperationId' }
+        version: { $ref: '#/components/schemas/Version' }
+        edits:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required: [ingredientId, managerQty]
+            additionalProperties: false
+            properties:
+              ingredientId: { $ref: '#/components/schemas/Identifier' }
+              managerQty: { $ref: '#/components/schemas/Quantity' }
+
+    InventoryRecord:
+      oneOf:
+        - $ref: '#/components/schemas/ReceiptCommand'
+        - $ref: '#/components/schemas/UsageOrWasteCommand'
+        - $ref: '#/components/schemas/CountCommand'
+    ReceiptCommand:
+      type: object
+      required: [kind, ingredientId, unit, quantity, expiresOn, unitCostCents, operationId]
+      additionalProperties: false
+      properties:
+        kind: { const: receipt }
+        ingredientId: { $ref: '#/components/schemas/Identifier' }
+        unit: { $ref: '#/components/schemas/Unit' }
+        quantity: { $ref: '#/components/schemas/PositiveQuantity' }
+        batchId:
+          $ref: '#/components/schemas/Identifier'
+          description: Omit to create a new batch. Existing batches retain recorded expiration and unit cost.
+        expiresOn: { $ref: '#/components/schemas/NullableDate' }
+        unitCostCents: { $ref: '#/components/schemas/UnitCost' }
+        orderId:
+          $ref: '#/components/schemas/Identifier'
+          description: Optional sent order whose remaining approved quantity is being received.
+        reason: { type: string, maxLength: 600 }
+        operationId: { $ref: '#/components/schemas/OperationId' }
+      allOf:
+        - if:
+            properties:
+              unit: { enum: [bag, bottle, tray] }
+          then:
+            properties:
+              quantity: { type: integer }
+    UsageOrWasteCommand:
+      type: object
+      required: [kind, ingredientId, batchId, unit, quantity, reason, operationId]
+      additionalProperties: false
+      properties:
+        kind: { type: string, enum: [usage, waste] }
+        ingredientId: { $ref: '#/components/schemas/Identifier' }
+        batchId: { $ref: '#/components/schemas/Identifier' }
+        unit: { $ref: '#/components/schemas/Unit' }
+        quantity: { $ref: '#/components/schemas/PositiveQuantity' }
+        reason: { $ref: '#/components/schemas/Reason' }
+        operationId: { $ref: '#/components/schemas/OperationId' }
+      allOf:
+        - if:
+            properties:
+              unit: { enum: [bag, bottle, tray] }
+          then:
+            properties:
+              quantity: { type: integer }
+    CountCommand:
+      type: object
+      required: [kind, ingredientId, batchId, unit, countedQuantity, reason, operationId]
+      additionalProperties: false
+      properties:
+        kind: { const: count }
+        ingredientId: { $ref: '#/components/schemas/Identifier' }
+        batchId: { $ref: '#/components/schemas/Identifier' }
+        unit: { $ref: '#/components/schemas/Unit' }
+        countedQuantity:
+          $ref: '#/components/schemas/Quantity'
+          description: Absolute amount counted in the selected batch.
+        reason: { $ref: '#/components/schemas/Reason' }
+        operationId: { $ref: '#/components/schemas/OperationId' }
+      allOf:
+        - if:
+            properties:
+              unit: { enum: [bag, bottle, tray] }
+          then:
+            properties:
+              countedQuantity: { type: integer }
+
+    SupplierEventRequest:
+      type: object
+      required: [kind, operationId]
+      additionalProperties: false
+      properties:
+        kind: { type: string, enum: [confirmed, partial, delayed, exception] }
+        note: { $ref: '#/components/schemas/Note' }
+        occurredAt:
+          $ref: '#/components/schemas/LocalTime'
+          description: Omit to use the demo event clock.
+        simulate: { $ref: '#/components/schemas/Simulate' }
+        operationId: { $ref: '#/components/schemas/OperationId' }
+    RecoveryRequest:
+      type: object
+      required: [batchId, quantity, partnerId, requestedWindow, operationId]
+      additionalProperties: false
+      properties:
+        batchId: { $ref: '#/components/schemas/Identifier' }
+        quantity: { $ref: '#/components/schemas/PositiveQuantity' }
+        partnerId:
+          type: string
+          enum: [Community Food Recovery]
+          description: Exact registered recovery account name from GET /api/accounts.
+        requestedWindow:
+          type: string
+          minLength: 1
+          maxLength: 120
+          pattern: '\S'
+          description: Human-readable pickup window in the demo scenario.
+        note: { $ref: '#/components/schemas/Note' }
+        operationId: { $ref: '#/components/schemas/OperationId' }
+    RecoveryPartnerEventRequest:
+      type: object
+      required: [kind, operationId]
+      additionalProperties: false
+      properties:
+        kind: { type: string, enum: [accepted, exception] }
+        note: { $ref: '#/components/schemas/Note' }
+        occurredAt:
+          $ref: '#/components/schemas/LocalTime'
+          description: Omit to use the demo event clock.
+        simulate: { $ref: '#/components/schemas/Simulate' }
+        operationId: { $ref: '#/components/schemas/OperationId' }
+    CollectionRequest:
+      type: object
+      required: [operationId]
+      additionalProperties: false
+      properties:
+        operationId: { $ref: '#/components/schemas/OperationId' }
+        simulate: { $ref: '#/components/schemas/Simulate' }
+
+    WorkspaceEnvelope:
+      type: object
+      required: [account, state, storage]
+      properties:
+        account: { $ref: '#/components/schemas/Account' }
+        state:
+          description: Business data projected according to the signed-in role.
+          anyOf:
+            - $ref: '#/components/schemas/ManagerState'
+            - $ref: '#/components/schemas/StaffState'
+            - $ref: '#/components/schemas/SupplierState'
+            - $ref: '#/components/schemas/RecoveryState'
+            - type: 'null'
+        storage: { $ref: '#/components/schemas/StorageMetadata' }
+      allOf:
+        - if:
+            properties:
+              account:
+                properties:
+                  role: { const: manager }
+          then:
+            properties:
+              state: { $ref: '#/components/schemas/ManagerState' }
+        - if:
+            properties:
+              account:
+                properties:
+                  role: { const: staff }
+          then:
+            properties:
+              state: { $ref: '#/components/schemas/StaffState' }
+        - if:
+            properties:
+              account:
+                properties:
+                  role: { const: supplier }
+          then:
+            properties:
+              state: { $ref: '#/components/schemas/SupplierState' }
+        - if:
+            properties:
+              account:
+                properties:
+                  role: { const: recovery }
+          then:
+            properties:
+              state: { $ref: '#/components/schemas/RecoveryState' }
+        - if:
+            properties:
+              account:
+                properties:
+                  role: { const: support }
+          then:
+            properties:
+              state: { type: 'null' }
+    Snapshot:
+      $ref: '#/components/schemas/WorkspaceEnvelope'
+      unevaluatedProperties: false
+    CommandResult:
+      $ref: '#/components/schemas/WorkspaceEnvelope'
+      properties:
+        recordId: { $ref: '#/components/schemas/Identifier' }
+      unevaluatedProperties: false
+    ApprovalResult:
+      $ref: '#/components/schemas/CommandResult'
+      required: [recordId]
+    Checkpoint:
+      type: object
+      required: [checkpoint]
+      additionalProperties: false
+      properties:
+        checkpoint: { $ref: '#/components/schemas/ManagerState' }
+    RawRecord:
+      type: object
+      required: [raw]
+      additionalProperties: false
+      properties:
+        raw: { type: string, description: Saved UTF-8 file content. }
+
+    StateHeader:
+      type: object
+      required: [schemaVersion, revision, restaurantId, demoDate]
+      properties:
+        schemaVersion: { const: 1 }
+        revision: { $ref: '#/components/schemas/Whole' }
+        restaurantId: { const: restaurant-demo-1 }
+        demoDate: { $ref: '#/components/schemas/Date' }
+    ManagerState:
+      $ref: '#/components/schemas/StateHeader'
+      required: [nextId, ingredients, batches, inventoryEvents, partnerEvents, drafts, orders, recoveries, observations, operations]
+      properties:
+        nextId: { $ref: '#/components/schemas/Whole' }
+        ingredients:
+          type: array
+          items: { $ref: '#/components/schemas/Ingredient' }
+        batches:
+          type: array
+          items: { $ref: '#/components/schemas/Batch' }
+        inventoryEvents:
+          type: array
+          items: { $ref: '#/components/schemas/InventoryEvent' }
+        partnerEvents:
+          type: array
+          items: { $ref: '#/components/schemas/PartnerEvent' }
+        drafts:
+          type: array
+          items: { $ref: '#/components/schemas/Draft' }
+        orders:
+          type: array
+          items: { $ref: '#/components/schemas/Order' }
+        recoveries:
+          type: array
+          items: { $ref: '#/components/schemas/Recovery' }
+        observations:
+          type: array
+          items: { $ref: '#/components/schemas/Observation' }
+        operations:
+          type: array
+          items: { type: string }
+    StaffState:
+      $ref: '#/components/schemas/StateHeader'
+      description: Inventory, reservation quantities and sent orders for receiving.
+      required: [ingredients, batches, inventoryEvents, orders, recoveries, drafts, observations, partnerEvents]
+      unevaluatedProperties: false
+      properties:
+        ingredients:
+          type: array
+          items: { $ref: '#/components/schemas/Ingredient' }
+        batches:
+          type: array
+          items: { $ref: '#/components/schemas/Batch' }
+        inventoryEvents:
+          type: array
+          items: { $ref: '#/components/schemas/InventoryEvent' }
+        orders:
+          type: array
+          items: { $ref: '#/components/schemas/ReceivingOrder' }
+        recoveries:
+          type: array
+          items: { $ref: '#/components/schemas/Reservation' }
+        drafts: { type: array, maxItems: 0 }
+        observations: { type: array, maxItems: 0 }
+        partnerEvents: { type: array, maxItems: 0 }
+    SupplierState:
+      $ref: '#/components/schemas/StateHeader'
+      required: [orders, ingredients]
+      unevaluatedProperties: false
+      properties:
+        orders:
+          type: array
+          items: { $ref: '#/components/schemas/SupplierOrder' }
+        ingredients:
+          type: array
+          items: { $ref: '#/components/schemas/IngredientLabel' }
+    RecoveryState:
+      $ref: '#/components/schemas/StateHeader'
+      required: [recoveries, ingredients]
+      unevaluatedProperties: false
+      properties:
+        recoveries:
+          type: array
+          items: { $ref: '#/components/schemas/PartnerRecovery' }
+        ingredients:
+          type: array
+          items: { $ref: '#/components/schemas/IngredientLabel' }
+
+    IngredientIdentity:
+      type: object
+      required: [id, name, unit]
+      properties:
+        id: { $ref: '#/components/schemas/Identifier' }
+        name: { type: string }
+        unit: { $ref: '#/components/schemas/Unit' }
+    IngredientLabel:
+      $ref: '#/components/schemas/IngredientIdentity'
+      unevaluatedProperties: false
+    Ingredient:
+      $ref: '#/components/schemas/IngredientIdentity'
+      required: [restaurantId, category, reorderPoint, packSize, defaultSupplierId]
+      properties:
+        restaurantId: { type: string }
+        category: { $ref: '#/components/schemas/Category' }
+        reorderPoint: { $ref: '#/components/schemas/Quantity' }
+        packSize: { $ref: '#/components/schemas/PositiveQuantity' }
+        dailyDemand: { $ref: '#/components/schemas/Quantity' }
+        defaultSupplierId: { type: string }
+        unitWeightKg: { type: number, exclusiveMinimum: 0 }
+    InventorySummary:
+      $ref: '#/components/schemas/Ingredient'
+      required: [batches, onHand, reserved, usableStock, nearest, status, risks, valueCents, costCovered]
+      properties:
+        batches:
+          type: array
+          items: { $ref: '#/components/schemas/Batch' }
+        onHand: { type: number, minimum: 0 }
+        reserved: { type: number, minimum: 0 }
+        usableStock: { type: number, minimum: 0 }
+        nearest: { $ref: '#/components/schemas/NullableDate' }
+        status: { type: string, enum: [healthy, expired, unknown, low, expiring] }
+        risks:
+          type: array
+          items: { type: string, enum: [expired, unknown, low, expiring] }
+        updatedAt: { $ref: '#/components/schemas/LocalTime' }
+        valueCents: { $ref: '#/components/schemas/Whole' }
+        costCovered: { type: boolean }
+    Batch:
+      type: object
+      required: [id, restaurantId, ingredientId, quantity, expiresOn, unitCostCents, receivedAt, updatedAt]
+      properties:
+        id: { $ref: '#/components/schemas/Identifier' }
+        restaurantId: { type: string }
+        ingredientId: { $ref: '#/components/schemas/Identifier' }
+        quantity: { $ref: '#/components/schemas/Quantity' }
+        expiresOn: { $ref: '#/components/schemas/NullableDate' }
+        unitCostCents: { $ref: '#/components/schemas/UnitCost' }
+        receivedAt: { $ref: '#/components/schemas/LocalTime' }
+        updatedAt: { $ref: '#/components/schemas/LocalTime' }
+    InventoryEvent:
+      type: object
+      required: [id, restaurantId, ingredientId, batchId, kind, unit, quantityDelta, before, after, occurredAt, unitCostCents]
+      properties:
+        id: { $ref: '#/components/schemas/Identifier' }
+        restaurantId: { type: string }
+        ingredientId: { $ref: '#/components/schemas/Identifier' }
+        batchId: { $ref: '#/components/schemas/Identifier' }
+        kind: { type: string, enum: [receipt, usage, count, waste, collection] }
+        unit: { $ref: '#/components/schemas/Unit' }
+        quantityDelta: { type: number }
+        before: { $ref: '#/components/schemas/Quantity' }
+        after: { $ref: '#/components/schemas/Quantity' }
+        occurredAt: { $ref: '#/components/schemas/LocalTime' }
+        unitCostCents: { $ref: '#/components/schemas/UnitCost' }
+        reason: { type: string }
+        operationId: { type: string }
+        recordedBy:
+          type: string
+          description: Role label for a recorded classroom operator when available.
+        relatedOrderId: { type: [string, 'null'] }
+        previousCorrectionId: { type: [string, 'null'] }
+    InventoryList:
+      type: object
+      required: [items]
+      additionalProperties: false
+      properties:
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/InventorySummary' }
+    InventoryDetail:
+      type: object
+      required: [item, events]
+      additionalProperties: false
+      properties:
+        item: { $ref: '#/components/schemas/InventorySummary' }
+        events:
+          type: array
+          description: Inventory movements in descending event time order.
+          items: { $ref: '#/components/schemas/InventoryEvent' }
+
+    ReceivingLine:
+      type: object
+      required: [ingredientId, unit, managerQty, unitCostCents]
+      properties:
+        ingredientId: { $ref: '#/components/schemas/Identifier' }
+        unit: { $ref: '#/components/schemas/Unit' }
+        managerQty: { $ref: '#/components/schemas/Quantity' }
+        unitCostCents: { $ref: '#/components/schemas/UnitCost' }
+    DraftLine:
+      $ref: '#/components/schemas/ReceivingLine'
+      required: [dailyDemand, horizonDays, forecastQty, usableStock, excludedStock, exclusionNotes, suggestedQty]
+      properties:
+        dailyDemand: { $ref: '#/components/schemas/Quantity' }
+        horizonDays: { $ref: '#/components/schemas/Version' }
+        forecastQty: { type: number, minimum: 0 }
+        usableStock: { type: number, minimum: 0 }
+        excludedStock: { type: number, minimum: 0 }
+        exclusionNotes:
+          type: array
+          items: { type: string }
+        suggestedQty: { $ref: '#/components/schemas/Quantity' }
+    Draft:
+      type: object
+      required: [id, restaurantId, supplierId, version, status, lines, updatedAt]
+      properties:
+        id: { $ref: '#/components/schemas/Identifier' }
+        restaurantId: { type: string }
+        supplierId: { type: string }
+        version: { $ref: '#/components/schemas/Version' }
+        status: { type: string, enum: [draft, approved] }
+        lines:
+          type: array
+          minItems: 1
+          items: { $ref: '#/components/schemas/DraftLine' }
+        updatedAt: { $ref: '#/components/schemas/LocalTime' }
+        createdByOperation: { type: string }
+    DraftList:
+      type: object
+      required: [drafts]
+      additionalProperties: false
+      properties:
+        drafts:
+          type: array
+          items: { $ref: '#/components/schemas/Draft' }
+    DraftDetail:
+      type: object
+      required: [draft]
+      additionalProperties: false
+      properties:
+        draft: { $ref: '#/components/schemas/Draft' }
+    OrderSummary:
+      type: object
+      required: [id, supplierId, sentAt, supplierStatus, fulfillmentStatus, receivedQuantities]
+      properties:
+        id: { $ref: '#/components/schemas/Identifier' }
+        supplierId: { type: string }
+        sentAt: { $ref: '#/components/schemas/NullableLocalTime' }
+        supplierStatus:
+          type: string
+          enum: [not_sent, awaiting_confirmation, confirmed, partial, delayed, exception]
+        fulfillmentStatus: { type: string, enum: [not_received, partially_received, received] }
+        receivedQuantities:
+          type: object
+          description: Actual quantities per ingredient ID, in the corresponding approved line unit.
+          propertyNames: { $ref: '#/components/schemas/Identifier' }
+          additionalProperties: { $ref: '#/components/schemas/Quantity' }
+    ReceivingOrderFields:
+      $ref: '#/components/schemas/OrderSummary'
+      required: [approvedLines]
+      properties:
+        sentAt: { $ref: '#/components/schemas/LocalTime' }
+        approvedLines:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/ReceivingLine'
+            unevaluatedProperties: false
+    ReceivingOrder:
+      $ref: '#/components/schemas/ReceivingOrderFields'
+      unevaluatedProperties: false
+    SupplierOrder:
+      $ref: '#/components/schemas/ReceivingOrderFields'
+      required: [approvedAt, approvedVersion, events, followUp]
+      unevaluatedProperties: false
+      properties:
+        approvedAt: { $ref: '#/components/schemas/LocalTime' }
+        approvedVersion: { $ref: '#/components/schemas/Version' }
+        followUp: { type: string }
+        events:
+          type: array
+          items: { $ref: '#/components/schemas/ProjectedTimelineEvent' }
+    Order:
+      $ref: '#/components/schemas/OrderSummary'
+      required: [restaurantId, sourceDraftId, approvedAt, approvedVersion, approvedLines, events]
+      properties:
+        restaurantId: { type: string }
+        sourceDraftId: { $ref: '#/components/schemas/Identifier' }
+        approvedBy: { type: string }
+        approvedAt: { $ref: '#/components/schemas/LocalTime' }
+        approvedVersion: { $ref: '#/components/schemas/Version' }
+        approvedLines:
+          type: array
+          minItems: 1
+          items: { $ref: '#/components/schemas/DraftLine' }
+        events:
+          type: array
+          items: { $ref: '#/components/schemas/TimelineEvent' }
+        latestSupplierAt: { $ref: '#/components/schemas/NullableLocalTime' }
+        owner: { type: string }
+        followUp: { type: string }
+    OrderList:
+      type: object
+      required: [orders]
+      additionalProperties: false
+      properties:
+        orders:
+          type: array
+          items:
+            anyOf:
+              - $ref: '#/components/schemas/Order'
+              - $ref: '#/components/schemas/ReceivingOrder'
+              - $ref: '#/components/schemas/SupplierOrder'
+    TimelineEvent:
+      type: object
+      required: [kind, occurredAt]
+      properties:
+        kind: { type: string }
+        occurredAt: { $ref: '#/components/schemas/LocalTime' }
+        note: { type: string }
+        recordedBy: { type: string }
+    ProjectedTimelineEvent:
+      type: object
+      required: [kind, occurredAt]
+      additionalProperties: false
+      properties:
+        kind: { type: string }
+        occurredAt: { $ref: '#/components/schemas/LocalTime' }
+        note: { type: string }
+    PartnerEvent:
+      $ref: '#/components/schemas/TimelineEvent'
+      required: [id, restaurantId, transactionId, partnerType, simulated]
+      properties:
+        id: { type: string }
+        restaurantId: { type: string }
+        transactionId: { $ref: '#/components/schemas/Identifier' }
+        partnerType: { type: string, enum: [supplier, recovery] }
+        simulated:
+          type: boolean
+          description: True for a manager event from Data tools.
+    RecoveryLine:
+      type: object
+      required: [batchId, ingredientId, quantity, unit]
+      additionalProperties: false
+      properties:
+        batchId: { $ref: '#/components/schemas/Identifier' }
+        ingredientId: { $ref: '#/components/schemas/Identifier' }
+        quantity: { $ref: '#/components/schemas/PositiveQuantity' }
+        unit: { $ref: '#/components/schemas/Unit' }
+    RecoveryStatus:
+      type: string
+      enum: [requested, accepted, exception, cancelled, collected]
+    ReservationFields:
+      type: object
+      required: [status, lines]
+      properties:
+        status: { $ref: '#/components/schemas/RecoveryStatus' }
+        lines:
+          type: array
+          minItems: 1
+          items: { $ref: '#/components/schemas/RecoveryLine' }
+    Reservation:
+      $ref: '#/components/schemas/ReservationFields'
+      unevaluatedProperties: false
+    RecoveryFields:
+      $ref: '#/components/schemas/ReservationFields'
+      required: [id, partnerId, requestedWindow, createdAt, events]
+      properties:
+        id: { $ref: '#/components/schemas/Identifier' }
+        partnerId: { type: string }
+        requestedWindow: { type: string }
+        createdAt: { $ref: '#/components/schemas/LocalTime' }
+        followUp: { type: string }
+        events:
+          type: array
+          items: { $ref: '#/components/schemas/TimelineEvent' }
+    Recovery:
+      $ref: '#/components/schemas/RecoveryFields'
+      required: [restaurantId]
+      properties:
+        restaurantId: { type: string }
+        owner: { type: string }
+        version: { $ref: '#/components/schemas/Version' }
+        latestPartnerAt: { $ref: '#/components/schemas/NullableLocalTime' }
+        createdByOperation: { type: string }
+    PartnerRecovery:
+      $ref: '#/components/schemas/RecoveryFields'
+      unevaluatedProperties: false
+      properties:
+        events:
+          type: array
+          items: { $ref: '#/components/schemas/ProjectedTimelineEvent' }
+    RecoveryList:
+      type: object
+      required: [recoveries]
+      additionalProperties: false
+      properties:
+        recoveries:
+          type: array
+          items:
+            anyOf:
+              - $ref: '#/components/schemas/Recovery'
+              - $ref: '#/components/schemas/PartnerRecovery'
+
+    Observation:
+      type: object
+      required: [restaurantId, date, covers, opportunities, unavailable, observationComplete]
+      properties:
+        restaurantId: { type: string }
+        date: { $ref: '#/components/schemas/Date' }
+        covers: { type: [integer, 'null'], minimum: 0 }
+        opportunities: { type: [integer, 'null'], minimum: 0 }
+        unavailable: { type: [integer, 'null'], minimum: 0 }
+        observationComplete: { type: boolean }
+    Report:
+      type: object
+      required: [range, covers, opportunities, unavailable, coverage, days, wasteKg, wasteMassComplete, wasteCostComplete, wastePer100, stockoutRate, series, wasteEntries]
+      properties:
+        range:
+          type: object
+          required: [start, end]
+          properties:
+            start: { $ref: '#/components/schemas/Date' }
+            end: { $ref: '#/components/schemas/Date' }
+        covers: { $ref: '#/components/schemas/Whole' }
+        opportunities: { $ref: '#/components/schemas/Whole' }
+        unavailable: { $ref: '#/components/schemas/Whole' }
+        coverage:
+          $ref: '#/components/schemas/Whole'
+          description: Number of days with complete observations.
+        days: { type: integer, minimum: 1, maximum: 7 }
+        wasteKg: { type: number, minimum: 0 }
+        wasteMassComplete: { type: boolean }
+        wasteCostComplete: { type: boolean }
+        wastePer100:
+          $ref: '#/components/schemas/ReportRate'
+          description: Kilograms of waste per 100 diner covers.
+        stockoutRate:
+          $ref: '#/components/schemas/ReportRate'
+          description: Percentage of observed demand opportunities with an unavailable ingredient.
+        series:
+          type: array
+          minItems: 1
+          maxItems: 7
+          items: { $ref: '#/components/schemas/DailyCost' }
+        wasteEntries: { $ref: '#/components/schemas/Whole' }
+    ReportRate:
+      type: object
+      required: [value, reason]
+      properties:
+        value: { type: [number, 'null'], minimum: 0 }
+        reason:
+          type: [string, 'null']
+          description: Explains which observations are missing when the rate is unknown.
+    DailyCost:
+      type: object
+      required: [date, usageCents, wasteCents, usageCostComplete, wasteCostComplete, costComplete]
+      properties:
+        date: { $ref: '#/components/schemas/Date' }
+        usageCents: { $ref: '#/components/schemas/Whole' }
+        wasteCents: { $ref: '#/components/schemas/Whole' }
+        usageCostComplete: { type: boolean }
+        wasteCostComplete: { type: boolean }
+        costComplete: { type: boolean }
+    WasteSignal:
+      type: object
+      required: [ingredientId, name, unit, quantity, count, latest, reasons, mainReason, guidance]
+      properties:
+        ingredientId: { $ref: '#/components/schemas/Identifier' }
+        name: { type: string }
+        unit: { $ref: '#/components/schemas/Unit' }
+        quantity: { type: number, exclusiveMinimum: 0 }
+        count: { $ref: '#/components/schemas/Version' }
+        latest: { $ref: '#/components/schemas/LocalTime' }
+        reasons:
+          type: array
+          description: Recorded reason and its event count, ordered by frequency.
+          items:
+            type: array
+            prefixItems:
+              - type: string
+              - $ref: '#/components/schemas/Version'
+            items: false
+            minItems: 2
+        mainReason: { type: string }
+        guidance: { type: string }
+    Reports:
+      type: object
+      required: [report, wasteInsights]
+      additionalProperties: false
+      properties:
+        report: { $ref: '#/components/schemas/Report' }
+        wasteInsights:
+          type: array
+          items: { $ref: '#/components/schemas/WasteSignal' }
+    Explanation:
+      type: object
+      required: [source, text]
+      additionalProperties: false
+      properties:
+        source:
+          type: string
+          enum: [model, calculated]
+          description: >-
+            model when the local model's advice passed every containment check; calculated when
+            PANTRI's own guidance is shown because the model was unavailable or its advice was rejected.
+        text:
+          type: string
+          minLength: 1
+          description: PANTRI's calculated summary. Every number in it comes from PANTRI, never from the model.
+        advice:
+          type: string
+          minLength: 1
+          description: >-
+            Present only when source is model. One or two sentences of number-free advice written by
+            the local model after the structure, length, number, ingredient and order-action checks.
+    NullableExplanation:
+      anyOf:
+        - $ref: '#/components/schemas/Explanation'
+        - type: 'null'
+    DraftExplanation:
+      type: object
+      required: [revision, explanation]
+      additionalProperties: false
+      properties:
+        revision: { $ref: '#/components/schemas/Whole' }
+        explanation: { $ref: '#/components/schemas/NullableExplanation' }
+    WasteInsights:
+      type: object
+      required: [revision, insights, explanation]
+      additionalProperties: false
+      properties:
+        revision: { $ref: '#/components/schemas/Whole' }
+        insights:
+          type: array
+          items: { $ref: '#/components/schemas/WasteSignal' }
+        explanation: { $ref: '#/components/schemas/NullableExplanation' }

@@ -1,12 +1,30 @@
-# Classroom demonstration — about 2 minutes 20 seconds
+# PANTRI classroom demonstration
 
-Open the offline HTML and your original Innoslate model before visitors arrive. The prototype's Model & traceability view includes the existing Action and Asset images as a fallback. Use Reset demo between visitors; export evidence first if the run needs to be retained.
+## Integrated release route — three minutes
 
-## 20 seconds — SoI and scope
+Start the local service and Ollama before the demonstration. Sign in as **Restaurant Manager**, use **Data tools → Reset data**, and start on **Overview**. Keep the existing Innoslate views ready for the two-minute Q&A. The walkthrough uses October 21, 2026 synthetic records. [Windows setup](../classroom-demo/README.md)
+
+| Segment | What to do | What to show |
+| --- | --- | --- |
+| Manager reviews and sends | On **Overview**, point out **132** tracked ingredients, **3** purchase drafts and **7** ingredients with the primary status **Low stock**. Open **Purchasing → Review draft** for **Prime Foods / Sliced beef**. Enter **5 kg**, select **Save changes**, then **Review & approve → Approve & send**. | **12 kg** expected demand minus **8 kg** usable stock gives **4 kg** suggested and a **$58.00** estimate. The revision shows **Version 2**, **5 kg** and **$72.50**. The sent order retains the approved version and quantity. |
+| Supplier confirms and staff receives | Use **Switch role** to select the **Prime Foods** supplier account. Open **View order**, choose **Confirm order**, and select **Send response**. Switch to **Restaurant Staff**, open **Inventory**, and select **Record receiving** for the pending order. Record **5 kg** with the displayed October 28 expiration and **$14.50/kg**, then save. | Supplier confirmation gives **Confirmed / Not received** at **8 kg** on hand. Staff receiving moves on-hand stock to **13 kg** and the order to **Received**. |
+| Staff records waste and manager requests recovery | As staff, open **Inventory → Sliced beef → Record waste**. Record **1 kg** from **batch-001** as **Overproduction**. Switch to **Restaurant Manager** and open **Waste & recovery → Recovery requests → New recovery request**. Choose Sliced beef, the same batch, **1 kg** and **Community Food Recovery**, then create the request. | Waste moves on-hand stock to **12 kg**. The request reserves **1 kg**, leaving **11 kg usable** and **12 kg on hand**. |
+| Partner records pickup and manager reviews | Switch to **Community Food Recovery**. Open the request and select **Accept request**, then **Record pickup**. Return to **Restaurant Manager**, open **Reports**, and select **Today**. | Acceptance leaves **12 kg on hand**. Pickup moves the request to **Collected** and stock to **11 kg**. In **Waste insights for planning**, **Sliced beef** is first, with **1 kg** and **Overproduction**. With the live model, point out **PANTRI calculation** and **Suggestion from the local model**. |
+| Manager asks about current inventory | Close any drawer, select **Ask PANTRI**, and ask **How much sliced beef do we have?** Compare the answer with **Inventory → Sliced beef**. | The answer and inventory show **11 kg on hand**, **11 kg usable** and **0 kg reserved**. Point out the **10 kg** reorder point and **Understood by the local model** beneath the answer. With Ollama disabled or unavailable, the same question returns those figures with **Matched by keywords**. |
+
+Use the detailed scripts for individual checks and the UC.2 correction-history example. [UC.1 purchase and receiving](../classroom-demo/docs/use-cases/uc-1-restaurant-manager-places-ingredient-order.md) · [UC.2 inventory review](../classroom-demo/docs/use-cases/uc-2-restaurant-manager-reviews-inventory-status.md) · [UC.11 recovery](../classroom-demo/docs/use-cases/uc-11-recovery-partner-processes-waste-collection-request.md)
+
+For Q&A, show how the retained approval binds Version 2 and 5 kg, how the supplier response and the physical receipt have separate effects, and how PANTRI checks the local model's interpretation before reading records for an answer. The verification record includes the saved-approval quarantine test and the assistant's model rejection and fallback cases. [Traceability](traceability.md) · [Integration verification](integration-verification.md)
+
+## Earlier milestone demonstration — about 2 minutes 20 seconds
+
+Open the offline HTML and your original Innoslate model before visitors arrive. The prototype's Model & traceability view includes the existing Action and Asset images as a fallback. Use Reset data between visitors; export evidence first if the run needs to be retained.
+
+### 20 seconds — SoI and scope
 
 “PANTRI is a restaurant ingredient-planning system. It uses inventory, usage and expiration records to recommend purchases, while the restaurant manager retains approval authority. Our milestone implementation covers the ingredient-ordering use case, UC.1. The manager and supplier are external participants; restaurant records and supplier replies are simulated for this demonstration.”
 
-## About 1 minute — Run the skeleton
+### About 1 minute — Run the skeleton
 
 Execute the numbered actions with the main button. Each click runs the current action, not just an animation.
 
@@ -18,7 +36,7 @@ Execute the numbered actions with the main button. Each click runs the current a
 
 “This is a working baseline path with visible action outputs. The supplier is a stub, but its order input is the actual approved output of PANTRI's demo workflow.”
 
-## About 1 minute — Live trace
+### About 1 minute — Live trace
 
 “N.03 is the manager's need to review, change and approve purchases before the restaurant is committed. It produces SR.03A, allowing revision, and SR.03, requiring the final approved order to be transmitted without quantity changes.”
 
@@ -26,7 +44,7 @@ Point to N.03 and SR.03/SR.03A in the original Innoslate documents. Open the ori
 
 “The model, spec, code and execution evidence use the same identifiers. Our next work includes real interfaces, broader exception handling and stakeholder validation; this run does not establish the proposed pilot outcome targets.”
 
-## Short answers to likely questions
+### Short answers to likely questions
 
 | Question | Answer |
 |---|---|
@@ -36,6 +54,6 @@ Point to N.03 and SR.03/SR.03A in the original Innoslate documents. Open the ori
 | Does this prove forecast performance? | No. The stand-in has transparent inputs and assumptions, but no real-data accuracy or waste-reduction validation has been performed. |
 | Are all requirements implemented? | No. The selected normal UC.1 slice supports SR.02, SR.03/SR.03A and normal confirmation under SR.04. Other requirements and full SR.04 exception scenarios remain open. |
 
-## Rehearsal checklist
+### Rehearsal checklist
 
 Run all 22 actions on the demonstration laptop; verify the three final quantities; export a live JSON; open the original model links while signed into the school account; upload source/spec/provenance to the team's GitHub; fill the six Canvas evidence fields using honest statuses. Individual peer reviews are separate.

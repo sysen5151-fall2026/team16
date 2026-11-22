@@ -1,65 +1,123 @@
-# PANTRI classroom build
+# PANTRI restaurant workspace
 
-SYSEN 5151 · Team 16 · November 18, 2026
+PANTRI helps a restaurant team track ingredients, approve purchases, record waste and coordinate recovery from a shared local workspace. Managers and restaurant staff can also ask for information about current records through Ask PANTRI.
 
-Open **PANTRI_Final.html** in Edge or Chrome. It is a standalone app and works offline. Use **Demo tools → Reset demo → Reset demo** to load the same synthetic restaurant data before class. The app keeps the demo date at October 21, 2026.
+## Run on Windows
 
-To build and test from the source directory, use Node 22 or later.
+Use PowerShell on Windows 11 with Node.js 22 or later, Git, and Edge or Chrome. The product runs with Node's standard library and its bundled synthetic dataset. There are no npm packages to install.
 
-```bash
-npm run build
-npm test
-npm start
-```
+~~~powershell
+git clone https://github.com/sysen5151-fall2026/team16.git
+cd team16
+npm.cmd run seed --prefix classroom-demo
+npm.cmd start --prefix classroom-demo
+~~~
 
-`npm start` serves the app at `http://127.0.0.1:5173`. The app stores this edition's data under `pantri.final.v1`. Demo Tools exports the complete state and event history as JSON.
+For a pre-merge review, add --branch final-integration to the clone command.
 
-## Interactive overview
+The verified direct launch runs node classroom-demo/build.mjs followed by node classroom-demo/serve.mjs from the repository root.
 
-- Select a health segment or its legend item to highlight the ring. The link below the ring opens that primary status in Inventory. Select an ingredient category to open its filtered list, or open Inventory value for the breakdown by category.
-- Switch between **7 days** and **Today** on Overview or Reports. The same period applies in both places. Hover or focus a chart column for exact costs. Click to keep the amounts visible and press Escape to dismiss them.
-- Draft prices, on-hand stock after receiving, and stock available after reservation recalculate while you type. Save or submit the form to record the change.
-- All five pages use a green frosted-glass look (`src/glass.css`, loaded after the base styles). The sidebar is an icon rail that opens while the pointer rests on it and pushes the page aside; it stays open after choosing a page and closes once the pointer moves onto the page.
-- Changing pages is choreographed: the current blocks dissolve one after another, then the new blocks condense out of a blur left to right, the heading just after the first cards and large panels last. Headline numbers roll digit by digit like an odometer once their card has landed, and the Overview health ring draws its segments in order.
-- Dropdowns use the browser's customizable `<select>` (a glass picker with a check mark). Chart columns lift and show their values, action arrows turn into dark circles on hover, and drawers slide in with their action buttons kept at the bottom. Motion is removed when the system asks for reduced motion.
+Open [PANTRI](http://127.0.0.1:5173) and choose **Restaurant Manager**. The sample dataset describes one restaurant on October 21, 2026. It begins with 132 tracked ingredients, 3 drafts, 7 ingredients with a primary Low stock status, and 8 kg of Sliced beef on hand. On first start, PANTRI seeds the data file automatically if it is missing.
 
-## Five-minute classroom walkthrough
+The seven accounts across five roles share the data in `classroom-demo/data/pantri-state.json`. At sign-in or under **Switch role**, choose the supplier account for **Prime Foods**, **Fresh Fields Produce**, or **Pantry Supply Co.** Each supplier sees orders sent to its own organization. **Community Food Recovery** is the registered recovery partner available in the manager's request form. **Data tools → Reset data** resets the shared data for another run. Run the seed command with the app stopped when recreating data from PowerShell.
 
-| Time | On screen | Say or show |
-| --- | --- | --- |
-| 0:00–0:40 | Repository README and PANTRI Overview | Introduce ingredient planning for a restaurant. Open the app from the build folder. The Overview starts with 132 tracked ingredients and three drafts. Select Low stock in the ring to highlight its seven ingredients. |
-| 0:40–1:05 | Innoslate OpsCon and Inventory | Identify the manager, staff, supplier and recovery partner. Open Sliced beef and point to the 8 kg on hand and the recorded batch. |
-| 1:05–2:30 | Purchasing | Review the Prime Foods sliced beef draft. Show `12 kg demand − 8 kg usable stock → 4 kg recommended`. Change the manager quantity to 5 kg and point to the updated $72.50 estimate. Save version 2, review and approve. Apply a simulated supplier confirmation. Point to **Confirmed** and **Not received**. |
-| 2:30–3:15 | Receiving | From the order, record 5 kg actually received. Check that stock becomes 13 kg and the receiving status becomes **Received**. |
-| 3:15–4:15 | Waste & recovery | In the beef inventory drawer, record 1 kg waste with the reason Overproduction. Open Recovery requests and reserve 1 kg of an eligible beef batch. Simulate acceptance, then record collection. The reservation keeps stock at 12 kg. Collection changes it to 11 kg. |
-| 4:15–5:00 | Reports | Select Today. Show paired waste and stockout measures, open the waste planning card for Sliced beef and follow the link to the underlying record. Mention that the manager reviews planning guidance before approving any quantity. |
+## Start the local model
 
-Keep the team repository README, the running app and the [Innoslate project](https://cloud.innoslate.com/cornell/p/687/dashboard) open. The course announcement asks for a short progress check and three statuses on the live OpsCon diagram. Keep presentation tabs free of API keys and credentials.
+Install [Ollama for Windows](https://ollama.com/download/windows) and start Ollama. Run these commands in PowerShell before starting PANTRI.
 
-## OpsCon annotations
+~~~powershell
+ollama pull qwen2.5:3b
+ollama show qwen2.5:3b
+~~~
 
-Use the **PANTRI Universe Context** Asset Diagram in Project 687. The statuses below describe this classroom build.
+The default [qwen2.5:3b tag](https://ollama.com/library/qwen2.5:3b) is Q4_K_M, 1.9 GB, model ID 357c53fb659c. PANTRI allows 60 seconds for background warmup and gives normal explanations 8 seconds by default. Each request keeps the model loaded for 10 minutes. The adapter calls only Ollama's loopback chat endpoint. Check the model and storage status at [PANTRI health](http://127.0.0.1:5173/api/health) or sign in as **PANTRI Staff**.
 
-| Diagram element | Status | Evidence |
-| --- | --- | --- |
-| Restaurant Manager | Working | Reviews drafts, approves final quantities and views decision reports as a demo manager. |
-| Restaurant Staff | Working | Records receipts, usage, counts and waste and can reconstruct movement history in the demo workspace. |
-| PANTRI System | Partial | Executes the integrated classroom workflows with local records and simulated partners. Production service and access-management integration are future work. |
-| Ingredient Supplier | Partial | The demo supports confirmation, partial confirmation, delay and exception. The supplier exchange is simulated. |
-| Recovery Partner | Partial | The app reserves stock, records simulated responses and records pickup. The partner exchange and physical logistics are external. |
-| PANTRI Staff | Not yet built | A dedicated support and service monitoring workspace remains future work. |
-| Diners | Not yet built | Diners are external stakeholders. The report uses recorded diner covers and availability observations from the demo dataset. |
+PANTRI can run with Node alone. If Ollama or the model is unavailable, the purchase draft and report panels show PANTRI's calculated explanations, and Ask PANTRI matches supported questions by keywords. To exercise that mode deliberately, stop PANTRI and start it with the following override.
 
-## Behavior and source trace
+~~~powershell
+$env:PANTRI_MODEL_ENABLED = '0'
+npm.cmd start --prefix classroom-demo
+~~~
 
-- The Business or Mission Analysis §7 and stakeholder need N.10 use waste records in the next planning cycle. The final app adds **Waste insights for planning** to Reports and shows recent waste context in related purchase drafts. Guidance uses recorded ingredient quantities and reasons. The approved ordering formula and manager control follow SR.02 and SR.03. [Operational concept](https://drive.google.com/file/d/1CCBnGWcpVhIFBuknlTvA_1Tw6pjJYXT3/view) · [Stakeholder requirements](https://drive.google.com/file/d/1wJJ-JP0zGaF9xXGDwwmc0YKXShJGNWGc/view)
-- Reports evaluate waste per 100 covers and stockout rate together for the selected period under SR.06. Unknown costs and missing observations are identified in the relevant summaries.
-- This edition uses the Team 16 app at GitHub commit `8fa2706` as the functional baseline. The supplied source is separated into domain logic, selectors, views, UI controller and presentation styles. [Original Team 16 build](https://github.com/sysen5151-fall2026/team16/tree/8fa27066d75433bf72e6fc1fbb8f3c2f9c5ba0d4)
+Set PANTRI_MODEL_ENABLED to 1 for the local model. Other optional settings are PANTRI_DEMO_PORT (default 5173), PANTRI_DATA_FILE (path to the server's JSON), PANTRI_OLLAMA_URL (default http://127.0.0.1:11434), PANTRI_OLLAMA_MODEL (default qwen2.5:3b), and PANTRI_MODEL_TIMEOUT_MS (per chat call). The Ollama URL must be HTTP loopback.
 
-## Verification
+## Demo scripts
 
-- **21 automated checks passed** for the actual release bundle. They cover the original approval flow, partial receiving, recovery, waste evidence, incomplete costs, paginated histories and storage consistency.
-- Edge ran the release HTML through the classroom browser workflow. The run checked 4 → 5 kg approval, simulated confirmation with 8 kg still in stock, two receipts adding 5 kg total, a 1 kg waste entry, a 1 kg recovery collection, report-to-record navigation and purchase draft waste context.
-- Edge also checked health-ring filtering, the inventory value drawer, chart detail selection, synchronized cost periods and the three live quantity previews.
-- All five pages and the receiving drawer fit the tested Edge widths of 1,416, 1,256, 390 and 320 CSS pixels without document overflow.
-- The team's archived 544.95 ms mean is for the previously instrumented baseline. This release has a workflow regression check. [Team simulation and timing report](https://drive.google.com/file/d/1_FWV8ekq42wsnNoRIWOMYxN3XVzPO-yS/view)
+| Segment | Actions |
+| --- | --- |
+| First minute | Manager verifies the overview and opens the Sliced beef draft, reviews the calculation, changes 4 kg to 5 kg and approves. |
+| Second minute | Supplier confirms in the supplier workspace. Staff opens the pending receipt and records 5 kg. Inventory moves from 8 kg to 13 kg when the receipt is recorded. |
+| Third minute | Staff records 1 kg waste, manager requests recovery, and partner accepts and records collection. Manager opens Today in Reports, then asks about Sliced beef and compares the 11 kg answer to Inventory. |
+
+Use the detailed scripts for set-up, controls, expected values and modeled boundaries.
+
+- [UC.1 Restaurant Manager Places Ingredient Order](docs/use-cases/uc-1-restaurant-manager-places-ingredient-order.md)
+- [UC.2 Restaurant Manager Reviews Inventory Status](docs/use-cases/uc-2-restaurant-manager-reviews-inventory-status.md)
+- [UC.11 Recovery Partner Processes Waste Collection Request](docs/use-cases/uc-11-recovery-partner-processes-waste-collection-request.md)
+
+[Three-minute classroom route](../docs/DEMO_SCRIPT.md)
+
+## Ask PANTRI
+
+Sign in as **Restaurant Manager** or **Restaurant Staff**, close any open drawer or dialog, and select **Ask PANTRI** in the lower-right corner. Pick an example or enter a question in English, up to 300 characters.
+
+| Role | Questions it can answer |
+| --- | --- |
+| Restaurant Manager | Stock on hand, usable and reserved quantities, low stock, expiration, purchase draft amounts and costs, sent order and receiving status, waste and recovery requests. |
+| Restaurant Staff | Stock on hand, usable and reserved quantities, low stock, expiration and orders awaiting receiving. |
+
+Try **How much sliced beef do we have?** PANTRI reports **8 kg** on hand after a fresh reset and **11 kg** after the full classroom route. It validates the local model's interpretation against the role, question and ingredient catalog and calculates the answer from the same records as the workspace. The label beneath the answer shows how PANTRI understood the question. If the model is unavailable or its interpretation fails validation, PANTRI uses keywords and catalog names. If it cannot match the question, it offers example questions or asks you to clarify the ingredient. Questions only read records. [Assistant design](../docs/adr/0009-ask-pantri-assistant.md)
+
+## How the workspace works
+
+~~~mermaid
+flowchart LR
+  UI["Restaurant workspace<br/>five roles"] <-->|"JSON and bearer session"| HTTP["Node REST API"]
+  UI --- Panel["Ask PANTRI panel<br/>manager and restaurant staff"]
+  Panel <-->|"question and sourced answer"| HTTP
+  HTTP --> Access["Service continuity<br/>role authorization"]
+  Access --> Work["Operational records, ingredient planning,<br/>purchase and recovery coordination,<br/>decision presentation"]
+  Access --> Assistant["Read-only question route<br/>validation and keyword fallback"]
+  Work -->|"validate and atomically replace"| Store["JSON current state and prior checkpoint"]
+  Store -->|"role-scoped snapshot"| Assistant
+  Assistant -->|"use domain and planning queries"| Work
+  Assistant -->|"question, allowed intents, catalog names"| Ollama
+  Ollama -->|"structured interpretation"| Assistant
+  Work -->|"qualitative facts, no numbers"| Ollama["Local Ollama"]
+  Ollama -->|"advice checked before display"| Work
+~~~
+
+The browser and server use the same domain and planning source. Manager approval persists the approved version before the dispatch request. Staff records physical receiving independently of supplier confirmation. A recovery reservation deducts available stock and a recorded pickup deducts on-hand stock.
+
+PANTRI writes the calculated summary with every number. The local model adds one or two sentences of advice from qualitative facts only. The server rejects advice that contains a number, names another ingredient, instructs an order action or is too long, and then shows PANTRI's calculated guidance instead. Purchase quantities, approvals and inventory updates use deterministic domain functions. [HTTP contract](contracts/pantri-api.yaml) · [Model baseline](docs/model-baseline.md) · [Verification record](../docs/integration-verification.md)
+
+## Verify
+
+~~~powershell
+npm.cmd test --prefix classroom-demo
+npm.cmd test
+~~~
+
+The classroom tests rebuild the release bundle and exercise the workflows, API roles and continuity, guarded explanations, and assistant interpretation and fallback with local test stubs. For a local model timing run, stop PANTRI and run the following command. It unloads only qwen2.5:3b to measure cold requests.
+
+~~~powershell
+node classroom-demo/study/model-timing.mjs
+~~~
+
+With Ollama running, evaluate Ask PANTRI on the prepared questions from the repository root.
+
+~~~powershell
+node classroom-demo/study/assistant-eval.mjs
+~~~
+
+## Known limits and handover
+
+**Sign in by role. Passwords are not used in this release..** Use the loopback service with the synthetic data. One restaurant and one PANTRI process own the file. Partner workspaces represent human actions in the classroom and do not send messages to real suppliers or recovery organizations. The support console shows service and model health, checkpoint metadata, and the recent operation/error log. Its log resets when the service restarts.
+
+**Sessions and assistant history.** Sessions live in the service process. After a restart, the browser returns to sign-in when it detects the expired session. Select an account again to access the saved records. The assistant covers the English question types listed above and can ask you to rephrase ambiguous questions. Its conversation history clears on page reload or account change.
+
+If the saved approval and order conflict, the service quarantines transaction writes. The manager can export the saved UTF-8 record and prior verified checkpoint for reconciliation, then use **Reload saved data** to revalidate a repaired file. The project team owns any manual reconciliation and storage recovery. Keep a secure copy of the data file if retaining the records and stop the service before moving or retiring its file. The application keeps no explanation cache on disk.
+
+### macOS
+
+to be verified

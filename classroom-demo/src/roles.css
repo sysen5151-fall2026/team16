@@ -1,0 +1,110 @@
+.sign-in-shell {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: clamp(16px, 5vw, 60px);
+}
+
+.sign-in-card {
+  width: min(100%, 780px);
+  padding: clamp(22px, 5vw, 42px);
+}
+
+.sign-in-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 24px;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -1.4px;
+  color: var(--skin-hero-bottom);
+}
+
+.sign-in-brand .brand-leaf { background: var(--skin-hero-top); }
+.sign-in-card h1 { font-size: clamp(26px, 5vw, 38px); }
+.sign-in-card > p { margin: 0 0 22px; color: var(--skin-muted); }
+.sign-in-card > .quiet-state { margin: 12px 0 0; }
+
+.account-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.account-modal { width: min(730px, calc(100vw - 24px)); }
+.account-group + .account-group { margin-top: 16px; }
+.account-group > h2 { margin: 0 0 7px; color: var(--skin-muted); font-size: 13px; font-weight: 650; }
+.supplier-accounts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+.account-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 11px;
+  min-height: 61px;
+  padding: 12px;
+  color: var(--skin-ink);
+  text-align: left;
+  border-radius: 14px;
+  background: var(--skin-glass-solid);
+}
+
+.account-card strong { overflow-wrap: anywhere; }
+.account-card:hover:not(:disabled) {
+  background: white;
+  border-color: var(--skin-field-line);
+}
+
+.account-card small {
+  display: block;
+  margin-top: 3px;
+  color: var(--skin-muted);
+  font-size: 12px;
+}
+
+.account-card > .icon { width: 15px; height: 15px; color: var(--skin-hero-top); }
+
+.role-switch-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 3px 8px 3px 3px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--skin-ink);
+  font-size: 12px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.role-switch-button:hover { background: var(--skin-glass-solid); }
+.role-switch-button > .icon { width: 14px; height: 14px; }
+.role-section { margin-bottom: 18px; }
+.role-section .table-scroll { border: 1px solid var(--line); border-radius: 12px; }
+.role-section table, .support-logs { min-width: 490px; }
+.role-section th, .role-section td { padding-inline: 13px; }
+
+.support-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.model-explanation { margin-top: 15px; }
+.model-explanation:empty { display: none; }
+.model-explanation p { white-space: pre-line; }
+.model-explanation p + strong { display: block; margin-top: 10px; }
+
+@media (max-width: 580px) {
+  .supplier-accounts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .role-switch-button { font-size: 11px; padding: 6px; }
+  .role-switch-button > .icon { display: none; }
+  .support-metrics { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 420px) {
+  .account-grid { grid-template-columns: 1fr; }
+}
