@@ -69,6 +69,7 @@ function render({ capture = true } = {}) {
           <div>${icon('alert')}<span>${esc(problem)}</span></div>
           <div>
             ${button('Download saved copy', 'export-raw', '', 'mini')}
+            ${service.getCheckpoint() ? button('Download prior checkpoint', 'export-checkpoint', '', 'mini') : ''}
             ${button('Reload saved data', 'reload', '', 'mini')}
             ${button('Reset', 'reset', '', 'mini')}
           </div>

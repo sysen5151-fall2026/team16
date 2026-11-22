@@ -112,9 +112,118 @@ function validateSaved(s){
   for(const b of s.batches){const reserved=s.recoveries.filter(r=>!['cancelled','collected'].includes(r.status)).reduce((n,r)=>n+r.lines.filter(l=>l.batchId===b.id).reduce((a,l)=>a+l.quantity,0),0);if(reserved>b.quantity+1e-9)return false;}
   if(!s.partnerEvents.every(e=>scoped(e)&&timestamp(e.occurredAt)&&['supplier','recovery'].includes(e.partnerType)&&e.simulated===true&&(e.partnerType==='supplier'?s.orders.some(o=>o.id===e.transactionId):s.recoveries.some(r=>r.id===e.transactionId))))return false;
   if(!s.observations.every(o=>scoped(o)&&validDate(o.date)&&[o.covers,o.opportunities,o.unavailable].every(n=>n===null||natural(n))&&(o.opportunities===null||o.unavailable===null||o.unavailable<=o.opportunities)&&typeof o.observationComplete==='boolean'))return false;
+  if (new Set(s.orders.map(order => order.sourceDraftId)).size !== s.orders.length) return false;
+  for (const draft of s.drafts) {
+    const order = s.orders.find(candidate => candidate.sourceDraftId === draft.id);
+    if (draft.status === 'draft' && order) return false;
+    if (draft.status === 'approved' && (!order || order.approvedVersion !== draft.version ||
+        order.supplierId !== draft.supplierId ||
+        JSON.stringify(order.approvedLines) !== JSON.stringify(draft.lines.filter(line => line.managerQty > 0)))) {
+      return false;
+    }
+  }
   return s.operations.every(text)&&new Set(s.operations).size===s.operations.length;
 }
 
 const STORAGE_KEY = 'pantri.final.v1';
 function freezeTree(x){if(x&&typeof x==='object'&&!Object.isFrozen(x)){Object.freeze(x);Object.values(x).forEach(freezeTree)}return x;}
-function createDemoService(storage){let state=createSeed(),problem=null,raw=null;const listeners=new Set();function load(){try{raw=storage.getItem(STORAGE_KEY);if(raw!==null){const parsed=JSON.parse(raw);if(!validateSaved(parsed))throw Error('Unsupported or damaged saved data.');state=parsed;}problem=null;}catch(e){problem=`Saved data could not be loaded: ${e.message} Download it before resetting.`;}state=freezeTree(state);}load();function notify(){for(const fn of listeners)fn(state);}return{getSnapshot:()=>state,getProblem:()=>problem,getRaw:()=>raw,subscribe(fn){listeners.add(fn);return()=>listeners.delete(fn)},reload(){load();notify();return !problem},markExternalChange(){problem='Data changed in another tab. Reload the latest saved data before continuing.';notify()},commit(work){if(problem)return fail(problem,'STORAGE');try{const latest=storage.getItem(STORAGE_KEY);if(latest!==raw){problem='Data changed in another tab. Reload before saving.';notify();return fail(problem,'CONFLICT')}const result=work(state);if(!result.ok)return result;if(result.value===state)return ok(state);const next={...result.value,revision:state.revision+1};if(!validateSaved(next))return fail('Changes were not saved because the resulting record is invalid. Check the entered values.','INVALID_STATE');storage.setItem(STORAGE_KEY,JSON.stringify(next));state=freezeTree(next);raw=JSON.stringify(next);notify();return ok(state);}catch(e){return fail(`Changes were not saved: ${e.message}`,'STORAGE')}},resetDemo(){try{const next={...createSeed(),revision:state.revision+1};storage.setItem(STORAGE_KEY,JSON.stringify(next));state=freezeTree(next);raw=JSON.stringify(next);problem=null;notify();return ok(state);}catch(e){return fail(`Reset could not be saved: ${e.message}`,'STORAGE')}}};}
+const STORAGE_FORMAT = 'pantri-checkpoint-v1';
+
+function usableCheckpoint(value) {
+  try {
+    return validateSaved(value);
+  } catch {
+    return false;
+  }
+}
+
+function createDemoService(storage) {
+  let state = freezeTree(createSeed());
+  let problem = null;
+  let raw = null;
+  let checkpoint = null;
+  const listeners = new Set();
+
+  function load() {
+    checkpoint = null;
+    try {
+      raw = storage.getItem(STORAGE_KEY);
+      if (raw !== null) {
+        const record = JSON.parse(raw);
+        const versioned = record?.format === STORAGE_FORMAT;
+        const current = versioned ? record.current : record;
+        if (versioned && usableCheckpoint(record.checkpoint)) checkpoint = record.checkpoint;
+        if (!validateSaved(current)) throw Error('Saved approval or transaction records are inconsistent or damaged.');
+        state = freezeTree(current);
+      } else {
+        state = freezeTree(createSeed());
+      }
+      problem = null;
+    } catch (error) {
+      problem = `Saved data could not be loaded: ${error.message} Download the saved record and reconcile before continuing.`;
+    }
+  }
+
+  function notify() {
+    for (const listener of listeners) listener(state);
+  }
+
+  function persist(next, previous) {
+    const serialized = JSON.stringify({ format: STORAGE_FORMAT, current: next, checkpoint: previous });
+    storage.setItem(STORAGE_KEY, serialized);
+    state = freezeTree(next);
+    raw = serialized;
+    checkpoint = previous;
+    problem = null;
+    notify();
+    return ok(state);
+  }
+
+  function markExternalChange() {
+    problem = 'Data changed in another tab. Reload the latest saved data before continuing.';
+    notify();
+  }
+
+  load();
+  return {
+    getSnapshot: () => state,
+    getProblem: () => problem,
+    getRaw: () => raw,
+    getCheckpoint: () => checkpoint === null ? null : exportDemoState(checkpoint),
+    subscribe(listener) {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    },
+    reload() {
+      load();
+      notify();
+      return !problem;
+    },
+    markExternalChange,
+    commit(work) {
+      if (problem) return fail(problem, 'STORAGE');
+      try {
+        if (storage.getItem(STORAGE_KEY) !== raw) {
+          markExternalChange();
+          return fail(problem, 'CONFLICT');
+        }
+        const result = work(state);
+        if (!result.ok) return result;
+        if (result.value === state) return ok(state);
+        const next = { ...result.value, revision: state.revision + 1 };
+        if (!validateSaved(next)) return fail('Changes would leave inconsistent transaction records.', 'INVALID_STATE');
+        return persist(next, state);
+      } catch (error) {
+        return fail(`Changes were not saved: ${error.message}`, 'STORAGE');
+      }
+    },
+    resetDemo() {
+      try {
+        if (storage.getItem(STORAGE_KEY) !== raw) return fail('Reload the latest saved data before reset.', 'CONFLICT');
+        return persist({ ...createSeed(), revision: state.revision + 1 }, null);
+      } catch (error) {
+        return fail(`Reset could not be saved: ${error.message}`, 'STORAGE');
+      }
+    },
+  };
+}
