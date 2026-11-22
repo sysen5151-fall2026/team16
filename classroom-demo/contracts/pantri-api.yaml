@@ -448,7 +448,7 @@ paths:
       x-demo-roles: [supplier, manager]
       description: >-
         A supplier can respond to its own sent order. A manager can use this route with
-        simulate set to true through Demo tools. A confirmation changes recorded supplier
+        simulate set to true through Data tools. A confirmation changes recorded supplier
         status. Physical receiving is a separate inventory command. An older valid response
         can remain in history without replacing the latest status.
       requestBody:
@@ -550,7 +550,7 @@ paths:
       summary: Record pickup against an accepted request
       x-demo-roles: [recovery, manager]
       description: >-
-        The assigned partner records pickup after collection. Demo tools requires simulate
+        The assigned partner records pickup after collection. Data tools requires simulate
         set to true for a manager. A successful pickup records the stock movement, consumes
         the reservation and closes the request.
       requestBody:
@@ -1650,7 +1650,7 @@ components:
         partnerType: { type: string, enum: [supplier, recovery] }
         simulated:
           type: boolean
-          description: True for a manager event from Demo tools.
+          description: True for a manager event from Data tools.
     RecoveryLine:
       type: object
       required: [batchId, ingredientId, quantity, unit]

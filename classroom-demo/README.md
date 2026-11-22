@@ -17,9 +17,9 @@ For a pre-merge review, add --branch final-integration to the clone command.
 
 The verified direct launch runs node classroom-demo/build.mjs followed by node classroom-demo/serve.mjs from the repository root.
 
-Open [PANTRI](http://127.0.0.1:5173) and choose **Restaurant Manager**. The seed is for Demo Buffet Hot Pot on October 21, 2026. It begins with 132 tracked ingredients, 3 drafts, 7 ingredients with a primary Low stock status, and 8 kg of Sliced beef on hand. On first start, PANTRI seeds the data file automatically if it is missing.
+Open [PANTRI](http://127.0.0.1:5173) and choose **Restaurant Manager**. The sample dataset describes one restaurant on October 21, 2026. It begins with 132 tracked ingredients, 3 drafts, 7 ingredients with a primary Low stock status, and 8 kg of Sliced beef on hand. On first start, PANTRI seeds the data file automatically if it is missing.
 
-The seven demo accounts across five roles share the data in `classroom-demo/data/pantri-state.json`. At sign-in or under **Switch role**, choose the supplier account for **Prime Foods**, **Fresh Fields Produce**, or **Pantry Supply Co.** Each supplier sees orders sent to its own organization. **Community Food Recovery** is the registered recovery partner available in the manager's request form. **Demo tools → Reset demo** resets the shared data for another run. Run the seed command with the app stopped when recreating data from PowerShell.
+The seven accounts across five roles share the data in `classroom-demo/data/pantri-state.json`. At sign-in or under **Switch role**, choose the supplier account for **Prime Foods**, **Fresh Fields Produce**, or **Pantry Supply Co.** Each supplier sees orders sent to its own organization. **Community Food Recovery** is the registered recovery partner available in the manager's request form. **Data tools → Reset data** resets the shared data for another run. Run the seed command with the app stopped when recreating data from PowerShell.
 
 ## Start the local model
 
@@ -72,10 +72,10 @@ Try **How much sliced beef do we have?** PANTRI reports **8 kg** on hand after a
 
 ~~~mermaid
 flowchart LR
-  UI["Restaurant workspace<br/>five demo roles"] <-->|"JSON and bearer session"| HTTP["Node REST API"]
+  UI["Restaurant workspace<br/>five roles"] <-->|"JSON and bearer session"| HTTP["Node REST API"]
   UI --- Panel["Ask PANTRI panel<br/>manager and restaurant staff"]
   Panel <-->|"question and sourced answer"| HTTP
-  HTTP --> Access["Service continuity<br/>demo role authorization"]
+  HTTP --> Access["Service continuity<br/>role authorization"]
   Access --> Work["Operational records, ingredient planning,<br/>purchase and recovery coordination,<br/>decision presentation"]
   Access --> Assistant["Read-only question route<br/>validation and keyword fallback"]
   Work -->|"validate and atomically replace"| Store["JSON current state and prior checkpoint"]
@@ -112,11 +112,11 @@ node classroom-demo/study/assistant-eval.mjs
 
 ## Known limits and handover
 
-**Demo sign-in, no real authentication.** Use the loopback service with the synthetic data. One restaurant and one PANTRI process own the file. Partner workspaces represent human actions in the classroom and do not send messages to real suppliers or recovery organizations. The support console shows service and model health, checkpoint metadata, and the recent operation/error log. Its log resets when the service restarts.
+**Sign in by role. Passwords are not used in this release..** Use the loopback service with the synthetic data. One restaurant and one PANTRI process own the file. Partner workspaces represent human actions in the classroom and do not send messages to real suppliers or recovery organizations. The support console shows service and model health, checkpoint metadata, and the recent operation/error log. Its log resets when the service restarts.
 
-**Sessions and assistant history.** Sessions live in the service process. After a restart, the browser returns to demo sign-in when it detects the expired session. Select an account again to access the saved records. The assistant covers the English question types listed above and can ask you to rephrase ambiguous questions. Its conversation history clears on page reload or account change.
+**Sessions and assistant history.** Sessions live in the service process. After a restart, the browser returns to sign-in when it detects the expired session. Select an account again to access the saved records. The assistant covers the English question types listed above and can ask you to rephrase ambiguous questions. Its conversation history clears on page reload or account change.
 
-If the saved approval and order conflict, the service quarantines transaction writes. The manager can export the saved UTF-8 record and prior verified checkpoint for reconciliation, then use **Reload saved data** to revalidate a repaired file. The project team owns any manual reconciliation and storage recovery. Keep a secure copy of the data file if retaining a demonstration and stop the service before moving or retiring its file. The application keeps no explanation cache on disk.
+If the saved approval and order conflict, the service quarantines transaction writes. The manager can export the saved UTF-8 record and prior verified checkpoint for reconciliation, then use **Reload saved data** to revalidate a repaired file. The project team owns any manual reconciliation and storage recovery. Keep a secure copy of the data file if retaining the records and stop the service before moving or retiring its file. The application keeps no explanation cache on disk.
 
 ### macOS
 

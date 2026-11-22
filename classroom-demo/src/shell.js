@@ -45,7 +45,7 @@ function render({ capture = true } = {}) {
   };
   const ready = !!state || ui.account.role === 'support';
   const drafts = state?.drafts?.filter(draft => draft.status === 'draft').length ?? 0;
-  const name = manager || ui.account.role === 'staff' ? 'Demo Buffet Hot Pot' : ui.account.name;
+  const name = manager || ui.account.role === 'staff' ? 'Restaurant workspace' : ui.account.name;
   const initials = /^[A-Z]{2}$/.test(ui.account.name) ? ui.account.name
     : ui.account.name.split(/\s+/).filter(Boolean).slice(0, 2).map(word => word[0]).join('').toUpperCase();
   const navInner = (page, symbol, label, index) =>
@@ -73,8 +73,8 @@ function render({ capture = true } = {}) {
         <header class="topbar">
           <div class="restaurant-name">${icon('leaf')}<strong>${esc(name)}</strong></div>
           <div class="topbar-right">
-            <span class="demo-tag"><i></i>DEMO DATA</span>
-            ${manager && state ? button('Demo tools', 'demo', '', 'toolbar-button', 'settings') : ''}
+            <span class="demo-tag"><i></i>SAMPLE DATA</span>
+            ${manager && state ? button('Data tools', 'demo', '', 'toolbar-button', 'settings') : ''}
             <button class="role-switch-button" type="button" data-action="switch-role" aria-haspopup="dialog" title="${esc(ui.account.label + ' · ' + ui.account.name)}">
               <span class="avatar" aria-hidden="true">${esc(initials)}</span><span>Switch role</span>${icon('chevrondown')}
             </button>

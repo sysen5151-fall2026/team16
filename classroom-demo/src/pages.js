@@ -1,5 +1,5 @@
 const periodOptions = [
-  ['week', 'Last 7 demo days'],
+  ['week', 'Last 7 days'],
   ['today', 'Today'],
 ];
 
@@ -227,7 +227,7 @@ function renderOverviewPage(state, ui) {
     </div>
     <div class="metrics overview-metrics">
       ${overviewMetric('Tracked ingredients', summary.total, `Across ${summary.categories.length} categories`, 'box', 'inventory')}
-      ${overviewMetric('Inventory value', money(summary.valueCents), summary.costCovered === summary.total ? 'At recorded demo prices' : `Known costs for ${summary.costCovered} of ${summary.total} ingredients`, 'dollar', 'inventory-value')}
+      ${overviewMetric('Inventory value', money(summary.valueCents), summary.costCovered === summary.total ? 'At recorded prices' : `Known costs for ${summary.costCovered} of ${summary.total} ingredients`, 'dollar', 'inventory-value')}
       ${overviewMetric('Needs attention', summary.attention, `${low} low · ${expiring} expiring soon`, 'alert', 'filter', 'data-risk="attention"')}
       ${overviewMetric('Purchase drafts', String(summary.drafts).padStart(2, '0'), 'Ready for your review', 'file', 'purchase-drafts')}
     </div>

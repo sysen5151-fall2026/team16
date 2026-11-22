@@ -45,7 +45,7 @@ function useSnapshot({ account, state, storage }) {
 function recoverExpiredSession(error) {
   if (error.status !== 401 || api.hasSession()) return false;
   changeWorkspace(null);
-  ui.sessionError = 'Your demo session expired. Choose an account to sign in again.';
+  ui.sessionError = 'Your session expired. Choose an account to sign in again.';
   return true;
 }
 
@@ -56,7 +56,7 @@ async function loadAccounts() {
   if (!ui.account || ['switch-role', 'new-recovery'].includes(ui.overlay?.type)) render();
   try {
     ({ accounts: ui.accounts } = await api.accounts());
-    if (!ui.accounts.length) ui.accountError = 'No demo accounts are available. Retry to load them.';
+    if (!ui.accounts.length) ui.accountError = 'No accounts are available. Retry to load them.';
   } catch (error) {
     ui.accountError = error.message;
   } finally {
@@ -439,7 +439,7 @@ root.addEventListener('click', event => {
     case 'reset':
       return openOverlay({ type: 'reset' }, ui.overlay);
     case 'confirm-reset':
-      return void mutate('/api/demo/reset', {}, 'Demo reset to the original restaurant dataset.', () => {
+      return void mutate('/api/demo/reset', {}, 'Data reset to the original restaurant dataset.', () => {
         Object.assign(ui, workspaceDefaults(ui.account.role));
         explanationCache.clear();
         render();
@@ -527,8 +527,8 @@ root.addEventListener('click', event => {
     case 'simulate-pickup':
       return openOverlay({ type: action }, ui.overlay);
     case 'export':
-      download(JSON.stringify(state, null, 2), `PANTRI_demo_${state.demoDate}.json`);
-      return toast('Demo data exported with records and approval snapshots.');
+      download(JSON.stringify(state, null, 2), `PANTRI_records_${state.demoDate}.json`);
+      return toast('Records exported with records and approval snapshots.');
   }
 });
 

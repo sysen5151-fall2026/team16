@@ -2,8 +2,8 @@ import { randomBytes } from 'node:crypto';
 import { HttpError, forbidden } from '../validation.mjs';
 
 const accounts = Object.freeze([
-  Object.freeze({ id: 'manager', role: 'manager', label: 'Restaurant Manager', name: 'Demo Manager' }),
-  Object.freeze({ id: 'staff', role: 'staff', label: 'Restaurant Staff', name: 'Demo Staff' }),
+  Object.freeze({ id: 'manager', role: 'manager', label: 'Restaurant Manager', name: 'Ordering and approvals' }),
+  Object.freeze({ id: 'staff', role: 'staff', label: 'Restaurant Staff', name: 'Kitchen and receiving' }),
   Object.freeze({ id: 'supplier', role: 'supplier', label: 'Ingredient Supplier', name: 'Prime Foods' }),
   Object.freeze({ id: 'supplier-fresh-fields', role: 'supplier', label: 'Ingredient Supplier', name: 'Fresh Fields Produce' }),
   Object.freeze({ id: 'supplier-pantry-supply', role: 'supplier', label: 'Ingredient Supplier', name: 'Pantry Supply Co.' }),
@@ -20,7 +20,7 @@ export function createSessions() {
     accounts,
     signIn(accountId, operationId) {
       const account = accounts.find(entry => entry.id === accountId);
-      if (!account) throw new HttpError(404, 'NOT_FOUND', 'That demo account is unavailable.');
+      if (!account) throw new HttpError(404, 'NOT_FOUND', 'That account is unavailable.');
       const now = Date.now();
       for (const [token, session] of active) {
         if (session.expiresAt <= now) active.delete(token);
@@ -38,7 +38,7 @@ export function createSessions() {
       const session = active.get(token);
       if (!session || session.expiresAt <= Date.now()) {
         active.delete(token);
-        throw new HttpError(401, 'SESSION_REQUIRED', 'Choose a demo account to continue.');
+        throw new HttpError(401, 'SESSION_REQUIRED', 'Choose an account to continue.');
       }
       return session.account;
     },

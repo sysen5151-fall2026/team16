@@ -1550,7 +1550,7 @@ function recommendPurchase(s,input){const i=s.ingredients.find(i=>i.id===input.i
 /** PMC2_MODEL: P-F.0.3.1 / PA.3.1 Revise Purchase Drafts. Input: restaurant-scoped state, draft id and quantity edits. Control: editable draft and current version. Output: new unapproved version; no order. */
 function editDraft(state,id,version,edits,operationId=`edit-${id}-${version}-${JSON.stringify(edits)}`){return transition(state,operationId,s=>{const d=s.drafts.find(d=>d.id===id&&d.restaurantId===s.restaurantId);requireThat(d?.status==='draft','This draft is no longer editable.');requireThat(d.version===version,'The draft has changed. Reload its current version.');for(const edit of edits){const l=d.lines.find(l=>l.ingredientId===edit.ingredientId);requireThat(l&&validQuantity(edit.managerQty,l.unit,true),'Enter a valid quantity for an ingredient in this draft.');l.managerQty=edit.managerQty;}d.version++;d.updatedAt=eventTime(s);});}
 function refreshDraft(state,id,version,demands,operationId=`refresh-${id}-${version}`){return transition(state,operationId,s=>{const d=s.drafts.find(d=>d.id===id&&d.restaurantId===s.restaurantId);requireThat(d?.status==='draft'&&d.version===version,'The draft has changed. Reopen it.');d.lines=d.lines.map(l=>recommendPurchase(s,{ingredientId:l.ingredientId,dailyDemand:demands?.[l.ingredientId]??l.dailyDemand,horizonDays:2}));d.version++;d.updatedAt=eventTime(s);});}
-/** PMC2_MODEL: P-F.0.3.2 / PA.3.2 Record Explicit Purchase Approval. Input: state and reviewed draft. Control: explicit UI approval, restaurant association and current version. Output: retained approvedLines snapshot. The UI invokes this only from Approve & send (demo). */
+/** PMC2_MODEL: P-F.0.3.2 / PA.3.2 Record Explicit Purchase Approval. Input: state and reviewed draft. Control: explicit UI approval, restaurant association and current version. Output: retained approvedLines snapshot. The UI invokes this only from Approve & send. */
 function approveDraft(state,id,version,operationId){return transition(state,operationId,s=>{const d=s.drafts.find(d=>d.id===id&&d.restaurantId===s.restaurantId);requireThat(d?.status==='draft','This draft has already been approved.');requireThat(d.version===version,'The draft version has changed. Review it again.');const lines=d.lines.filter(l=>l.managerQty>0);requireThat(lines.length,'Add at least one nonzero purchase quantity.');for(const l of lines){requireThat(validQuantity(l.managerQty,l.unit),'Invalid purchase quantity.');const current=recommendPurchase(s,l);requireThat(current.usableStock===l.usableStock&&current.forecastQty===l.forecastQty,'Inventory changed. Refresh the recommendation before approving.');}const order={id:entityId('PO',s),restaurantId:s.restaurantId,supplierId:d.supplierId,sourceDraftId:d.id,approvedVersion:d.version,approvedLines:structuredClone(lines),approvedBy:'manager-demo-1',approvedAt:eventTime(s),sentAt:null,supplierStatus:'not_sent',fulfillmentStatus:'not_received',receivedQuantities:{},events:[{kind:'approved',occurredAt:eventTime(s),note:`Version ${d.version} explicitly approved`}],latestSupplierAt:null,owner:'Manager',followUp:''};s.orders.push(order);d.status='approved';});}
 /** PMC2_MODEL: P-F.0.3.3 / PA.3.3 Transmit Approved Purchase Orders. Input: retained order id and operation id. Control: approved record and restaurant association. Output: unchanged approvedLines with awaiting_confirmation. Simulated handoff, not external network delivery. */
 function sendApprovedOrder(state,id,operationId,note='Approved snapshot sent to simulated supplier'){return transition(state,operationId,s=>{const o=s.orders.find(o=>o.id===id&&o.restaurantId===s.restaurantId);requireThat(o,'Approved order not found.');if(o.sentAt)return;o.sentAt=eventTime(s);o.supplierStatus='awaiting_confirmation';o.events.push({kind:'sent',occurredAt:o.sentAt,note});});}
@@ -1599,7 +1599,7 @@ const low=new Set([0,12,41,60,78,101,120]),soon=new Set([5,17,27,34,48,65,73,86,
 for(const [category,names] of Object.entries(CATALOG))for(const name of names){const index=s.ingredients.length,id=`ing-${String(index+1).padStart(3,'0')}`,batchId=`batch-${String(index+1).padStart(3,'0')}`;const unit=category==='Other'?'bottle':name==='Large eggs'||name==='Quail eggs'?'tray':category==='Dry goods'?'bag':'kg';const quantity=index===0?8:low.has(index)?2:unit==='kg'?qty(15+(index*7%220)/10):12+index%24;const cost=category==='Proteins'?1450+index*9:category==='Seafood'?1800+index*7:350+index*4;s.ingredients.push({id,restaurantId:s.restaurantId,name,category,unit,reorderPoint:index===0?10:5,packSize:1,dailyDemand:index===0?6:unit==='kg'?4:2,defaultSupplierId:category==='Produce'?'Fresh Fields Produce':category==='Dry goods'||category==='Other'?'Pantry Supply Co.':'Prime Foods'});s.batches.push({id:batchId,restaurantId:s.restaurantId,ingredientId:id,quantity,expiresOn:addDays(s.demoDate,soon.has(index)?index%3+1:10+index%16),unitCostCents:cost,receivedAt:'2026-10-14T08:00:00',updatedAt:'2026-10-21T08:30:00'});}
 // The historical ledger starts with opening receipts and reconciles to current batch quantities.
 for(let j=0;j<7;j++){const date=addDays(s.demoDate,j-6);s.observations.push({date,restaurantId:s.restaurantId,covers:180+j*8,opportunities:550+j*12,unavailable:9+j%3,observationComplete:true});}
-for(let n=0;n<s.batches.length;n++){const b=s.batches[n],i=s.ingredients[n];const movements=[];if(n>=18&&n<30&&i.unit==='kg')for(let d=0;d<7;d++){const date=addDays(s.demoDate,d-6);movements.push({kind:'usage',quantity:qty(.7+(n+d)%5*.2),occurredAt:date+(d===6?'T08:00:00':'T18:00:00'),reason:'Dinner service'});if((n+d)%3===0)movements.push({kind:'waste',quantity:.1,occurredAt:date+(d===6?'T08:15:00':'T19:00:00'),reason:'Preparation loss'});}let balance=qty(b.quantity+movements.reduce((sum,m)=>sum+m.quantity,0));s.inventoryEvents.push({id:`opening-${n}`,restaurantId:s.restaurantId,ingredientId:i.id,batchId:b.id,kind:'receipt',quantityDelta:balance,unit:i.unit,before:0,after:balance,occurredAt:'2026-10-14T08:00:00',reason:'Opening demo inventory',operationId:`seed-opening-${n}`,unitCostCents:b.unitCostCents});for(let m=0;m<movements.length;m++){const move=movements[m],before=balance;balance=qty(balance-move.quantity);s.inventoryEvents.push({id:`history-${n}-${m}`,restaurantId:s.restaurantId,ingredientId:i.id,batchId:b.id,kind:move.kind,quantityDelta:-move.quantity,unit:i.unit,before,after:balance,occurredAt:move.occurredAt,reason:move.reason,operationId:`seed-history-${n}-${m}`,unitCostCents:b.unitCostCents});}}
+for(let n=0;n<s.batches.length;n++){const b=s.batches[n],i=s.ingredients[n];const movements=[];if(n>=18&&n<30&&i.unit==='kg')for(let d=0;d<7;d++){const date=addDays(s.demoDate,d-6);movements.push({kind:'usage',quantity:qty(.7+(n+d)%5*.2),occurredAt:date+(d===6?'T08:00:00':'T18:00:00'),reason:'Dinner service'});if((n+d)%3===0)movements.push({kind:'waste',quantity:.1,occurredAt:date+(d===6?'T08:15:00':'T19:00:00'),reason:'Preparation loss'});}let balance=qty(b.quantity+movements.reduce((sum,m)=>sum+m.quantity,0));s.inventoryEvents.push({id:`opening-${n}`,restaurantId:s.restaurantId,ingredientId:i.id,batchId:b.id,kind:'receipt',quantityDelta:balance,unit:i.unit,before:0,after:balance,occurredAt:'2026-10-14T08:00:00',reason:'Opening inventory',operationId:`seed-opening-${n}`,unitCostCents:b.unitCostCents});for(let m=0;m<movements.length;m++){const move=movements[m],before=balance;balance=qty(balance-move.quantity);s.inventoryEvents.push({id:`history-${n}-${m}`,restaurantId:s.restaurantId,ingredientId:i.id,batchId:b.id,kind:move.kind,quantityDelta:-move.quantity,unit:i.unit,before,after:balance,occurredAt:move.occurredAt,reason:move.reason,operationId:`seed-history-${n}-${m}`,unitCostCents:b.unitCostCents});}}
 const draftDefs=[['draft-001','Prime Foods','ing-001'],['draft-002','Fresh Fields Produce','ing-042'],['draft-003','Pantry Supply Co.','ing-061']];for(const [id,supplierId,ingredientId] of draftDefs){const i=s.ingredients.find(i=>i.id===ingredientId);const line=recommendPurchase(s,{ingredientId,dailyDemand:ingredientId==='ing-001'?6:qty((s.batches.find(b=>b.ingredientId===ingredientId).quantity+4)/2),horizonDays:2});s.drafts.push({id,restaurantId:s.restaurantId,supplierId,version:1,status:'draft',lines:[line],updatedAt:'2026-10-21T08:45:00'});}return s;}
 
 
@@ -2020,15 +2020,15 @@ function recordOverlay(state, overlay) {
   };
 }
 function draftOverlay(s,o){const d=s.drafts.find(x=>x.id===o.id);
-const recentWaste=new Map(selectWastePlanning(s,reportRange(s,'week')).map(signal=>[signal.ingredientId,signal]));return{title:'Review purchase draft',sub:`${d.supplierId} · ${d.id.toUpperCase()} · Version ${d.version}`,actions:`<button type="submit" form="dialog-form" class="btn secondary">Save changes</button>${button('Refresh recommendation','refresh-draft',`data-id="${d.id}"`,'ghost','refresh')}${button('Review & approve','review-approval',`data-id="${d.id}"`,'primary','arrow')}`,body:`<div class="notice compact">${icon('info')}<span>Demo forecast: recorded daily demand × the planning window. The recommendation stays a draft until you approve it.</span></div><form id="dialog-form" data-form="draft"><input type="hidden" name="version" value="${d.version}">${d.lines.map(l=>{const i=s.ingredients.find(i=>i.id===l.ingredientId);return`<h3 class="section-heading">${esc(i.name)}</h3><div class="math-list"><div><span>Expected demand · ${l.horizonDays} days</span><b>${amount(l.forecastQty)} ${l.unit}</b></div><div><span>Usable recorded stock</span><b>${amount(l.usableStock)} ${l.unit}</b></div><div><span>Excluded from planning</span><b>${amount(l.excludedStock)} ${l.unit}</b></div><div class="math-total"><span>Suggested purchase</span><b>${amount(l.suggestedQty)} ${l.unit}</b></div></div>${l.exclusionNotes.length?`<p class="field-help">${esc(l.exclusionNotes.join('; '))}</p>`:''}${field(o,'qty_'+i.id,`Manager quantity (${l.unit})`,l.managerQty,'number',`data-draft-price="${Number.isFinite(l.unitCostCents) ? l.unitCostCents : ''}" required min="0" step="${l.unit==='kg'?.001:1}"`)}<p class="field-help">Pack size ${i.packSize} ${i.unit}. You can revise the suggested amount before approving.</p>${draftWasteContext(recentWaste.get(i.id),s.demoDate)}`}).join('')}${explanationBlock(null, 'draft:' + d.id)}<div class="live-preview"><div><strong>Estimated order total</strong><small>At recorded unit costs</small></div><output data-draft-estimate aria-live="polite">${purchaseEstimate(d.lines)}</output></div></form>`};}
-function approvalOverlay(s,o){const d=s.drafts.find(x=>x.id===o.id);return{title:'Approve final purchase',sub:`${d.supplierId} · Version ${d.version}`,center:true,actions:`${button('Back to draft','back-draft',`data-id="${d.id}"`,'secondary')}${button('Approve & send (demo)','approve-send',`data-id="${d.id}" data-version="${d.version}"`,'primary','send')}`,body:`<div class="confirmation-icon">${icon('file')}</div><p class="confirmation-intro">You are approving the exact quantities below. Sending will use this approved snapshot.</p><div class="approved-lines">${d.lines.filter(l=>l.managerQty>0).map(l=>`<div><span>${esc(s.ingredients.find(i=>i.id===l.ingredientId).name)}<small class="block muted">${l.unitCostCents===null?'Unit cost unknown':money(l.unitCostCents)+' / '+l.unit}</small></span><b>${amount(l.managerQty)} ${l.unit}</b></div>`).join('')}</div><div class="math-list"><div><span>Estimated total</span><b>${purchaseEstimate(d.lines)}</b></div></div><p class="field-help">The approved order will appear in the supplier portal.</p>`};}
+const recentWaste=new Map(selectWastePlanning(s,reportRange(s,'week')).map(signal=>[signal.ingredientId,signal]));return{title:'Review purchase draft',sub:`${d.supplierId} · ${d.id.toUpperCase()} · Version ${d.version}`,actions:`<button type="submit" form="dialog-form" class="btn secondary">Save changes</button>${button('Refresh recommendation','refresh-draft',`data-id="${d.id}"`,'ghost','refresh')}${button('Review & approve','review-approval',`data-id="${d.id}"`,'primary','arrow')}`,body:`<div class="notice compact">${icon('info')}<span>Forecast: recorded daily demand × the planning window. The recommendation stays a draft until you approve it.</span></div><form id="dialog-form" data-form="draft"><input type="hidden" name="version" value="${d.version}">${d.lines.map(l=>{const i=s.ingredients.find(i=>i.id===l.ingredientId);return`<h3 class="section-heading">${esc(i.name)}</h3><div class="math-list"><div><span>Expected demand · ${l.horizonDays} days</span><b>${amount(l.forecastQty)} ${l.unit}</b></div><div><span>Usable recorded stock</span><b>${amount(l.usableStock)} ${l.unit}</b></div><div><span>Excluded from planning</span><b>${amount(l.excludedStock)} ${l.unit}</b></div><div class="math-total"><span>Suggested purchase</span><b>${amount(l.suggestedQty)} ${l.unit}</b></div></div>${l.exclusionNotes.length?`<p class="field-help">${esc(l.exclusionNotes.join('; '))}</p>`:''}${field(o,'qty_'+i.id,`Manager quantity (${l.unit})`,l.managerQty,'number',`data-draft-price="${Number.isFinite(l.unitCostCents) ? l.unitCostCents : ''}" required min="0" step="${l.unit==='kg'?.001:1}"`)}<p class="field-help">Pack size ${i.packSize} ${i.unit}. You can revise the suggested amount before approving.</p>${draftWasteContext(recentWaste.get(i.id),s.demoDate)}`}).join('')}${explanationBlock(null, 'draft:' + d.id)}<div class="live-preview"><div><strong>Estimated order total</strong><small>At recorded unit costs</small></div><output data-draft-estimate aria-live="polite">${purchaseEstimate(d.lines)}</output></div></form>`};}
+function approvalOverlay(s,o){const d=s.drafts.find(x=>x.id===o.id);return{title:'Approve final purchase',sub:`${d.supplierId} · Version ${d.version}`,center:true,actions:`${button('Back to draft','back-draft',`data-id="${d.id}"`,'secondary')}${button('Approve & send','approve-send',`data-id="${d.id}" data-version="${d.version}"`,'primary','send')}`,body:`<div class="confirmation-icon">${icon('file')}</div><p class="confirmation-intro">You are approving the exact quantities below. Sending will use this approved snapshot.</p><div class="approved-lines">${d.lines.filter(l=>l.managerQty>0).map(l=>`<div><span>${esc(s.ingredients.find(i=>i.id===l.ingredientId).name)}<small class="block muted">${l.unitCostCents===null?'Unit cost unknown':money(l.unitCostCents)+' / '+l.unit}</small></span><b>${amount(l.managerQty)} ${l.unit}</b></div>`).join('')}</div><div class="math-list"><div><span>Estimated total</span><b>${purchaseEstimate(d.lines)}</b></div></div><p class="field-help">The approved order will appear in the supplier portal.</p>`};}
 function orderOverlay(state, overlay) {
   const order = state.orders.find(order => order.id === overlay.id);
   if (!order) return missingTransaction('Purchase order');
   const allEvents = [...order.events, ...state.inventoryEvents.filter(event => event.relatedOrderId === order.id).map(event => ({
     ...event, note: `${amount(event.quantityDelta)} ${event.unit} receiving recorded in ${event.batchId}`,
   }))];
-  const actions = !order.sentAt ? button('Send approved order (demo)', 'send-order', `data-id="${esc(order.id)}"`, 'primary', 'send')
+  const actions = !order.sentAt ? button('Send approved order', 'send-order', `data-id="${esc(order.id)}"`, 'primary', 'send')
     : order.fulfillmentStatus !== 'received' ? button('Record receiving', 'receive-order', `data-order="${esc(order.id)}"`, 'primary', 'truck') : '';
   return {
     title: order.id,
@@ -2093,13 +2093,13 @@ function stockPreview(label, current, unit, direction) {
 }
 function resetOverlay() {
   return {
-    title: 'Reset the demo?',
+    title: 'Reset all data?',
     sub: 'Return to the original restaurant dataset',
     center: true,
     body: `<div class="confirmation-icon">${icon('refresh')}</div>
-      <p class="confirmation-intro">Reset restores the original 132 ingredients, three drafts and demonstration date for every demo account.</p>
+      <p class="confirmation-intro">Reset restores the original 132 ingredients, three drafts and working date for every account.</p>
       <p class="field-help">Download your data first if you want to keep this run.</p>
-      <div class="form-footer">${button('Keep my data', 'close-overlay')}${button('Reset demo', 'confirm-reset', '', 'primary', 'refresh')}</div>`,
+      <div class="form-footer">${button('Keep my data', 'close-overlay')}${button('Reset data', 'confirm-reset', '', 'primary', 'refresh')}</div>`,
   };
 }
 
@@ -2142,7 +2142,7 @@ function renderOverlay(state, overlay, error = '', discard = false, ui) {
 }
 
 const periodOptions = [
-  ['week', 'Last 7 demo days'],
+  ['week', 'Last 7 days'],
   ['today', 'Today'],
 ];
 
@@ -2370,7 +2370,7 @@ function renderOverviewPage(state, ui) {
     </div>
     <div class="metrics overview-metrics">
       ${overviewMetric('Tracked ingredients', summary.total, `Across ${summary.categories.length} categories`, 'box', 'inventory')}
-      ${overviewMetric('Inventory value', money(summary.valueCents), summary.costCovered === summary.total ? 'At recorded demo prices' : `Known costs for ${summary.costCovered} of ${summary.total} ingredients`, 'dollar', 'inventory-value')}
+      ${overviewMetric('Inventory value', money(summary.valueCents), summary.costCovered === summary.total ? 'At recorded prices' : `Known costs for ${summary.costCovered} of ${summary.total} ingredients`, 'dollar', 'inventory-value')}
       ${overviewMetric('Needs attention', summary.attention, `${low} low · ${expiring} expiring soon`, 'alert', 'filter', 'data-risk="attention"')}
       ${overviewMetric('Purchase drafts', String(summary.drafts).padStart(2, '0'), 'Ready for your review', 'file', 'purchase-drafts')}
     </div>
@@ -2673,7 +2673,7 @@ function render({ capture = true } = {}) {
   };
   const ready = !!state || ui.account.role === 'support';
   const drafts = state?.drafts?.filter(draft => draft.status === 'draft').length ?? 0;
-  const name = manager || ui.account.role === 'staff' ? 'Demo Buffet Hot Pot' : ui.account.name;
+  const name = manager || ui.account.role === 'staff' ? 'Restaurant workspace' : ui.account.name;
   const initials = /^[A-Z]{2}$/.test(ui.account.name) ? ui.account.name
     : ui.account.name.split(/\s+/).filter(Boolean).slice(0, 2).map(word => word[0]).join('').toUpperCase();
   const navInner = (page, symbol, label, index) =>
@@ -2701,8 +2701,8 @@ function render({ capture = true } = {}) {
         <header class="topbar">
           <div class="restaurant-name">${icon('leaf')}<strong>${esc(name)}</strong></div>
           <div class="topbar-right">
-            <span class="demo-tag"><i></i>DEMO DATA</span>
-            ${manager && state ? button('Demo tools', 'demo', '', 'toolbar-button', 'settings') : ''}
+            <span class="demo-tag"><i></i>SAMPLE DATA</span>
+            ${manager && state ? button('Data tools', 'demo', '', 'toolbar-button', 'settings') : ''}
             <button class="role-switch-button" type="button" data-action="switch-role" aria-haspopup="dialog" title="${esc(ui.account.label + ' · ' + ui.account.name)}">
               <span class="avatar" aria-hidden="true">${esc(initials)}</span><span>Switch role</span>${icon('chevrondown')}
             </button>
@@ -3346,7 +3346,7 @@ function accountChoices(ui) {
   return `
     ${ui.accountError ? `<div class="form-error" role="alert">${icon('alert')} ${esc(ui.accountError)}</div>` : ''}
     ${ui.accounts.length ? renderAccountCards(ui.accounts, ui.sessionBusy)
-      : ui.accountsLoading ? '<p class="quiet-state" role="status">Loading demo accounts…</p>'
+      : ui.accountsLoading ? '<p class="quiet-state" role="status">Loading accounts…</p>'
       : button('Retry', 'retry-accounts', '', 'secondary', 'refresh')}`;
 }
 
@@ -3354,8 +3354,8 @@ function renderSignIn(ui) {
   return `<main class="sign-in-shell" id="main-content">
     <section class="card sign-in-card">
       <div class="sign-in-brand"><span class="brand-leaf" aria-hidden="true"></span>pantri.</div>
-      <h1>Choose a demo account</h1>
-      <p>Demo sign-in, no real authentication</p>
+      <h1>Choose an account</h1>
+      <p>Sign in by role. Passwords are not used in this release.</p>
       ${ui.sessionError && ui.sessionError !== ui.accountError ? `<div class="form-error" role="alert">${icon('alert')} ${esc(ui.sessionError)}</div>` : ''}
       ${ui.sessionBusy === 'restoring' ? '<p class="quiet-state" role="status">Opening your workspace…</p>' : accountChoices(ui)}
       ${ui.sessionBusy === 'switching' ? '<p class="quiet-state" role="status">Signing in…</p>' : ''}
@@ -3366,7 +3366,7 @@ function renderSignIn(ui) {
 function roleSwitchOverlay(ui) {
   return {
     title: 'Switch role',
-    sub: 'Demo sign-in, no real authentication',
+    sub: 'Sign in by role. Passwords are not used in this release.',
     center: true,
     modalClass: 'account-modal',
     body: accountChoices(ui) + (ui.sessionBusy ? '<p class="quiet-state" role="status">Signing in…</p>' : ''),
@@ -3502,13 +3502,13 @@ function demoToolsOverlay(state) {
   const recovery = state.recoveries.some(request => !['collected', 'cancelled'].includes(request.status));
   const pickup = state.recoveries.some(request => request.status === 'accepted');
   return {
-    title: 'Demo tools',
-    sub: 'A repeatable presentation workspace',
+    title: 'Data tools',
+    sub: 'Export, reload or reset the shared records',
     center: true,
-    body: `<div class="notice compact">${icon('info')}<span>All records are synthetic. The demo date is fixed at ${fullDate(state.demoDate)}.</span></div>
-      <div class="tool-row"><div><strong>Export your demonstration</strong><p>Download records, approved snapshots and event history.</p></div>${button('Download JSON', 'export', '', 'secondary', 'download')}</div>
+    body: `<div class="notice compact">${icon('info')}<span>All records are synthetic. The working date is fixed at ${fullDate(state.demoDate)}.</span></div>
+      <div class="tool-row"><div><strong>Export records</strong><p>Download records, approved snapshots and event history.</p></div>${button('Download JSON', 'export', '', 'secondary', 'download')}</div>
       <div class="tool-row"><div><strong>Reload workspace</strong><p>Read the latest shared dataset from the server.</p></div>${refreshWorkspaceButton()}</div>
-      <div class="tool-row"><div><strong>Restart the presentation</strong><p>Restore the same starting data for the next run.</p></div>${button('Reset demo', 'reset', '', 'secondary', 'refresh')}</div>
+      <div class="tool-row"><div><strong>Reset to starting data</strong><p>Restore the original sample records for every account.</p></div>${button('Reset data', 'reset', '', 'secondary', 'refresh')}</div>
       <h3 class="section-heading">Simulate external activity</h3>
       <div class="drawer-actions">
         ${button('Supplier response', 'simulate-supplier', supplier ? '' : 'disabled', 'secondary', 'truck')}
@@ -3534,8 +3534,8 @@ function simulationOverlay(state, overlay) {
   const form = supplier ? 'supplier-response' : pickup ? 'pickup-simulation' : 'partner-response';
   return {
     title,
-    sub: 'Demo tools',
-    actions: choices.length ? button('Back to Demo tools', 'close-overlay') +
+    sub: 'Data tools',
+    actions: choices.length ? button('Back to Data tools', 'close-overlay') +
       `<button class="btn primary" type="submit" form="dialog-form">${pickup ? 'Record simulated pickup' : 'Apply simulated response'}</button>` : '',
     body: choices.length ? `<form id="dialog-form" data-form="${form}">
       ${selectField(overlay, 'transactionId', supplier ? 'Sent order' : 'Recovery request', choices, choices[0].value)}
@@ -3770,7 +3770,7 @@ function useSnapshot({ account, state, storage }) {
 function recoverExpiredSession(error) {
   if (error.status !== 401 || api.hasSession()) return false;
   changeWorkspace(null);
-  ui.sessionError = 'Your demo session expired. Choose an account to sign in again.';
+  ui.sessionError = 'Your session expired. Choose an account to sign in again.';
   return true;
 }
 
@@ -3781,7 +3781,7 @@ async function loadAccounts() {
   if (!ui.account || ['switch-role', 'new-recovery'].includes(ui.overlay?.type)) render();
   try {
     ({ accounts: ui.accounts } = await api.accounts());
-    if (!ui.accounts.length) ui.accountError = 'No demo accounts are available. Retry to load them.';
+    if (!ui.accounts.length) ui.accountError = 'No accounts are available. Retry to load them.';
   } catch (error) {
     ui.accountError = error.message;
   } finally {
@@ -4164,7 +4164,7 @@ root.addEventListener('click', event => {
     case 'reset':
       return openOverlay({ type: 'reset' }, ui.overlay);
     case 'confirm-reset':
-      return void mutate('/api/demo/reset', {}, 'Demo reset to the original restaurant dataset.', () => {
+      return void mutate('/api/demo/reset', {}, 'Data reset to the original restaurant dataset.', () => {
         Object.assign(ui, workspaceDefaults(ui.account.role));
         explanationCache.clear();
         render();
@@ -4252,8 +4252,8 @@ root.addEventListener('click', event => {
     case 'simulate-pickup':
       return openOverlay({ type: action }, ui.overlay);
     case 'export':
-      download(JSON.stringify(state, null, 2), `PANTRI_demo_${state.demoDate}.json`);
-      return toast('Demo data exported with records and approval snapshots.');
+      download(JSON.stringify(state, null, 2), `PANTRI_records_${state.demoDate}.json`);
+      return toast('Records exported with records and approval snapshots.');
   }
 });
 

@@ -2,11 +2,11 @@
 
 ## Integrated release route — three minutes
 
-Start the local service and Ollama before the demonstration. Sign in as **Restaurant Manager**, use **Demo tools → Reset demo**, and start on **Overview**. Keep the existing Innoslate views ready for the two-minute Q&A. The walkthrough uses October 21, 2026 synthetic records. [Windows setup](../classroom-demo/README.md)
+Start the local service and Ollama before the demonstration. Sign in as **Restaurant Manager**, use **Data tools → Reset data**, and start on **Overview**. Keep the existing Innoslate views ready for the two-minute Q&A. The walkthrough uses October 21, 2026 synthetic records. [Windows setup](../classroom-demo/README.md)
 
 | Segment | What to do | What to show |
 | --- | --- | --- |
-| Manager reviews and sends | On **Overview**, point out **132** tracked ingredients, **3** purchase drafts and **7** ingredients with the primary status **Low stock**. Open **Purchasing → Review draft** for **Prime Foods / Sliced beef**. Enter **5 kg**, select **Save changes**, then **Review & approve → Approve & send (demo)**. | **12 kg** expected demand minus **8 kg** usable stock gives **4 kg** suggested and a **$58.00** estimate. The revision shows **Version 2**, **5 kg** and **$72.50**. The sent order retains the approved version and quantity. |
+| Manager reviews and sends | On **Overview**, point out **132** tracked ingredients, **3** purchase drafts and **7** ingredients with the primary status **Low stock**. Open **Purchasing → Review draft** for **Prime Foods / Sliced beef**. Enter **5 kg**, select **Save changes**, then **Review & approve → Approve & send**. | **12 kg** expected demand minus **8 kg** usable stock gives **4 kg** suggested and a **$58.00** estimate. The revision shows **Version 2**, **5 kg** and **$72.50**. The sent order retains the approved version and quantity. |
 | Supplier confirms and staff receives | Use **Switch role** to select the **Prime Foods** supplier account. Open **View order**, choose **Confirm order**, and select **Send response**. Switch to **Restaurant Staff**, open **Inventory**, and select **Record receiving** for the pending order. Record **5 kg** with the displayed October 28 expiration and **$14.50/kg**, then save. | Supplier confirmation gives **Confirmed / Not received** at **8 kg** on hand. Staff receiving moves on-hand stock to **13 kg** and the order to **Received**. |
 | Staff records waste and manager requests recovery | As staff, open **Inventory → Sliced beef → Record waste**. Record **1 kg** from **batch-001** as **Overproduction**. Switch to **Restaurant Manager** and open **Waste & recovery → Recovery requests → New recovery request**. Choose Sliced beef, the same batch, **1 kg** and **Community Food Recovery**, then create the request. | Waste moves on-hand stock to **12 kg**. The request reserves **1 kg**, leaving **11 kg usable** and **12 kg on hand**. |
 | Partner records pickup and manager reviews | Switch to **Community Food Recovery**. Open the request and select **Accept request**, then **Record pickup**. Return to **Restaurant Manager**, open **Reports**, and select **Today**. | Acceptance leaves **12 kg on hand**. Pickup moves the request to **Collected** and stock to **11 kg**. In **Waste insights for planning**, **Sliced beef** is first, with **1 kg** and **Overproduction**. With the live model, point out **PANTRI calculation** and **Suggestion from the local model**. |
@@ -18,7 +18,7 @@ For Q&A, show how the retained approval binds Version 2 and 5 kg, how the suppli
 
 ## Earlier milestone demonstration — about 2 minutes 20 seconds
 
-Open the offline HTML and your original Innoslate model before visitors arrive. The prototype's Model & traceability view includes the existing Action and Asset images as a fallback. Use Reset demo between visitors; export evidence first if the run needs to be retained.
+Open the offline HTML and your original Innoslate model before visitors arrive. The prototype's Model & traceability view includes the existing Action and Asset images as a fallback. Use Reset data between visitors; export evidence first if the run needs to be retained.
 
 ### 20 seconds — SoI and scope
 

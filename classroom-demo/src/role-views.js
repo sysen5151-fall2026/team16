@@ -40,7 +40,7 @@ function accountChoices(ui) {
   return `
     ${ui.accountError ? `<div class="form-error" role="alert">${icon('alert')} ${esc(ui.accountError)}</div>` : ''}
     ${ui.accounts.length ? renderAccountCards(ui.accounts, ui.sessionBusy)
-      : ui.accountsLoading ? '<p class="quiet-state" role="status">Loading demo accounts…</p>'
+      : ui.accountsLoading ? '<p class="quiet-state" role="status">Loading accounts…</p>'
       : button('Retry', 'retry-accounts', '', 'secondary', 'refresh')}`;
 }
 
@@ -48,8 +48,8 @@ function renderSignIn(ui) {
   return `<main class="sign-in-shell" id="main-content">
     <section class="card sign-in-card">
       <div class="sign-in-brand"><span class="brand-leaf" aria-hidden="true"></span>pantri.</div>
-      <h1>Choose a demo account</h1>
-      <p>Demo sign-in, no real authentication</p>
+      <h1>Choose an account</h1>
+      <p>Sign in by role. Passwords are not used in this release.</p>
       ${ui.sessionError && ui.sessionError !== ui.accountError ? `<div class="form-error" role="alert">${icon('alert')} ${esc(ui.sessionError)}</div>` : ''}
       ${ui.sessionBusy === 'restoring' ? '<p class="quiet-state" role="status">Opening your workspace…</p>' : accountChoices(ui)}
       ${ui.sessionBusy === 'switching' ? '<p class="quiet-state" role="status">Signing in…</p>' : ''}
@@ -60,7 +60,7 @@ function renderSignIn(ui) {
 function roleSwitchOverlay(ui) {
   return {
     title: 'Switch role',
-    sub: 'Demo sign-in, no real authentication',
+    sub: 'Sign in by role. Passwords are not used in this release.',
     center: true,
     modalClass: 'account-modal',
     body: accountChoices(ui) + (ui.sessionBusy ? '<p class="quiet-state" role="status">Signing in…</p>' : ''),
@@ -196,13 +196,13 @@ function demoToolsOverlay(state) {
   const recovery = state.recoveries.some(request => !['collected', 'cancelled'].includes(request.status));
   const pickup = state.recoveries.some(request => request.status === 'accepted');
   return {
-    title: 'Demo tools',
-    sub: 'A repeatable presentation workspace',
+    title: 'Data tools',
+    sub: 'Export, reload or reset the shared records',
     center: true,
-    body: `<div class="notice compact">${icon('info')}<span>All records are synthetic. The demo date is fixed at ${fullDate(state.demoDate)}.</span></div>
-      <div class="tool-row"><div><strong>Export your demonstration</strong><p>Download records, approved snapshots and event history.</p></div>${button('Download JSON', 'export', '', 'secondary', 'download')}</div>
+    body: `<div class="notice compact">${icon('info')}<span>All records are synthetic. The working date is fixed at ${fullDate(state.demoDate)}.</span></div>
+      <div class="tool-row"><div><strong>Export records</strong><p>Download records, approved snapshots and event history.</p></div>${button('Download JSON', 'export', '', 'secondary', 'download')}</div>
       <div class="tool-row"><div><strong>Reload workspace</strong><p>Read the latest shared dataset from the server.</p></div>${refreshWorkspaceButton()}</div>
-      <div class="tool-row"><div><strong>Restart the presentation</strong><p>Restore the same starting data for the next run.</p></div>${button('Reset demo', 'reset', '', 'secondary', 'refresh')}</div>
+      <div class="tool-row"><div><strong>Reset to starting data</strong><p>Restore the original sample records for every account.</p></div>${button('Reset data', 'reset', '', 'secondary', 'refresh')}</div>
       <h3 class="section-heading">Simulate external activity</h3>
       <div class="drawer-actions">
         ${button('Supplier response', 'simulate-supplier', supplier ? '' : 'disabled', 'secondary', 'truck')}
@@ -228,8 +228,8 @@ function simulationOverlay(state, overlay) {
   const form = supplier ? 'supplier-response' : pickup ? 'pickup-simulation' : 'partner-response';
   return {
     title,
-    sub: 'Demo tools',
-    actions: choices.length ? button('Back to Demo tools', 'close-overlay') +
+    sub: 'Data tools',
+    actions: choices.length ? button('Back to Data tools', 'close-overlay') +
       `<button class="btn primary" type="submit" form="dialog-form">${pickup ? 'Record simulated pickup' : 'Apply simulated response'}</button>` : '',
     body: choices.length ? `<form id="dialog-form" data-form="${form}">
       ${selectField(overlay, 'transactionId', supplier ? 'Sent order' : 'Recovery request', choices, choices[0].value)}

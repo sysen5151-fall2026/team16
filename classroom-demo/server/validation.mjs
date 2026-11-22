@@ -14,7 +14,7 @@ export function check(condition, message) {
 }
 
 export function forbidden() {
-  throw new HttpError(403, 'FORBIDDEN', 'This demo role cannot access that operation or record.');
+  throw new HttpError(403, 'FORBIDDEN', 'This role cannot access that operation or record.');
 }
 
 export function fields(body, keys) {

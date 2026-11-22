@@ -93,7 +93,7 @@ function waste(state, ingredient, period) {
       text: name + ': ' + quantity + ' ' + unit + ' across ' + count + ' ' + (count === 1 ? 'record' : 'records') +
         '. Main reason: ' + mainReason + '.' };
   });
-  const when = { today: 'Today (' + dateText(state.demoDate) + ')', week: 'Last seven demo days', all: 'All recorded dates' }[period];
+  const when = { today: 'Today (' + dateText(state.demoDate) + ')', week: 'Last seven days', all: 'All recorded dates' }[period];
   if (!events.length) return answer(when + ': no waste records' + (ingredient ? ' for ' + ingredient.name : '') + '.');
   const mainReason = [...reasons].sort((a, b) => b[1] - a[1])[0]?.[0] ?? 'Unspecified';
   const cost = coverage.missingCost === events.length ? 'cost unknown'

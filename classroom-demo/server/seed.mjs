@@ -5,6 +5,6 @@ try {
   seedStateFile(file);
   console.log('Seeded the PANTRI classroom dataset at ' + file);
 } catch {
-  console.error('Could not seed PANTRI. Check the data directory and stop any running demo server.');
+  console.error('Could not seed PANTRI. Check the data directory and stop any running PANTRI server.');
   process.exitCode = 1;
 }

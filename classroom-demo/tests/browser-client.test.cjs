@@ -221,7 +221,7 @@ test('external workspaces render their own actions and model explanations safely
   assert.match(support, /qwen2\.5:3b/);
   assert.match(support, /Checkpoint/);
   assert.match(support, /&lt;invalid&gt;/);
-  assert.doesNotMatch(support, /<invalid>|Reset demo|Record receiving/);
+  assert.doesNotMatch(support, /<invalid>|Reset data|Record receiving/);
   assert.match(explanationBlock({ source: 'calculated', text: '<review>' }), /Showing PANTRI's calculated summary/);
   assert.match(explanationBlock({ source: 'calculated', text: '<review>' }), /&lt;review&gt;/);
   const modelBlock = explanationBlock({ source: 'model', text: 'PANTRI numbers.', advice: '<check prep>' });
@@ -358,7 +358,7 @@ test('browser boot displays an API connection failure and recovers the demo acco
   await settle();
   assert.match(browser.html, /PANTRI could not reach the server/);
   assert.match(browser.html, /Retry/);
-  assert.match(browser.html, /Demo sign-in, no real authentication/);
+  assert.match(browser.html, /Sign in by role. Passwords are not used in this release./);
   online = true;
   browser.click('retry-accounts');
   await settle();
@@ -438,7 +438,7 @@ test('the drawer keeps its inputs during an explanation and supports retrying an
   assert.match(browser.html, /Supplier portal/);
   assert.match(browser.html, /Sliced beef/);
   assert.match(browser.html, /Awaiting confirmation/);
-  assert.doesNotMatch(browser.html, /Recommendations &amp; drafts|Review draft|Demo tools/);
+  assert.doesNotMatch(browser.html, /Recommendations &amp; drafts|Review draft|Data tools/);
   assert.deepEqual([...browser.store.values()], ['fixture-session-supplier']);
 });
 
@@ -536,7 +536,7 @@ test('browser controls complete shared purchasing and recovery against the real 
   assert.match(browser.html, /Healthy/);
   assert.match(browser.html, /Checkpoint revision/);
   assert.match(browser.html, /Operation log/);
-  assert.doesNotMatch(browser.html, /Demo tools|Record receiving/);
+  assert.doesNotMatch(browser.html, /Data tools|Record receiving/);
 });
 
 test('an unresolved write keeps its operation ID after the tab reloads without saving its form text', async () => {

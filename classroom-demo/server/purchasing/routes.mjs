@@ -31,7 +31,7 @@ function supplierResponse({ account, body, state, id, op, commit, present }) {
   requirePartner(account, order.supplierId, 'supplier', body.simulate);
   const kind = oneOf(body.kind, ['confirmed', 'partial', 'delayed', 'exception'], 'Supplier response');
   const note = text(body.note, 'Note', 500, { optional: true, allowEmpty: true }) || (
-    body.simulate ? 'Simulated supplier response' : 'Supplier response recorded in the demo portal'
+    body.simulate ? 'Simulated supplier response' : 'Supplier response recorded in the supplier portal'
   );
   const occurredAt = body.occurredAt === undefined ? eventTime(state) : body.occurredAt;
   check(validTimestamp(occurredAt), 'Use a local timestamp in YYYY-MM-DDTHH:mm:ss format.');
