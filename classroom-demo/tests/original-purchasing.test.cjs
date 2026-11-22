@@ -20,3 +20,33 @@ test('P-AFR.11 wrong restaurant/order and invalid time are rejected',()=>{for(co
 test('P-AFR.11 late older event does not overwrite latest supplier state',()=>{const s=sent(),o=s.orders[0];const newest=accepted(c.recordSupplierEvent(s,{id:'new',restaurantId:s.restaurantId,transactionId:o.id,kind:'delayed',occurredAt:'2026-10-21T12:00:00'}));const late=accepted(c.recordSupplierEvent(newest,{id:'old',restaurantId:s.restaurantId,transactionId:o.id,kind:'confirmed',occurredAt:'2026-10-21T11:00:00'}));assert.equal(late.orders[0].supplierStatus,'delayed');assert.equal(late.partnerEvents.length,2);});
 test('Original service saves approvals and rehydrates actual local-storage state',()=>{let raw=null;const storage={getItem:()=>raw,setItem:(k,v)=>{raw=v;}};const service=c.createDemoService(storage);accepted(service.commit(s=>c.editDraft(s,'draft-001',1,[{ingredientId:'ing-001',managerQty:5}])));accepted(service.commit(s=>c.approveDraft(s,'draft-001',2,'approve-1')));const next=c.createDemoService(storage);assert.equal(next.getSnapshot().orders[0].approvedLines[0].managerQty,5);assert.equal(next.getSnapshot().orders[0].approvedVersion,2);});
 test('Original storage failure does not publish an unpersisted approval',()=>{const storage={getItem:()=>null,setItem:()=>{throw Error('quota');}};const s=c.createDemoService(storage);assert.equal(s.commit(x=>c.approveDraft(x,'draft-001',1,'approve')).ok,false);assert.equal(s.getSnapshot().orders.length,0);});
+
+test('Task 6 legacy migration preserves v2 approval in the prior verified checkpoint', () => {
+  const previous = plain(approved());
+  let raw = JSON.stringify(previous);
+  const storage = { getItem: () => raw, setItem: (_, value) => { raw = value; } };
+  const service = c.createDemoService(storage);
+  const id = previous.orders[0].id;
+  accepted(service.commit(state => c.sendApprovedOrder(state, id, 'task6-send')));
+  const reloaded = c.createDemoService(storage);
+  assert.deepEqual(JSON.parse(reloaded.getCheckpoint()), previous);
+  assert.equal(reloaded.getSnapshot().orders[0].supplierStatus, 'awaiting_confirmation');
+  assert.equal(reloaded.getSnapshot().orders[0].approvedVersion, 2);
+});
+
+test('Task 6 inconsistent saved approval is quarantined without resending or changing stock', () => {
+  const good = plain(sent());
+  const bad = plain(good);
+  bad.orders[0].approvedLines[0].managerQty = 4;
+  const raw = JSON.stringify({ format: 'pantri-checkpoint-v1', current: bad, checkpoint: good });
+  let writes = 0;
+  const service = c.createDemoService({ getItem: () => raw, setItem: () => { writes++; } });
+  assert.match(service.getProblem(), /inconsistent/);
+  assert.equal(service.getRaw(), raw);
+  assert.deepEqual(JSON.parse(service.getCheckpoint()), good);
+  assert.equal(service.commit(state => c.sendApprovedOrder(state, good.orders[0].id, 'task6-retry')).ok, false);
+  assert.equal(service.getSnapshot().orders.length, 0);
+  assert.equal(service.getSnapshot().partnerEvents.length, 0);
+  assert.equal(c.getIngredientSummary(service.getSnapshot(), 'ing-001').onHand, 8);
+  assert.equal(writes, 0);
+});
