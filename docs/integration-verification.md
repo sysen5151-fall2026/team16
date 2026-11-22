@@ -179,3 +179,53 @@ tests 72, pass 72, fail 0
 npm.cmd test
 tests 54, pass 54, fail 0
 ~~~
+
+## Final Windows sprint verification
+
+A fresh Windows checkout cloned the GitHub `final-integration` branch at `76392e1`. It used Node v24.14.1 and the README's direct Node startup after seeding and rebuilding. No previously saved demo data or package directory was copied. Both browser runs used isolated data paths.
+
+~~~text
+git clone --single-branch --branch final-integration https://github.com/sysen5151-fall2026/team16.git <new-directory>
+76392e1 Document the assistant, classroom route, and native model plan
+node --version
+v24.14.1
+npm.cmd run seed --prefix classroom-demo
+Seeded the PANTRI classroom dataset
+npm.cmd test --prefix classroom-demo
+tests 76, pass 76, fail 0
+npm.cmd test
+tests 54, pass 54, fail 0
+git status --porcelain
+<empty>
+node classroom-demo/build.mjs
+Built PANTRI_Final.html
+node classroom-demo/serve.mjs
+PANTRI demo at http://127.0.0.1:50829
+PANTRI_MODEL_ENABLED=0: model disabled
+PANTRI demo at http://127.0.0.1:50847
+PANTRI_MODEL_ENABLED=1: qwen2.5:3b ready
+~~~
+
+### Browser acceptance
+
+The full classroom route passed in Edge at 1280×720 with the model disabled and at 1440×900 with local Ollama ready. The checks covered all seven demo accounts, nine named drawer actions, the documented restart behavior and the rendered interface constraints.
+
+| Check | Observed result in both runs |
+| --- | --- |
+| Reset and purchase | 132 ingredients, three drafts and seven low-stock ingredients. The Sliced beef draft showed 12 kg forecast, 8 kg usable and 4 kg suggested. Editing to 5 kg changed $58.00 to $72.50. Saving created Version 2, then approval and dispatch retained 5 kg. |
+| Supplier confirmation and receiving | Prime Foods confirmed the sent order. Receiving showed Not received and stock remained 8 kg. Restaurant Staff recorded the physical 5 kg delivery and stock became 13 kg. |
+| Waste and recovery | The 1 kg waste entry left 12 kg. The registered Community Food Recovery request reserved 1 kg. Request and acceptance each left 12 kg on hand. The partner recorded pickup and stock reached 11 kg with no remaining reservation. |
+| Reports and Ask PANTRI | Sliced beef was first under Today waste insights. Live Ollama showed PANTRI calculation and Suggestion from the local model. The disabled run showed the calculated explanation. Ask PANTRI reported 11 kg, with the local model and keyword labels respectively. |
+| Login and supplier isolation | Sign-in showed seven accounts with three supplier cards together. Prime Foods, Fresh Fields Produce and Pantry Supply Co. saw their own sent order. Fresh Fields reported a delay and Pantry Supply confirmed its order. The support account opened and refreshed the operation log. |
+| Drawer actions | Save changes, Review & approve, Approve & send, Send response, Save receiving, Save waste, Create request, Accept request and Record pickup were inside the viewport with a separate scroll region above the footer. After confirmation, the supplier portal removed repeat confirmation and retained available follow-up responses. |
+| Restart and layout | An expired session returned to sign-in after a same-port server restart. Signing back in showed the saved 11 kg. No checked page had horizontal overflow or covered drawer actions. Reduced motion was active on the 1280×720 run. No unexpected browser console or page errors were reported. |
+
+### Contract and safety checks
+
+OpenAPI 3.1 parsed with 29 unique operations and 481 resolved local references. All 30 captured Stage A request/response pairs still validated after the Stage B contract changes. The repository scan checked 154 tracked text files using the requested keyword search and common credential formats. It returned zero credential-format matches. The server adapter accepts HTTP loopback model endpoints and rejects cloud tags. Checked role pages showed no functional or requirement identifiers and no Innoslate links.
+
+### Remaining items in priority order
+
+1. **Submission evidence.** The live Project 687 read redirected to sign-in. The archived model comparison and nine-item approval plan are available. The shared native edits and authenticated Stage E readback remain open. [Innoslate change plan](../classroom-demo/docs/innoslate-changes.md) · [Post-integration comparison](../classroom-demo/docs/model-baseline.md#post-integration-comparison)
+2. **Model coverage.** The 40-question interpretation dataset is fixed. Keyword support outside the listed English intents is limited. The published measurements describe this checkout and local hardware.
+3. **Deployment scope.** The verified release uses a local synthetic restaurant, process-local demo sessions and simulated partner activity. macOS verification belongs to the separate handover.
