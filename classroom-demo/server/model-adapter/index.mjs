@@ -77,15 +77,7 @@ export function checkAdvice(advice, { facts, knownNames = [] }) {
   return null;
 }
 
-function validateReply(body, expected) {
-  let reply;
-  try {
-    const content = JSON.parse(body)?.message?.content;
-    if (typeof content !== 'string') return { reason: 'invalid-response' };
-    reply = JSON.parse(content);
-  } catch {
-    return { reason: 'invalid-json' };
-  }
+function validateReply(reply, expected) {
   if (!reply || typeof reply !== 'object' || Array.isArray(reply) || Object.keys(reply).length !== 1 ||
       !Object.hasOwn(reply, 'advice')) {
     return { reason: 'invalid-response' };
@@ -98,26 +90,19 @@ function validateReply(body, expected) {
   return reason ? { reason } : { advice, reason: null };
 }
 
-async function askModel(endpoint, model, timeoutMs, { kind, facts, knownNames = [] }) {
+async function chatJson(endpoint, model, timeoutMs, { instructions, input, format, temperature }) {
   if (!endpoint) return { reason: 'invalid-base-url' };
   // A signed-in Ollama daemon can proxy cloud tags despite its loopback address.
   if (/:\s*(?:[^/:]*-)?cloud\s*$/i.test(model)) return { reason: 'cloud-model' };
-  const input = JSON.stringify({ kind, facts });
-  const expected = { facts: JSON.parse(input).facts, knownNames, warmup: kind === 'warmup' };
   const requestBody = JSON.stringify({
     model,
     stream: false,
     keep_alive: '10m',
-    format: {
-      type: 'object',
-      properties: { advice: { type: 'string' } },
-      required: ['advice'],
-      additionalProperties: false,
-    },
-    options: { temperature: 0.3 },
+    format,
+    options: { temperature },
     messages: [
-      { role: 'system', content: INSTRUCTIONS },
-      { role: 'user', content: input },
+      { role: 'system', content: instructions },
+      { role: 'user', content: JSON.stringify(input) },
     ],
   });
 
@@ -135,7 +120,29 @@ async function askModel(endpoint, model, timeoutMs, { kind, facts, knownNames = 
   } catch {
     return { reason: signal?.aborted ? 'timeout' : 'service-unavailable' };
   }
-  return validateReply(body, expected);
+  try {
+    const content = JSON.parse(body)?.message?.content;
+    if (typeof content !== 'string') return { reason: 'invalid-response' };
+    return { reply: JSON.parse(content), reason: null };
+  } catch {
+    return { reason: 'invalid-json' };
+  }
+}
+
+async function askModel(endpoint, model, timeoutMs, { kind, facts, knownNames = [] }) {
+  const input = { kind, facts };
+  const { reply, reason } = await chatJson(endpoint, model, timeoutMs, {
+    instructions: INSTRUCTIONS, input, temperature: 0.3,
+    format: {
+      type: 'object',
+      properties: { advice: { type: 'string' } },
+      required: ['advice'],
+      additionalProperties: false,
+    },
+  });
+  return reason ? { reason } : validateReply(reply, {
+    facts: JSON.parse(JSON.stringify(input)).facts, knownNames, warmup: kind === 'warmup',
+  });
 }
 
 export function createModelAdapter({
@@ -177,5 +184,8 @@ export function createModelAdapter({
     return explain.health();
   };
   explain.health = () => ({ name: model, status, reason: healthReason });
+  explain.interpretQuestion = (instructions, input, format) => enabled
+    ? chatJson(endpoint, model, timeoutMs, { instructions, input, format, temperature: 0 })
+    : Promise.resolve({ reason: 'disabled' });
   return explain;
 }

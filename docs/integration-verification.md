@@ -130,3 +130,52 @@ Live Ollama after restart: qwen2.5:3b ready; draft and report source model; Slic
 ~~~
 
 One deliberate 1 kg waste entry reduced the fresh fixture from 8 kg to 7 kg. Its stock, report and revision survived the restart. Native model work remains as listed in the model baseline. The Phase E live model page requested reauthentication, so its post-build comparison used the dated export. The macOS handoff has its own validation scope.
+
+## Stage A | Ask PANTRI verification
+
+The question route reads one restaurant snapshot at the revision returned in its response. The browser labels each answer with the interpretation method. The model receives only English question data, the role's allowed intents and catalog names. PANTRI validates the returned intent, ingredient and period, applies the existing role scope and computes the answer from the saved records. The operation log records the interpretation method, intent, model, latency and fallback reason. Raw question text is omitted.
+
+| Interface check | Observed result |
+| --- | --- |
+| Format and quantity basis | OpenAPI 3.1 parsed with 29 unique operations and 481 resolved references. All 30 captured request and response pairs validated against the assistant schemas. Stock quantities and units agreed with the Inventory API, including an ingredient with both expiration and low-stock flags. Waste quantities and USD costs agreed with the recorded movement and report. |
+| Errors and missing information | Automated HTTP checks exercised missing and malformed inputs, role and origin denials, body limits, contradictory intent, a real catalog ingredient absent from the question, a fabricated ingredient, an invalid period and a timeout. Unrecognized or ambiguous ingredients yielded clarification using catalog names. Quarantined data returned 503 without an answer. |
+| Timing and consistency | The normal answer deadline for Ollama was eight seconds. An unavailable model and a deliberately disabled model both produced keyword answers. Questions about approving, sending, deleting and resetting left the snapshot unchanged. |
+| Responsibility and scope | Manager and restaurant staff had access. Supplier, recovery and support accounts received 403, and unauthenticated calls received 401. Staff only saw orders awaiting receiving and received an explanation when requesting manager-only figures. |
+
+### Live interpretation evaluation
+
+Run the evaluation from the repository root after starting Ollama.
+
+~~~text
+node classroom-demo/study/assistant-eval.mjs
+model: qwen2.5:3b
+questions: 40
+replied: 40
+rawCorrect: 30 (75%)
+accepted: 30
+checkedCorrect: 30
+fallbackCount: 10
+ingredient-not-mentioned: 1
+unknown-ingredient: 1
+ingredient-mismatch: 3
+period-mismatch: 2
+intent-conflict: 3
+finalCorrect: 40 (100%)
+medianMs: 108
+maxMs: 144
+~~~
+
+Correctness means the interpretation matched the expected intent, ingredient and period on this fixed set. The set covers all nine intents, manager-only requests from staff, spelling errors, aliases, off-topic questions and attempted instructions to modify records. The raw score uses the canonical ingredient names requested in the model prompt and includes restricted and ambiguous questions. The timings measure post-warmup interpretation through validation and fallback.
+
+### Browser and workflow checks
+
+In Microsoft Edge, five questions per restaurant role were sent through the visible panel in each of three modes. All ten live Ollama answers displayed the model source. All twenty answers with PANTRI's model setting disabled or Ollama unreachable at a loopback address displayed the keyword source. The desktop checks used 1440×900 for live Ollama and 1280×720 for fallback. After the classroom transactions, the questions confirmed 11 kg of Sliced beef on hand, six ingredients below their reorder points, eleven expired or soon-to-expire batches, 2 kg of Red onions on hand, 1 kg of Sliced beef waste at $14.50, a confirmed and received purchase, and a collected recovery request.
+
+Switching roles cleared chat history, opening a role dialog or ingredient drawer hid the assistant, and Escape restored focus to the launcher. With an answer deliberately delayed, the panel showed its waiting state and repeated Enter presses sent one request. At a 390 px viewport the panel spanned the available layout width, and reduced-motion mode disabled its animation. The browser reported no page or console errors during these checks.
+
+~~~text
+npm.cmd test --prefix classroom-demo
+tests 72, pass 72, fail 0
+npm.cmd test
+tests 54, pass 54, fail 0
+~~~

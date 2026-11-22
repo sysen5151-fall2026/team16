@@ -86,8 +86,8 @@ export function commandResult(result) {
   throw new HttpError(409, 'STATE_CONFLICT', result.message);
 }
 
-export function route(method, path, roles, handle) {
+export function route(method, path, roles, handle, { readOnly = false } = {}) {
   const parts = path.split('/');
   const matcher = new RegExp('^' + parts.map(part => part === ':id' ? '([^/]+)' : part).join('/') + '$');
-  return { method, path, roles, handle, matcher };
+  return { method, path, roles, handle, matcher, readOnly };
 }

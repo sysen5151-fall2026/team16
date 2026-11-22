@@ -10,6 +10,7 @@ const selectIsOpen = () => {
 
 function render({ capture = true } = {}) {
   if (ui.dirty && capture) snapshotForm();
+  if (!assistantVisible(ui)) ui.assistant.open = false;
   const previousOverlay = ui.lastOverlay;
   const active = focusedControl();
   const hint = focusHint(active);
@@ -84,6 +85,7 @@ function render({ capture = true } = {}) {
       </div>
     </div>
     ${renderOverlay(state, ui.overlay, ui.error, ui.discard, ui)}
+    <div id="assistant-region">${renderAssistant(ui)}</div>
     <div id="toast-region" aria-live="polite" aria-atomic="true"></div>`;
 
   ui.lastPage = ui.page;
@@ -108,7 +110,8 @@ function render({ capture = true } = {}) {
     updateFormPreview(dialog.querySelector('form'));
   }
   const target = dialog ? matchFocusTarget(dialogControls(dialog), hint)
-    : matchFocusTarget(dialogControls(root.querySelector('.app-shell')), hint);
+    : matchFocusTarget(dialogControls(root.querySelector('.app-shell')), hint)
+      ?? matchFocusTarget(dialogControls(root.querySelector('#assistant-region')), hint);
   if (target) {
     target.focus({ preventScroll: true });
     if (selection.every(Number.isInteger) && ['text', 'search'].includes(target.type)) {

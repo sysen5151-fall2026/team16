@@ -14,6 +14,7 @@ function workspaceDefaults(role = 'manager') {
     overlay: null, lastOverlay: null, error: '', dirty: false, discard: false, notice: null,
     animateCharts: false, chartsPlayed: false, railOpen: false, navPillY: null,
     leaving: null, leaveTimer: null, railTimer: null,
+    assistant: assistantDefaults(),
   };
 }
 
@@ -414,6 +415,10 @@ root.addEventListener('click', event => {
   if (!ui.account) return;
 
   switch (action) {
+    case 'toggle-assistant':
+      return toggleAssistant();
+    case 'ask-example':
+      return void submitAssistant(element.dataset.question);
     case 'backdrop':
     case 'close-overlay':
       return closeOverlay();
@@ -527,6 +532,10 @@ root.addEventListener('click', event => {
 });
 
 root.addEventListener('input', event => {
+  if (event.target.id === 'assistant-question') {
+    ui.assistant.draft = event.target.value;
+    return;
+  }
   const input = event.target;
   if (input.id === 'inventory-search') {
     ui.filter.query = input.value;
@@ -602,6 +611,7 @@ root.addEventListener('submit', event => {
   const kind = form.dataset.form;
   if (!kind) return;
   event.preventDefault();
+  if (kind === 'ask-assistant') return void submitAssistant(form.elements.question.value);
   const { state, overlay } = ui;
   if (interactionBusy() || !state || !overlay) return;
   const values = Object.fromEntries(new FormData(form, event.submitter));
@@ -645,6 +655,10 @@ document.addEventListener('keydown', event => {
   // An open custom dropdown handles its own Escape and Tab keys.
   if ((event.key === 'Escape' || event.key === 'Tab') && selectIsOpen()) return;
   if (!ui.overlay) {
+    if (event.key === 'Escape' && ui.assistant.open) {
+      event.preventDefault();
+      return toggleAssistant();
+    }
     if (event.key === 'Escape' && ui.chartDate && root.querySelector('.paired-chart')) setChartDay(ui.chartDate);
     return;
   }

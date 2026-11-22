@@ -226,7 +226,8 @@ function renderLogRows(logs) {
   return `<div class="table-scroll"><table class="support-logs">
     <thead><tr><th scope="col">Time (UTC)</th><th scope="col">Operation</th><th scope="col">Outcome</th><th scope="col" class="num">Time elapsed</th></tr></thead>
     <tbody>${logs.map(log => `<tr><td>${esc(String(log.at ?? '').replace('T', ' ').slice(0, 19))}</td>
-      <td><strong>${esc(log.event)}</strong>${log.type ? `<small class="block muted">${esc(log.type)}</small>` : ''}</td>
+      <td><strong>${esc(log.event)}</strong>${log.type ? `<small class="block muted">${esc(log.type)}</small>` : ''}
+        ${log.type === 'assistant' ? `<small class="block muted">${esc(log.intent?.replaceAll('_', ' '))} · ${esc(log.model)}</small>` : ''}</td>
       <td>${esc(log.outcome || 'Recorded')}${log.reason || log.code ? `<small class="block muted">${esc(log.reason || log.code)}</small>` : ''}</td>
       <td class="num">${Number.isFinite(log.elapsedMs) ? amount(log.elapsedMs) + ' ms' : '—'}</td></tr>`).join('')}</tbody>
   </table></div>`;

@@ -22,6 +22,54 @@ function loadBrowserFunctions() {
   );
 }
 
+test('assistant transport posts only the question and keeps it out of pending writes', async () => {
+  const { api, calls, stored, respond } = transportFixture();
+  respond(201, { token: 'assistant-session', account: manager });
+  await api.signIn('manager');
+  respond(200, { answer: { text: '8 kg on hand' } });
+  await api.askAssistant('How much sliced beef do we have?');
+  assert.equal(calls[1].method, 'POST');
+  assert.equal(calls[1].url, '/api/assistant/questions');
+  assert.equal(calls[1].headers.Authorization, 'Bearer assistant-session');
+  assert.deepEqual(calls[1].body, { question: 'How much sliced beef do we have?' });
+  assert.deepEqual([...stored.values()], ['assistant-session']);
+});
+
+test('assistant UI is available only for restaurant roles and collapses behind overlays', () => {
+  const { renderAssistant, assistantDefaults } = vm.runInNewContext(
+    browserSource('assistant.js') + '\n({ renderAssistant, assistantDefaults })',
+  );
+  const ui = { account: { role: 'manager' }, state: {}, overlay: null, assistant: assistantDefaults() };
+  assert.match(renderAssistant(ui), /Ask PANTRI/);
+  ui.assistant.open = true;
+  assert.match(renderAssistant(ui), /aria-live="polite"/);
+  ui.assistant.messages.push({
+    question: '<img src=x onerror=alert(1)>',
+    answer: { text: '<script>bad</script>', items: [{ text: '<b>row</b>' }] },
+    understoodBy: 'keywords',
+  });
+  const html = renderAssistant(ui);
+  assert.match(html, /&lt;img src=x onerror=alert\(1\)&gt;/);
+  assert.match(html, /&lt;script&gt;bad&lt;\/script&gt;/);
+  assert.match(html, /&lt;b&gt;row&lt;\/b&gt;/);
+  assert.match(html, /Matched by keywords/);
+  ui.overlay = { type: 'ingredient' };
+  assert.equal(renderAssistant(ui), '');
+  ui.overlay = null;
+  ui.storage = { status: 'quarantined' };
+  assert.equal(renderAssistant(ui), '');
+  ui.storage = { status: 'ready' };
+  for (const role of ['supplier', 'recovery', 'support']) {
+    ui.account.role = role;
+    assert.equal(renderAssistant(ui), '');
+  }
+  ui.account.role = 'staff';
+  ui.assistant = assistantDefaults();
+  ui.assistant.open = true;
+  assert.match(renderAssistant(ui), /Which orders are awaiting receiving/);
+  assert.doesNotMatch(renderAssistant(ui), /How much did we waste today/);
+});
+
 function transportFixture(stored = new Map()) {
   const { createPantriApi } = loadBrowserFunctions();
   const calls = [];
@@ -259,7 +307,7 @@ function browserFixture(fetcher) {
     clearTimeout() {},
   });
   Object.defineProperty(context, 'localStorage', { get() { throw Error('Browser must never use localStorage'); } });
-  const ui = vm.runInContext(browserSource('shell.js', 'controller.js') + '\nui', context);
+  const ui = vm.runInContext(browserSource('shell.js', 'assistant.js', 'controller.js') + '\nui', context);
   return {
     ui, store, calls,
     get html() { return html; },

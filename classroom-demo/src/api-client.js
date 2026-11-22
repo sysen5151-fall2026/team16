@@ -140,6 +140,7 @@ function createPantriApi({
       return result;
     },
     read: path => request(path),
+    askAssistant: question => request('/api/assistant/questions', { method: 'POST', body: { question } }),
     write: (path, payload = {}, options) => mutate(path, payload, options),
   };
 }

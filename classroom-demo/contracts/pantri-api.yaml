@@ -11,7 +11,7 @@ info:
     data. The starting catalog has 132 ingredients.
 
     Send POST and PATCH bodies as application/json, at most 32,768 bytes.
-    For a transport retry, repeat the same operationId on the same account, action
+    For a state-changing request or demo sign-in, repeat the same operationId on the same account, action
     and target resource. The server applies an accepted operation once in the
     retained demo run. Use a fresh operationId for a new intent. Draft edits,
     refresh and approval require the version currently under review. Reload after a version conflict
@@ -635,6 +635,42 @@ paths:
         '403': { $ref: '#/components/responses/Forbidden' }
         '500': { $ref: '#/components/responses/InternalError' }
 
+  /api/assistant/questions:
+    post:
+      operationId: askPantri
+      tags: [Decision Presentation]
+      summary: Answer a read-only English question about restaurant records
+      x-demo-roles: [manager, staff]
+      description: |
+        Uses the role-scoped snapshot captured when the question enters the handler.
+        Ollama may classify the question within the standard model deadline, eight
+        seconds by default. PANTRI checks the classification independently and
+        falls back to keywords or help. PANTRI computes all facts and quantities.
+        This request has no operationId and cannot modify business records.
+        Staff receiving answers cover sent orders still awaiting stock receipt.
+        Unavailable capabilities and ambiguous ingredients receive explanatory
+        answers without restricted data. An unspecified waste period uses the last
+        seven synthetic calendar days. Raw questions are excluded from diagnostics.
+        The service declines to answer while saved data is quarantined.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AssistantQuestion' }
+      responses:
+        '200':
+          description: Snapshot revision, interpretation source and grounded answer
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AssistantResponse' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '401': { $ref: '#/components/responses/InvalidSession' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '413': { $ref: '#/components/responses/TooLarge' }
+        '415': { $ref: '#/components/responses/WrongMediaType' }
+        '500': { $ref: '#/components/responses/InternalError' }
+        '503': { $ref: '#/components/responses/StorageUnavailable' }
+
   /api/demo/reset:
     post:
       operationId: resetClassroomDemo
@@ -801,6 +837,81 @@ components:
           schema: { $ref: '#/components/schemas/Error' }
 
   schemas:
+    AssistantQuestion:
+      type: object
+      required: [question]
+      additionalProperties: false
+      properties:
+        question: { type: string, minLength: 1, maxLength: 300, pattern: '\S' }
+    AssistantIntent:
+      type: string
+      enum: [stock_level, low_stock, expiring, purchase_suggestion, order_status, waste_summary, recovery_status, help, out_of_scope]
+    AssistantSource:
+      type: string
+      enum: [model, keywords, none]
+    AssistantResponse:
+      type: object
+      required: [revision, understoodBy, interpretation, answer, suggestions]
+      additionalProperties: false
+      properties:
+        revision: { $ref: '#/components/schemas/Whole' }
+        understoodBy: { $ref: '#/components/schemas/AssistantSource' }
+        interpretation:
+          type: object
+          required: [intent, ingredientId, period]
+          additionalProperties: false
+          properties:
+            intent: { $ref: '#/components/schemas/AssistantIntent' }
+            ingredientId:
+              anyOf:
+                - $ref: '#/components/schemas/Identifier'
+                - type: 'null'
+            period: { enum: ['today', 'week', 'all', null] }
+        answer:
+          type: object
+          required: [text, items, total]
+          additionalProperties: false
+          properties:
+            text: { type: string }
+            items:
+              type: array
+              maxItems: 5
+              items: { $ref: '#/components/schemas/AssistantAnswerItem' }
+            total:
+              $ref: '#/components/schemas/Whole'
+              description: Total matching items before truncation.
+        suggestions:
+          type: array
+          minItems: 1
+          maxItems: 4
+          items: { type: string }
+    AssistantAnswerItem:
+      type: object
+      description: Fields vary by intent and role. Staff order items omit supplier status.
+      additionalProperties: false
+      properties:
+        id: { $ref: '#/components/schemas/Identifier' }
+        ingredientId: { $ref: '#/components/schemas/Identifier' }
+        name: { type: string }
+        unit: { $ref: '#/components/schemas/Unit' }
+        text: { type: string }
+        status: { type: string }
+        onHand: { type: number, minimum: 0 }
+        usableStock: { type: number, minimum: 0 }
+        reserved: { type: number, minimum: 0 }
+        reorderPoint: { $ref: '#/components/schemas/Quantity' }
+        nearest: { $ref: '#/components/schemas/NullableDate' }
+        expiresOn: { $ref: '#/components/schemas/Date' }
+        quantity: { type: number, minimum: 0 }
+        suggestedQty: { type: number, minimum: 0 }
+        managerQty: { $ref: '#/components/schemas/Quantity' }
+        estimateCents: { type: [integer, 'null'], minimum: 0 }
+        supplierId: { type: string }
+        supplierStatus: { type: string }
+        fulfillmentStatus: { type: string }
+        partnerId: { type: string }
+        count: { $ref: '#/components/schemas/Whole' }
+        mainReason: { type: string }
     Identifier:
       type: string
       minLength: 1
@@ -958,16 +1069,18 @@ components:
       required: [type, event, at, outcome, elapsedMs]
       additionalProperties: false
       properties:
-        type: { type: string, enum: [operation, model] }
+        type: { type: string, enum: [operation, model, assistant] }
         event: { type: string }
         at: { type: string, format: date-time }
-        outcome: { type: string, enum: [ok, rejected, fallback] }
+        outcome: { type: string, enum: [ok, rejected, fallback, model, keywords, none] }
         role: { $ref: '#/components/schemas/Role' }
         elapsedMs: { type: number, minimum: 0 }
         code: { type: string }
         fallback: { type: boolean }
         reason: { type: [string, 'null'] }
         model: { type: string }
+        intent: { $ref: '#/components/schemas/AssistantIntent' }
+        understoodBy: { $ref: '#/components/schemas/AssistantSource' }
 
     OperationCommand:
       type: object

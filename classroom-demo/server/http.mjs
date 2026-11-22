@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import { RESET_OPERATION_PREFIX } from '../src/domain.js';
+import { assistantRoutes } from './assistant/routes.mjs';
 import { createSessions, scopedState } from './continuity/access.mjs';
 import { continuityRoutes } from './continuity/routes.mjs';
 import { openState, resolveDataFile, storageStatus } from './continuity/storage.mjs';
@@ -13,7 +14,7 @@ import { recoveryRoutes } from './recovery/routes.mjs';
 import { commandResult, forbidden, HttpError, identifier, readJson } from './validation.mjs';
 
 const htmlFile = new URL('../PANTRI_Final.html', import.meta.url);
-const allRoutes = [...continuityRoutes, ...recordRoutes, ...purchaseRoutes, ...recoveryRoutes, ...presentationRoutes];
+const allRoutes = [...continuityRoutes, ...recordRoutes, ...purchaseRoutes, ...recoveryRoutes, ...presentationRoutes, ...assistantRoutes];
 const auditLimit = 100;
 
 function createAudit(logger) {
@@ -109,8 +110,9 @@ export function createPantriServer({
       }
       const resource = chosen.matcher.exec(url.pathname)[1];
       const id = resource === undefined ? undefined : identifier(resource, 'Record');
-      const write = chosen.method === 'POST' || chosen.method === 'PATCH';
-      const body = write ? await readJson(request) : undefined;
+      const hasBody = chosen.method === 'POST' || chosen.method === 'PATCH';
+      const write = hasBody && !chosen.readOnly;
+      const body = hasBody ? await readJson(request) : undefined;
       if (write) identifier(body.operationId, 'Operation ID');
 
       if (write && account && chosen.path !== '/api/demo/reset' && service.getProblem()) {
@@ -124,7 +126,7 @@ export function createPantriServer({
         present(next, recordId) {
           return { account, state: scopedState(next, account), storage: storageStatus(service), recordId };
         },
-        commit(work) { return commandResult(service.commit(work)); },
+        ...(write && { commit: work => commandResult(service.commit(work)) }),
       });
       if (write) audit.record({ type: 'operation', event: chosen.method + ' ' + chosen.path,
         role: account?.role ?? payload.account?.role, outcome: 'ok', elapsedMs: Math.round(performance.now() - started) });

@@ -1396,6 +1396,113 @@ span.odo { position: relative; color: transparent; font-size: inherit; font-weig
 @media (max-width: 420px) {
   .account-grid { grid-template-columns: 1fr; }
 }
+
+.assistant-shell {
+  position: fixed;
+  right: 24px;
+  bottom: max(24px, env(safe-area-inset-bottom));
+  z-index: 45;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.assistant-launch {
+  min-height: 44px;
+  padding-inline: 16px;
+  border-radius: 999px;
+  box-shadow: var(--skin-shadow);
+}
+
+.assistant-panel {
+  display: flex;
+  flex-direction: column;
+  width: min(390px, calc(100vw - 48px));
+  max-height: min(540px, calc(100dvh - 110px));
+  padding: 14px;
+  color: var(--skin-ink);
+  border: 1px solid var(--skin-glass-line);
+  border-radius: 24px;
+  background: var(--skin-glass-strong);
+  backdrop-filter: blur(24px);
+  box-shadow: 0 18px 48px #15392030;
+  animation: modal-in .18s ease-out;
+}
+
+.assistant-panel[hidden],
+.assistant-waiting[hidden] { display: none; }
+
+.assistant-panel > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 0 8px 4px;
+  border-bottom: 1px solid var(--line);
+}
+
+.assistant-panel h2 { margin: 0; font-size: 16px; }
+.assistant-panel header button { min-width: 36px; min-height: 36px; }
+
+.assistant-history {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 12px;
+  padding: 10px 4px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.assistant-history p { margin: 0; }
+.assistant-answer, .assistant-question, .assistant-error {
+  padding: 8px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.assistant-history .assistant-question { align-self: end; max-width: 88%; background: #ddf3e2; }
+.assistant-answer, .assistant-error { align-self: start; background: var(--skin-glass-solid); }
+.assistant-answer ul { margin: 6px 0; padding-inline-start: 18px; }
+.assistant-answer li + li { margin-top: 4px; }
+.assistant-answer small { display: block; margin-top: 5px; color: var(--skin-muted); }
+.assistant-error { color: var(--red); }
+.assistant-waiting { margin: 0 4px 8px; font-size: 12px; color: var(--skin-muted); }
+
+.assistant-examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  flex-shrink: 0;
+  margin: 0 4px 10px;
+}
+
+.assistant-examples button { min-height: 28px; white-space: normal; text-align: start; }
+
+.assistant-compose { display: flex; gap: 7px; flex-shrink: 0; }
+.assistant-compose input {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 11px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--skin-glass-solid);
+  color: var(--skin-ink);
+}
+
+@media (max-width: 767px) {
+  .assistant-shell { right: 0; left: 0; bottom: max(12px, env(safe-area-inset-bottom)); pointer-events: none; }
+  .assistant-panel, .assistant-launch { pointer-events: auto; }
+  .assistant-panel { width: 100%; border-radius: 20px 20px 0 0; }
+  .assistant-launch { margin-inline-end: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .assistant-panel, .assistant-shell button { animation: none; transition: none; }
+}
 </style></head><body><div id="app"><div class="boot">Opening PANTRI…</div></div><script type="module">
 const ok = value => ({ok:true,value});
 const fail = (message,code='INVALID') => ({ok:false,code,message});
@@ -2518,6 +2625,7 @@ const selectIsOpen = () => {
 
 function render({ capture = true } = {}) {
   if (ui.dirty && capture) snapshotForm();
+  if (!assistantVisible(ui)) ui.assistant.open = false;
   const previousOverlay = ui.lastOverlay;
   const active = focusedControl();
   const hint = focusHint(active);
@@ -2592,6 +2700,7 @@ function render({ capture = true } = {}) {
       </div>
     </div>
     ${renderOverlay(state, ui.overlay, ui.error, ui.discard, ui)}
+    <div id="assistant-region">${renderAssistant(ui)}</div>
     <div id="toast-region" aria-live="polite" aria-atomic="true"></div>`;
 
   ui.lastPage = ui.page;
@@ -2616,7 +2725,8 @@ function render({ capture = true } = {}) {
     updateFormPreview(dialog.querySelector('form'));
   }
   const target = dialog ? matchFocusTarget(dialogControls(dialog), hint)
-    : matchFocusTarget(dialogControls(root.querySelector('.app-shell')), hint);
+    : matchFocusTarget(dialogControls(root.querySelector('.app-shell')), hint)
+      ?? matchFocusTarget(dialogControls(root.querySelector('#assistant-region')), hint);
   if (target) {
     target.focus({ preventScroll: true });
     if (selection.every(Number.isInteger) && ['text', 'search'].includes(target.type)) {
@@ -3176,6 +3286,7 @@ function createPantriApi({
       return result;
     },
     read: path => request(path),
+    askAssistant: question => request('/api/assistant/questions', { method: 'POST', body: { question } }),
     write: (path, payload = {}, options) => mutate(path, payload, options),
   };
 }
@@ -3408,7 +3519,8 @@ function renderLogRows(logs) {
   return `<div class="table-scroll"><table class="support-logs">
     <thead><tr><th scope="col">Time (UTC)</th><th scope="col">Operation</th><th scope="col">Outcome</th><th scope="col" class="num">Time elapsed</th></tr></thead>
     <tbody>${logs.map(log => `<tr><td>${esc(String(log.at ?? '').replace('T', ' ').slice(0, 19))}</td>
-      <td><strong>${esc(log.event)}</strong>${log.type ? `<small class="block muted">${esc(log.type)}</small>` : ''}</td>
+      <td><strong>${esc(log.event)}</strong>${log.type ? `<small class="block muted">${esc(log.type)}</small>` : ''}
+        ${log.type === 'assistant' ? `<small class="block muted">${esc(log.intent?.replaceAll('_', ' '))} · ${esc(log.model)}</small>` : ''}</td>
       <td>${esc(log.outcome || 'Recorded')}${log.reason || log.code ? `<small class="block muted">${esc(log.reason || log.code)}</small>` : ''}</td>
       <td class="num">${Number.isFinite(log.elapsedMs) ? amount(log.elapsedMs) + ' ms' : '—'}</td></tr>`).join('')}</tbody>
   </table></div>`;
@@ -3450,6 +3562,136 @@ function explanationBlock(explanation, scope = '') {
   return `<div class="planning-context model-explanation" role="status" data-explanation-scope="${esc(scope)}">${explanationCopy(explanation)}</div>`;
 }
 
+const assistantMethods = {
+  model: 'Understood by the local model',
+  keywords: 'Matched by keywords',
+  none: 'Not understood',
+};
+
+function assistantDefaults() {
+  return { open: false, busy: false, draft: '', messages: [], suggestions: null };
+}
+
+function assistantVisible(ui) {
+  return !!ui.state && !ui.overlay && ui.storage?.status !== 'quarantined' &&
+    ['manager', 'staff'].includes(ui.account?.role);
+}
+
+function assistantPromptButtons(assistant, role) {
+  const prompts = assistant.suggestions ?? [
+    'How much sliced beef do we have?',
+    'Which ingredients are low on stock?',
+    'What is expiring soon?',
+    role === 'manager' ? 'How much did we waste today?' : 'Which orders are awaiting receiving?',
+  ];
+  return prompts.map(question => `<button type="button" class="btn mini" data-action="ask-example"
+    data-question="${esc(question)}" ${assistant.busy ? 'disabled' : ''}>${esc(question)}</button>`).join('');
+}
+
+function assistantHistory(assistant) {
+  return assistant.messages.map(({ question, answer, understoodBy, error }) => `
+    <p class="assistant-question">${esc(question)}</p>
+    ${answer ? `<div class="assistant-answer"><p>${esc(answer.text)}</p>
+      ${answer.items?.some(item => item.text) ? `<ul>${answer.items.filter(item => item.text)
+        .map(item => `<li>${esc(item.text)}</li>`).join('')}</ul>` : ''}
+      <small>${assistantMethods[understoodBy] ?? assistantMethods.none}</small>
+    </div>` : ''}
+    ${error ? `<p class="assistant-error">${esc(error)}</p>` : ''}`).join('');
+}
+
+function renderAssistant(ui) {
+  if (!assistantVisible(ui)) return '';
+  const { assistant } = ui;
+  return `<div class="assistant-shell">
+    <section id="assistant-panel" class="assistant-panel" aria-labelledby="assistant-title" ${assistant.open ? '' : 'hidden'}>
+      <header><h2 id="assistant-title">Ask PANTRI</h2>
+        ${button(icon('close'), 'toggle-assistant', 'aria-label="Close Ask PANTRI"', 'icon-button')}
+      </header>
+      <div class="assistant-history" aria-label="Conversation" tabindex="0">${assistantHistory(assistant)}</div>
+      <p class="assistant-waiting" aria-hidden="true" ${assistant.busy ? '' : 'hidden'}>Thinking…</p>
+      <p class="assistant-status sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
+      <div class="assistant-examples" role="group" aria-label="Suggested questions">
+        ${assistantPromptButtons(assistant, ui.account.role)}
+      </div>
+      <form class="assistant-compose" data-form="ask-assistant">
+        <label class="sr-only" for="assistant-question">Ask a question in English</label>
+        <input id="assistant-question" name="question" data-focus="assistant-question" type="text" maxlength="300"
+          placeholder="Ask a question in English" required value="${esc(assistant.draft)}">
+        <button class="btn primary" type="submit" ${assistant.busy ? 'disabled' : ''}>Send</button>
+      </form>
+    </section>
+    <button type="button" class="btn primary assistant-launch" data-action="toggle-assistant"
+      data-focus="assistant-launch" aria-expanded="${assistant.open}" aria-controls="assistant-panel">${icon('leaf')} Ask PANTRI</button>
+  </div>`;
+}
+
+function toggleAssistant() {
+  if (!assistantVisible(ui)) return;
+  const { assistant } = ui;
+  assistant.open = !assistant.open;
+  const panel = root.querySelector('#assistant-panel');
+  const launch = root.querySelector('.assistant-launch');
+  panel.hidden = !assistant.open;
+  launch.setAttribute('aria-expanded', String(assistant.open));
+  if (assistant.open) {
+    const history = panel.querySelector('.assistant-history');
+    history.scrollTop = history.scrollHeight;
+    panel.querySelector('input').focus();
+  } else launch.focus();
+}
+
+function updateAssistantPanel(announcement) {
+  const panel = root.querySelector('#assistant-panel');
+  if (!panel) return;
+  const { assistant } = ui;
+  const history = panel.querySelector('.assistant-history');
+  history.innerHTML = assistantHistory(assistant);
+  history.scrollTop = history.scrollHeight;
+  panel.querySelector('.assistant-status').textContent = announcement;
+  panel.querySelector('.assistant-waiting').hidden = !assistant.busy;
+  panel.querySelector('.assistant-examples').innerHTML = assistantPromptButtons(assistant, ui.account.role);
+  panel.querySelector('[type="submit"]').disabled = assistant.busy;
+}
+
+async function submitAssistant(value) {
+  const { assistant } = ui;
+  const question = value.trim();
+  if (!assistantVisible(ui) || !assistant.open || assistant.busy || !question || question.length > 300) return;
+  const message = { question };
+  assistant.messages = [...assistant.messages.slice(-11), message];
+  assistant.draft = '';
+  assistant.busy = true;
+  const input = root.querySelector('#assistant-question');
+  input.value = '';
+  input.focus();
+  updateAssistantPanel('Thinking…');
+  try {
+    const { revision, answer, understoodBy, suggestions } = await api.askAssistant(question);
+    if (ui.assistant !== assistant) return;
+    if (revision < ui.storage?.revision) {
+      message.error = 'Records changed while this question was being answered. Ask again for the latest records.';
+    } else {
+      Object.assign(message, { answer, understoodBy });
+      assistant.suggestions = suggestions;
+    }
+  } catch (error) {
+    if (ui.assistant !== assistant) return;
+    if (recoverExpiredSession(error)) {
+      render();
+      return;
+    }
+    message.error = error.message;
+  } finally {
+    assistant.busy = false;
+    if (ui.assistant === assistant) {
+      const answer = message.answer;
+      const announcement = answer ? [answer.text, ...answer.items.map(item => item.text).filter(Boolean),
+        assistantMethods[message.understoodBy]].join(' ') : message.error;
+      updateAssistantPanel(announcement ?? '');
+    }
+  }
+}
+
 const root=document.getElementById('app');
 const api = createPantriApi();
 const explanationCache = new Map();
@@ -3466,6 +3708,7 @@ function workspaceDefaults(role = 'manager') {
     overlay: null, lastOverlay: null, error: '', dirty: false, discard: false, notice: null,
     animateCharts: false, chartsPlayed: false, railOpen: false, navPillY: null,
     leaving: null, leaveTimer: null, railTimer: null,
+    assistant: assistantDefaults(),
   };
 }
 
@@ -3866,6 +4109,10 @@ root.addEventListener('click', event => {
   if (!ui.account) return;
 
   switch (action) {
+    case 'toggle-assistant':
+      return toggleAssistant();
+    case 'ask-example':
+      return void submitAssistant(element.dataset.question);
     case 'backdrop':
     case 'close-overlay':
       return closeOverlay();
@@ -3979,6 +4226,10 @@ root.addEventListener('click', event => {
 });
 
 root.addEventListener('input', event => {
+  if (event.target.id === 'assistant-question') {
+    ui.assistant.draft = event.target.value;
+    return;
+  }
   const input = event.target;
   if (input.id === 'inventory-search') {
     ui.filter.query = input.value;
@@ -4054,6 +4305,7 @@ root.addEventListener('submit', event => {
   const kind = form.dataset.form;
   if (!kind) return;
   event.preventDefault();
+  if (kind === 'ask-assistant') return void submitAssistant(form.elements.question.value);
   const { state, overlay } = ui;
   if (interactionBusy() || !state || !overlay) return;
   const values = Object.fromEntries(new FormData(form, event.submitter));
@@ -4097,6 +4349,10 @@ document.addEventListener('keydown', event => {
   // An open custom dropdown handles its own Escape and Tab keys.
   if ((event.key === 'Escape' || event.key === 'Tab') && selectIsOpen()) return;
   if (!ui.overlay) {
+    if (event.key === 'Escape' && ui.assistant.open) {
+      event.preventDefault();
+      return toggleAssistant();
+    }
     if (event.key === 'Escape' && ui.chartDate && root.querySelector('.paired-chart')) setChartDay(ui.chartDate);
     return;
   }

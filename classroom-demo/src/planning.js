@@ -110,4 +110,4 @@ function paginate(items, page, size) {
   };
 }
 
-export { reportRange, selectWasteEvents, selectWastePlanning };
+export { isAwaitingReceiving, reportRange, selectWasteEvents, selectWastePlanning, summarizeWaste };
