@@ -1,6 +1,7 @@
 const root=document.getElementById('app');
 const api = createPantriApi();
 const explanationCache = new Map();
+let explanationViewKey = null;
 let sessionEpoch = 0;
 let toastTimer;
 
@@ -63,8 +64,8 @@ async function loadAccounts() {
   }
 }
 
-async function loadWorkspace() {
-  useSnapshot(await api.snapshot());
+async function loadWorkspace(options) {
+  useSnapshot(await api.snapshot(options));
   if (ui.account.role !== 'support') return;
   const [support, health] = await Promise.allSettled([api.read('/api/support'), api.health()]);
   if (support.status === 'rejected') throw support.reason;
@@ -225,23 +226,30 @@ function paintExplanation(scope, explanation) {
 
 function syncExplanation() {
   const context = currentExplanation();
-  if (!context) return;
+  if (!context) {
+    explanationViewKey = null;
+    return;
+  }
   const { scope, key, revision, path } = context;
-  if (explanationCache.has(key)) {
-    paintExplanation(scope, explanationCache.get(key));
+  const entering = explanationViewKey !== key;
+  explanationViewKey = key;
+  const cached = explanationCache.get(key);
+  if (cached && (cached.pending || !entering || cached.explanation?.source === 'model')) {
+    paintExplanation(scope, cached.explanation);
     return;
   }
 
   // The placeholder can update without re-rendering the drawer, inputs or active page.
-  explanationCache.set(key, null);
+  explanationCache.set(key, { pending: true, explanation: null });
   const epoch = sessionEpoch;
   api.read(path).then(result => {
     if (epoch !== sessionEpoch || revision !== ui.storage?.revision) return;
     const explanation = result.revision === revision ? result.explanation : null;
-    explanationCache.set(key, explanation);
+    explanationCache.set(key, { pending: false, explanation });
     if (currentExplanation()?.key === key) paintExplanation(scope, explanation);
   }).catch(error => {
-    if (epoch !== sessionEpoch) return;
+    if (epoch !== sessionEpoch || revision !== ui.storage?.revision) return;
+    explanationCache.set(key, { pending: false, explanation: null });
     if (recoverExpiredSession(error)) {
       render();
     } else if (error.retryable && currentExplanation()?.key === key) {
@@ -310,7 +318,7 @@ async function reloadWorkspace() {
   explanationCache.clear();
   let failure;
   try {
-    await loadWorkspace();
+    await loadWorkspace({ reloadSaved: ui.account.role === 'manager' });
   } catch (error) {
     failure = error;
   } finally {

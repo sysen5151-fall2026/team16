@@ -55,7 +55,7 @@ export function openState(file) {
   }
   if (missing) seedStateFile(file);
   return createDemoService({
-    getItem: () => readState(file),
+    getItem: () => readFileSync(file, 'utf8'),
     setItem: (_, data) => atomicWrite(file, data),
   });
 }

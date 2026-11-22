@@ -1,4 +1,6 @@
 const SESSION_TOKEN_KEY = 'pantri-demo-session';
+const PENDING_OPERATION_KEY = 'pantri-pending-operations';
+const persistedIntent = /^[a-f0-9]{64}$/;
 const apiUnavailableMessage = 'PANTRI could not reach the server. Check that it is running, then retry.';
 
 class PantriApiError extends Error {
@@ -28,7 +30,30 @@ function createPantriApi({
   } catch {
     // The token stays in memory.
   }
-  const pendingIds = new Map();
+  let pendingIds = new Map();
+  try {
+    const saved = JSON.parse(tokenStore?.getItem(PENDING_OPERATION_KEY) ?? '[]');
+    pendingIds = new Map(saved.filter(([key, id]) => persistedIntent.test(key) && typeof id === 'string'));
+  } catch {
+    // A corrupt or blocked session store does not prevent the workspace from loading.
+  }
+
+  function savePendingIds() {
+    try {
+      const saved = [...pendingIds].filter(([key]) => persistedIntent.test(key));
+      if (saved.length) tokenStore?.setItem(PENDING_OPERATION_KEY, JSON.stringify(saved));
+      else tokenStore?.removeItem(PENDING_OPERATION_KEY);
+    } catch {
+      // Retry tracking still works in the open tab.
+    }
+  }
+
+  async function intentKey(principal, method, path, payload) {
+    const intent = JSON.stringify([principal, method, path, payload]);
+    if (!globalThis.crypto?.subtle) return intent;
+    const digest = await globalThis.crypto.subtle.digest('SHA-256', new TextEncoder().encode(intent));
+    return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
+  }
 
   function setSession(nextToken, nextAccountId = null) {
     token = nextToken;
@@ -82,9 +107,10 @@ function createPantriApi({
 
   async function mutate(path, payload, { method = 'POST', anonymous = false, principal = accountId } = {}) {
     // An unacknowledged write may already be saved. Retrying the same intent uses its original ID.
-    const key = JSON.stringify([principal, method, path, payload]);
+    const key = await intentKey(principal, method, path, payload);
     const id = pendingIds.get(key) ?? operationId();
     pendingIds.set(key, id);
+    savePendingIds();
     try {
       const result = await request(path, { method, body: { ...payload, operationId: id }, anonymous });
       pendingIds.delete(key);
@@ -92,6 +118,8 @@ function createPantriApi({
     } catch (error) {
       if (!error.retryable && error.status !== 401) pendingIds.delete(key);
       throw error;
+    } finally {
+      savePendingIds();
     }
   }
 
@@ -104,9 +132,10 @@ function createPantriApi({
       setSession(result.token, result.account.id);
       return result;
     },
-    async snapshot() {
+    async snapshot({ reloadSaved = false } = {}) {
       const requestToken = token;
-      const result = await request('/api/snapshot');
+      const path = reloadSaved ? '/api/snapshot?reloadSaved=1' : '/api/snapshot';
+      const result = await request(path);
       if (requestToken === token) accountId = result.account.id;
       return result;
     },

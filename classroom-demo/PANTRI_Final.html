@@ -1526,6 +1526,7 @@ function validateSaved(s){
 const STORAGE_KEY = 'pantri.final.v1';
 function freezeTree(x){if(x&&typeof x==='object'&&!Object.isFrozen(x)){Object.freeze(x);Object.values(x).forEach(freezeTree)}return x;}
 const STORAGE_FORMAT = 'pantri-checkpoint-v1';
+const RESET_OPERATION_PREFIX = 'pantri-reset-';
 
 function serializeState(current, checkpoint = null) {
   return JSON.stringify({ format: STORAGE_FORMAT, current, checkpoint });
@@ -1547,6 +1548,7 @@ function createDemoService(storage) {
   const listeners = new Set();
 
   function load() {
+    raw = null;
     checkpoint = null;
     try {
       raw = storage.getItem(STORAGE_KEY);
@@ -1581,8 +1583,9 @@ function createDemoService(storage) {
     return ok(state);
   }
 
-  function markExternalChange() {
-    problem = 'Data changed in another tab. Reload the latest saved data before continuing.';
+  function markExternalChange(latest) {
+    if (latest !== undefined) raw = latest;
+    problem = 'Saved data changed outside this workspace. Reload it before continuing.';
     notify();
   }
 
@@ -1606,8 +1609,9 @@ function createDemoService(storage) {
     commit(work) {
       if (problem) return fail(problem, 'STORAGE');
       try {
-        if (storage.getItem(STORAGE_KEY) !== raw) {
-          markExternalChange();
+        const latest = storage.getItem(STORAGE_KEY);
+        if (latest !== raw) {
+          markExternalChange(latest);
           return fail(problem, 'CONFLICT');
         }
         const result = work(state);
@@ -1622,10 +1626,19 @@ function createDemoService(storage) {
     },
     resetDemo(operationId) {
       try {
-        if (storage.getItem(STORAGE_KEY) !== raw) return fail('Reload the latest saved data before reset.', 'CONFLICT');
-        if (operationId && state.operations.includes(operationId) && !problem) return ok(state);
+        const latest = storage.getItem(STORAGE_KEY);
+        if (latest !== raw) {
+          markExternalChange(latest);
+          return fail(problem, 'CONFLICT');
+        }
+        const resetOperations = [...new Set([
+          ...state.operations, ...(checkpoint?.operations ?? []),
+        ].filter(key => key.startsWith(RESET_OPERATION_PREFIX)))];
+        if (operationId && (state.operations.includes(operationId) || resetOperations.includes(operationId))) {
+          return problem ? fail(problem, 'STORAGE') : ok(state);
+        }
         const next = { ...createSeed(), revision: state.revision + 1 };
-        if (operationId) next.operations.push(operationId);
+        if (operationId) next.operations.push(...resetOperations, operationId);
         return persist(next, null);
       } catch (error) {
         return fail(`Reset could not be saved: ${error.message}`, 'STORAGE');
@@ -3021,6 +3034,8 @@ function recoveryForm(state, overlay) {
 }
 
 const SESSION_TOKEN_KEY = 'pantri-demo-session';
+const PENDING_OPERATION_KEY = 'pantri-pending-operations';
+const persistedIntent = /^[a-f0-9]{64}$/;
 const apiUnavailableMessage = 'PANTRI could not reach the server. Check that it is running, then retry.';
 
 class PantriApiError extends Error {
@@ -3050,7 +3065,30 @@ function createPantriApi({
   } catch {
     // The token stays in memory.
   }
-  const pendingIds = new Map();
+  let pendingIds = new Map();
+  try {
+    const saved = JSON.parse(tokenStore?.getItem(PENDING_OPERATION_KEY) ?? '[]');
+    pendingIds = new Map(saved.filter(([key, id]) => persistedIntent.test(key) && typeof id === 'string'));
+  } catch {
+    // A corrupt or blocked session store does not prevent the workspace from loading.
+  }
+
+  function savePendingIds() {
+    try {
+      const saved = [...pendingIds].filter(([key]) => persistedIntent.test(key));
+      if (saved.length) tokenStore?.setItem(PENDING_OPERATION_KEY, JSON.stringify(saved));
+      else tokenStore?.removeItem(PENDING_OPERATION_KEY);
+    } catch {
+      // Retry tracking still works in the open tab.
+    }
+  }
+
+  async function intentKey(principal, method, path, payload) {
+    const intent = JSON.stringify([principal, method, path, payload]);
+    if (!globalThis.crypto?.subtle) return intent;
+    const digest = await globalThis.crypto.subtle.digest('SHA-256', new TextEncoder().encode(intent));
+    return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
+  }
 
   function setSession(nextToken, nextAccountId = null) {
     token = nextToken;
@@ -3104,9 +3142,10 @@ function createPantriApi({
 
   async function mutate(path, payload, { method = 'POST', anonymous = false, principal = accountId } = {}) {
     // An unacknowledged write may already be saved. Retrying the same intent uses its original ID.
-    const key = JSON.stringify([principal, method, path, payload]);
+    const key = await intentKey(principal, method, path, payload);
     const id = pendingIds.get(key) ?? operationId();
     pendingIds.set(key, id);
+    savePendingIds();
     try {
       const result = await request(path, { method, body: { ...payload, operationId: id }, anonymous });
       pendingIds.delete(key);
@@ -3114,6 +3153,8 @@ function createPantriApi({
     } catch (error) {
       if (!error.retryable && error.status !== 401) pendingIds.delete(key);
       throw error;
+    } finally {
+      savePendingIds();
     }
   }
 
@@ -3126,9 +3167,10 @@ function createPantriApi({
       setSession(result.token, result.account.id);
       return result;
     },
-    async snapshot() {
+    async snapshot({ reloadSaved = false } = {}) {
       const requestToken = token;
-      const result = await request('/api/snapshot');
+      const path = reloadSaved ? '/api/snapshot?reloadSaved=1' : '/api/snapshot';
+      const result = await request(path);
       if (requestToken === token) accountId = result.account.id;
       return result;
     },
@@ -3407,6 +3449,7 @@ function explanationBlock(explanation, scope = '') {
 const root=document.getElementById('app');
 const api = createPantriApi();
 const explanationCache = new Map();
+let explanationViewKey = null;
 let sessionEpoch = 0;
 let toastTimer;
 
@@ -3469,8 +3512,8 @@ async function loadAccounts() {
   }
 }
 
-async function loadWorkspace() {
-  useSnapshot(await api.snapshot());
+async function loadWorkspace(options) {
+  useSnapshot(await api.snapshot(options));
   if (ui.account.role !== 'support') return;
   const [support, health] = await Promise.allSettled([api.read('/api/support'), api.health()]);
   if (support.status === 'rejected') throw support.reason;
@@ -3631,23 +3674,30 @@ function paintExplanation(scope, explanation) {
 
 function syncExplanation() {
   const context = currentExplanation();
-  if (!context) return;
+  if (!context) {
+    explanationViewKey = null;
+    return;
+  }
   const { scope, key, revision, path } = context;
-  if (explanationCache.has(key)) {
-    paintExplanation(scope, explanationCache.get(key));
+  const entering = explanationViewKey !== key;
+  explanationViewKey = key;
+  const cached = explanationCache.get(key);
+  if (cached && (cached.pending || !entering || cached.explanation?.source === 'model')) {
+    paintExplanation(scope, cached.explanation);
     return;
   }
 
   // The placeholder can update without re-rendering the drawer, inputs or active page.
-  explanationCache.set(key, null);
+  explanationCache.set(key, { pending: true, explanation: null });
   const epoch = sessionEpoch;
   api.read(path).then(result => {
     if (epoch !== sessionEpoch || revision !== ui.storage?.revision) return;
     const explanation = result.revision === revision ? result.explanation : null;
-    explanationCache.set(key, explanation);
+    explanationCache.set(key, { pending: false, explanation });
     if (currentExplanation()?.key === key) paintExplanation(scope, explanation);
   }).catch(error => {
-    if (epoch !== sessionEpoch) return;
+    if (epoch !== sessionEpoch || revision !== ui.storage?.revision) return;
+    explanationCache.set(key, { pending: false, explanation: null });
     if (recoverExpiredSession(error)) {
       render();
     } else if (error.retryable && currentExplanation()?.key === key) {
@@ -3716,7 +3766,7 @@ async function reloadWorkspace() {
   explanationCache.clear();
   let failure;
   try {
-    await loadWorkspace();
+    await loadWorkspace({ reloadSaved: ui.account.role === 'manager' });
   } catch (error) {
     failure = error;
   } finally {

@@ -108,13 +108,20 @@ paths:
       x-demo-roles: [manager, staff, supplier, recovery, support]
       description: >-
         Use this route for refresh and role switching. Storage diagnostics are available
-        during quarantine. Support receives null for the business state.
+        during quarantine. Support receives null for the business state. A manager may
+        explicitly reload and validate the current saved file for reconciliation.
+      parameters:
+        - name: reloadSaved
+          in: query
+          description: Revalidate the server file when the manager selects Reload saved data.
+          schema: { type: string, const: '1' }
       responses:
         '200':
           description: Role-scoped state and storage diagnostics
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Snapshot' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
         '401': { $ref: '#/components/responses/InvalidSession' }
         '403': { $ref: '#/components/responses/Forbidden' }
         '500': { $ref: '#/components/responses/InternalError' }

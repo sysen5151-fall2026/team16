@@ -26,8 +26,8 @@ The contract uses JSON, milliseconds for diagnostic latency, integer USD cents f
 | --- | --- | --- | --- |
 | GET health | Storage and model status objects | Ready file with model disabled, unreachable and ready. Quarantine is separately identified. | Public bounded status. Server reports readiness after background warmup. |
 | GET accounts | Five stable IDs and labels | Five distinct roles available before sign-in. | One account list at boot. Server uses the fixed demo account catalog. |
-| POST sessions | Account ID and operation ID, opaque bearer response | 201, duplicate sign-in returns the same session. Missing or expired credentials fail protected reads. | One call per role switch. Server binds role and expiry. Client stores only the token for the tab. |
-| GET snapshot | State envelope, role account and storage metadata | Manager full state, staff operational projection, partner-specific views, support null. Unsigned returns 401. | One 132-ingredient manager sample. Server scopes results. Client reloads after role switches and 401. |
+| POST sessions | Account ID and operation ID, opaque bearer response | 201, duplicate sign-in returns the same session. Missing or expired credentials fail protected reads. | One call per role switch. Server binds role and expiry. Client stores the session token and hashed identifiers for unacknowledged writes, without storing form data. |
+| GET snapshot | State envelope, role account and storage metadata | Manager full state, staff operational projection, partner-specific views, support null. Unsigned returns 401. Explicit manager reload revalidates the file. | One 132-ingredient manager sample. Server scopes results. Client reloads after role switches and 401. |
 | GET support | Log, checkpoint and model status records | Support sees metadata and bounded activity. Business writes and manager diagnostics request are forbidden. | Latest 100 entries in process memory. Server keeps data and bearer values out of diagnostic events. |
 | GET inventory | Scoped item summaries with on-hand, reserved and usable quantities | Returns 132 items and supports category, search and stock status. Supplier access fails. | 30 serial reads plus 10 parallel on localhost. Server validates scope and derives summaries. |
 | GET inventory/{id} | Ingredient, batches, dated events and units | Sliced beef goes 8→13→12→11 kg. Missing ingredient returns 404. | Per-ingredient response. Client displays the shared state and server owns mutations. |
@@ -49,9 +49,9 @@ The contract uses JSON, milliseconds for diagnostic latency, integer USD cents f
 | POST recoveries/{id}/cancellation | Recovery ID and operation ID | Releases the reservation on an active request and retains the event. | One write. Server checks role and state. |
 | GET reports | Today or week query, dated paired metrics and insights | The normal report returns scoped measures. Unknown period returns 400. | A maximum seven-day demo window. Server calculates metrics and UI renders them. |
 | GET reports/waste-insights | Period, revision, structured insights and optional explanation | Today shows Sliced beef first after 1 kg waste and opens its recorded Overproduction entry. Model-off shows calculated text. | Same 8 s model deadline after deterministic aggregation. Server checks facts and source. |
-| POST demo/reset | Manager operation ID | One reset restores 132 ingredients and three drafts. A same-ID retry leaves revision intact. Other roles read the new shared state. | Explicit manager control. Client confirms, server resets the prepared data. |
+| POST demo/reset | Manager operation ID | One reset restores 132 ingredients and three drafts. A delayed same-ID reset leaves newer records and revision intact. Other roles read the new shared state. | Explicit manager control. Client confirms, server resets the prepared data. |
 | GET checkpoints/previous | Verified prior state envelope | After a contradictory saved approval, the prior approved quantity is returned. | At most one prior snapshot. Server only exposes it to the manager. |
-| GET storage/raw | Exact saved bytes as text | Quarantine preserves raw bytes and rejects the attempted transaction with 503. | Manager export for reconciliation. Server retains the damaged record and does not replay it. |
+| GET storage/raw | Retained UTF-8 saved text | Quarantine preserves the original file and rejects the attempted transaction with 503. | Manager export for reconciliation. Server retains the damaged record and does not replay it. |
 
 The OpenAPI file parsed as 3.1.0, resolved its local references and defined **28 operations** matching the handler inventory. The 90 component schemas passed Draft 2020-12 schema checks. A separate live harness validated 56 request and response envelopes across the 28 operations, with all five roles and the documented 400, 401, 403, 404, 409, 413 and 415 responses. The Node test suite verifies the 503 quarantine case and loopback model fault paths.
 
@@ -85,9 +85,13 @@ The normal demo began with 132 ingredients, three drafts and seven low-stock ite
 | --- | --- | --- |
 | Supplier events from the partner workspace initially appeared as simulations. | Code defect in the shared event attribution boundary. | Explicit manager simulation and partner submission now retain distinct boolean values and role attribution. HTTP regression checks the recorded source. |
 | A supplied empty receipt batch identifier silently created a fresh batch. | Code defect at the request validation boundary. | The contract permits an omitted field. An explicitly empty identifier now returns 400 and leaves revision 0. |
+| A delayed retry of an earlier reset could replace a newer run. | Code defect in reset idempotency retention. | Retain reset identifiers across resets and check for replay before replacement. |
+| Reloading a tab lost the operation ID for an unacknowledged write. | Code defect in client retry lifespan. | Retain hashed pending intent keys and IDs in the tab session until acknowledged. The original intent reuses its ID after reload. |
+| The recovery view could offer the old raw record and reload only in-memory state. | Code defect at the disk recovery boundary. | Expose the observed saved text and provide the manager's explicit revalidation action. Staff cannot invoke it. |
+| Reopening a draft continued to show its earlier calculated result after model warmup. | Code defect in explanation cache refresh. | Retry the calculated or failed explanation on re-entry. |
 | The first host start needed substantially longer than the foreground explanation deadline. | Interface specification defect in the startup timing budget. | Separate background warmup from the bounded user-facing inference path. Re-run actual cold/warm measurements and keep a deterministic explanation during unavailable states. |
 
-Two findings came from code and one from an interface timing assumption. The bounded release scenarios cover the resulting defects. Operational validation and the native third-level IDEF0 and independent UC.11 views are tracked in the model baseline.
+Six findings came from code and one from an interface timing assumption. The bounded release scenarios cover the resulting defects. Operational validation and the native third-level IDEF0 and independent UC.11 views are tracked in the model baseline.
 
 ## Repeatable checks
 
@@ -97,4 +101,4 @@ npm.cmd test
 node classroom-demo/study/model-timing.mjs
 ~~~
 
-The working tree run reported **60/60** classroom checks and **54/54** repository checks, zero failures. The classroom run retains the 23 pre-integration checks. The release sign-in, active model, unreachable model and clean-checkout setup results are recorded below.
+The working tree run reported **64/64** classroom checks and **54/54** repository checks, zero failures. The classroom run retains the 23 pre-integration checks. The release sign-in, active model, unreachable model and clean-checkout setup results are recorded below.

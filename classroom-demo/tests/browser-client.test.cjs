@@ -18,13 +18,12 @@ function loadBrowserFunctions() {
   return vm.runInNewContext(
     browserSource() + '\n' +
       '({ createPantriApi, createSeed, approveDraft, sendApprovedOrder, getIngredientSummary, renderAccountCards, workspaceNavigation, renderStaffReceipts, supplierOrderOverlay, recoveryPartnerOverlay, renderSupportPage, explanationBlock, orderOverlay, recoveryOverlay, ingredientDetails, draftOverlay, renderReportsPage })',
-    { AbortSignal, structuredClone },
+    { AbortSignal, structuredClone, TextEncoder, crypto: require('node:crypto').webcrypto },
   );
 }
 
-function transportFixture() {
+function transportFixture(stored = new Map()) {
   const { createPantriApi } = loadBrowserFunctions();
-  const stored = new Map();
   const calls = [];
   const replies = [];
   let count = 0;
@@ -464,4 +463,52 @@ test('browser controls complete shared purchasing and recovery against the real 
   assert.match(browser.html, /Checkpoint revision/);
   assert.match(browser.html, /Operation log/);
   assert.doesNotMatch(browser.html, /Demo tools|Record receiving/);
+});
+
+test('an unresolved write keeps its operation ID after the tab reloads without saving its form text', async () => {
+  const original = transportFixture();
+  original.respond(201, { token: 'manager-session', account: manager });
+  await original.api.signIn('manager');
+  const path = '/api/inventory/records';
+  const input = { kind: 'waste', quantity: 1, reason: 'Unsaved example reason' };
+  original.replies.push(() => { throw new TypeError('Response lost'); });
+  await assert.rejects(original.api.write(path, input), { code: 'CONNECTION_LOST' });
+  const firstId = original.calls.at(-1).body.operationId;
+  assert.doesNotMatch(JSON.stringify([...original.stored.values()]), /Unsaved example reason/);
+
+  const reloaded = transportFixture(original.stored);
+  reloaded.respond(200, { account: manager, state: {}, storage: { revision: 1 } });
+  await reloaded.api.snapshot();
+  reloaded.respond(200, { account: manager, state: {}, storage: { revision: 1 } });
+  await reloaded.api.write(path, input);
+  assert.equal(reloaded.calls.at(-1).body.operationId, firstId);
+  assert.deepEqual([...reloaded.stored.values()], ['manager-session']);
+});
+
+test('returning to a draft retries a calculated explanation after startup', async () => {
+  const state = loadBrowserFunctions().createSeed();
+  let explanations = 0;
+  const browser = browserFixture(async ({ url }) => {
+    if (url === '/api/accounts') return json({ accounts: [manager] });
+    if (url === '/api/sessions') return json({ token: 'manager-session', account: manager }, 201);
+    if (url === '/api/snapshot') return json({ account: manager, state,
+      storage: { status: 'ready', revision: state.revision } });
+    assert.equal(url, '/api/drafts/draft-001/explanation');
+    explanations++;
+    const source = explanations === 1 ? 'calculated' : 'model';
+    return json({ revision: state.revision, explanation: { source,
+      text: source === 'model' ? 'Validated model explanation.' : 'Calculated while warming.' } });
+  });
+  await settle();
+  browser.click('sign-in', { id: 'manager' });
+  await settle();
+  browser.click('purchasing');
+  browser.click('draft', { id: 'draft-001' });
+  await settle();
+  assert.match(browser.explanation, /Calculated while warming/);
+  browser.click('close-overlay');
+  browser.click('draft', { id: 'draft-001' });
+  await settle();
+  assert.equal(explanations, 2);
+  assert.match(browser.explanation, /Validated model explanation/);
 });

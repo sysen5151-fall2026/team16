@@ -86,7 +86,7 @@ node classroom-demo/study/model-timing.mjs
 
 **Demo sign-in, no real authentication.** Use the loopback service with the synthetic data. One restaurant and one PANTRI process own the file. Partner workspaces represent human actions in the classroom and do not send messages to real suppliers or recovery organizations. The support console shows service and model health, checkpoint metadata, and the recent operation/error log. Its log resets when the service restarts.
 
-If the saved approval and order conflict, the service quarantines transaction writes. The manager can export the raw record and prior verified checkpoint for reconciliation. The project team owns any manual reconciliation and storage recovery. Keep a secure copy of the data file if retaining a demonstration and stop the service before moving or retiring its file. The application keeps no explanation cache on disk.
+If the saved approval and order conflict, the service quarantines transaction writes. The manager can export the saved UTF-8 record and prior verified checkpoint for reconciliation, then use **Reload saved data** to revalidate a repaired file. The project team owns any manual reconciliation and storage recovery. Keep a secure copy of the data file if retaining a demonstration and stop the service before moving or retiring its file. The application keeps no explanation cache on disk.
 
 ### macOS
 

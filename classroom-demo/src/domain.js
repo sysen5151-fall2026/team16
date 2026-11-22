@@ -128,6 +128,7 @@ function validateSaved(s){
 const STORAGE_KEY = 'pantri.final.v1';
 function freezeTree(x){if(x&&typeof x==='object'&&!Object.isFrozen(x)){Object.freeze(x);Object.values(x).forEach(freezeTree)}return x;}
 const STORAGE_FORMAT = 'pantri-checkpoint-v1';
+const RESET_OPERATION_PREFIX = 'pantri-reset-';
 
 function serializeState(current, checkpoint = null) {
   return JSON.stringify({ format: STORAGE_FORMAT, current, checkpoint });
@@ -149,6 +150,7 @@ function createDemoService(storage) {
   const listeners = new Set();
 
   function load() {
+    raw = null;
     checkpoint = null;
     try {
       raw = storage.getItem(STORAGE_KEY);
@@ -183,8 +185,9 @@ function createDemoService(storage) {
     return ok(state);
   }
 
-  function markExternalChange() {
-    problem = 'Data changed in another tab. Reload the latest saved data before continuing.';
+  function markExternalChange(latest) {
+    if (latest !== undefined) raw = latest;
+    problem = 'Saved data changed outside this workspace. Reload it before continuing.';
     notify();
   }
 
@@ -208,8 +211,9 @@ function createDemoService(storage) {
     commit(work) {
       if (problem) return fail(problem, 'STORAGE');
       try {
-        if (storage.getItem(STORAGE_KEY) !== raw) {
-          markExternalChange();
+        const latest = storage.getItem(STORAGE_KEY);
+        if (latest !== raw) {
+          markExternalChange(latest);
           return fail(problem, 'CONFLICT');
         }
         const result = work(state);
@@ -224,10 +228,19 @@ function createDemoService(storage) {
     },
     resetDemo(operationId) {
       try {
-        if (storage.getItem(STORAGE_KEY) !== raw) return fail('Reload the latest saved data before reset.', 'CONFLICT');
-        if (operationId && state.operations.includes(operationId) && !problem) return ok(state);
+        const latest = storage.getItem(STORAGE_KEY);
+        if (latest !== raw) {
+          markExternalChange(latest);
+          return fail(problem, 'CONFLICT');
+        }
+        const resetOperations = [...new Set([
+          ...state.operations, ...(checkpoint?.operations ?? []),
+        ].filter(key => key.startsWith(RESET_OPERATION_PREFIX)))];
+        if (operationId && (state.operations.includes(operationId) || resetOperations.includes(operationId))) {
+          return problem ? fail(problem, 'STORAGE') : ok(state);
+        }
         const next = { ...createSeed(), revision: state.revision + 1 };
-        if (operationId) next.operations.push(operationId);
+        if (operationId) next.operations.push(...resetOperations, operationId);
         return persist(next, null);
       } catch (error) {
         return fail(`Reset could not be saved: ${error.message}`, 'STORAGE');
@@ -237,7 +250,7 @@ function createDemoService(storage) {
 }
 
 export {
-  addDays, approveDraft, applyInventoryCommand, calculateReport, cancelRecovery, createDemoService,
+  RESET_OPERATION_PREFIX, addDays, approveDraft, applyInventoryCommand, calculateReport, cancelRecovery, createDemoService,
   createDraftFromOrder, createSeed, editDraft, eventTime, getIngredientSummary, qty, recordCollection,
   recordRecoveryEvent, recordSupplierEvent, refreshDraft, requestRecovery, selectInventory,
   sendApprovedOrder, serializeState, validDate, validQuantity, validTimestamp,

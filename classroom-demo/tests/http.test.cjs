@@ -275,3 +275,40 @@ test('an unavailable language model leaves the draft available with a calculated
   assert.equal(draft.json.revision, before.revision);
   assert.deepEqual(stateOf(await api.send('/api/snapshot', { token: manager })), before);
 });
+
+test('a delayed replay of an older reset preserves a newer run', async t => {
+  const env = await fixture(t);
+  const api = await env.start();
+  const manager = await api.signIn('manager');
+  stateOf(await api.write(manager, '/api/demo/reset', { operationId: 'reset-a' }));
+  stateOf(await api.write(manager, '/api/demo/reset', { operationId: 'reset-b' }));
+  const saved = stateOf(await api.write(manager, '/api/inventory/records', {
+    kind: 'waste', ingredientId: 'ing-001', batchId: 'batch-001', unit: 'kg',
+    quantity: 1, reason: 'Overproduction',
+  }));
+  const replay = stateOf(await api.write(manager, '/api/demo/reset', { operationId: 'reset-a' }));
+  assert.equal(replay.revision, saved.revision);
+  assert.equal((await api.send('/api/inventory/ing-001', { token: manager })).json.item.onHand, 7);
+});
+
+test('external file change exposes the actual saved record and manager reload revalidates it', async t => {
+  const env = await fixture(t);
+  const api = await env.start();
+  const manager = await api.signIn('manager');
+  const staff = await api.signIn('staff');
+  const orderId = await approve(api, manager, 'draft-001', 1);
+  const correct = await readFile(env.dataFile, 'utf8');
+  const changed = JSON.parse(correct);
+  changed.current.orders[0].approvedLines[0].managerQty = 9;
+  const damaged = JSON.stringify(changed);
+  await writeFile(env.dataFile, damaged, 'utf8');
+
+  assert.equal((await api.write(manager, '/api/orders/' + orderId + '/dispatch', {})).status, 409);
+  assert.equal((await api.send('/api/storage/raw', { token: manager })).json.raw, damaged);
+  assert.equal((await api.send('/api/snapshot?reloadSaved=1', { token: staff })).status, 403);
+  assert.equal((await api.send('/api/snapshot?reloadSaved=1', { token: manager })).json.storage.status, 'quarantined');
+  await writeFile(env.dataFile, correct, 'utf8');
+  assert.equal((await api.send('/api/snapshot?reloadSaved=1', { token: manager })).json.storage.status, 'ready');
+  assert.equal(stateOf(await api.write(manager, '/api/orders/' + orderId + '/dispatch', {})).orders[0].supplierStatus,
+    'awaiting_confirmation');
+});

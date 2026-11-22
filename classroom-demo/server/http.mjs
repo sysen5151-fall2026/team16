@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { createServer } from 'node:http';
+import { RESET_OPERATION_PREFIX } from '../src/domain.js';
 import { createSessions, scopedState } from './continuity/access.mjs';
 import { continuityRoutes } from './continuity/routes.mjs';
 import { openState, resolveDataFile, storageStatus } from './continuity/storage.mjs';
@@ -39,7 +40,8 @@ function json(response, status, payload) {
 
 function requestId(account, route, id, key) {
   const basis = JSON.stringify([account.id, route.method, route.path, id, key]);
-  return 'api-' + createHash('sha256').update(basis).digest('hex');
+  const prefix = route.path === '/api/demo/reset' ? RESET_OPERATION_PREFIX : 'api-';
+  return prefix + createHash('sha256').update(basis).digest('hex');
 }
 
 function validateOrigin(request) {

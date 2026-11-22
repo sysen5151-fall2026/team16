@@ -234,9 +234,9 @@ The seven colors below were read from [D.1 PANTRI Universe Context](https://clou
 | Asset | Model title | Live status |
 | --- | --- | --- |
 | [1.1](https://cloud.innoslate.com/cornell/p/687/database/entity/198986) | PANTRI System | Partial |
-| [1.2](https://cloud.innoslate.com/cornell/p/687/database/entity/265046) | Output Requirements | Working |
-| [1.3](https://cloud.innoslate.com/cornell/p/687/database/entity/265045) | External Interface Requirements | Not yet built |
-| [1.4](https://cloud.innoslate.com/cornell/p/687/database/entity/265044) | Functions Requirements | Partial |
+| [1.2](https://cloud.innoslate.com/cornell/p/687/database/entity/198989) | Restaurant Manager | Working |
+| [1.3](https://cloud.innoslate.com/cornell/p/687/database/entity/198990) | Diners | Not yet built |
+| [1.4](https://cloud.innoslate.com/cornell/p/687/database/entity/198991) | Ingredient Supplier | Partial |
 | [1.5](https://cloud.innoslate.com/cornell/p/687/database/entity/198992) | Recovery Partner | Partial |
 | [1.6](https://cloud.innoslate.com/cornell/p/687/database/entity/198994) | PANTRI Staff | Not yet built |
 | [1.8](https://cloud.innoslate.com/cornell/p/687/database/entity/199005) | Restaurant Staff | Working |
