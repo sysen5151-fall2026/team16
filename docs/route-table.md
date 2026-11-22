@@ -1,3 +1,20 @@
+# Integrated product route audit
+
+The normal classroom entry is the local Node service started by classroom-demo's package. The [release contract](../classroom-demo/contracts/pantri-api.yaml) describes the actual paths, quantities and error behavior. The [verification record](integration-verification.md) identifies the exercised boundaries.
+
+| Product entry | Release resources | Model scope |
+| --- | --- | --- |
+| Demo account cards and Switch role | accounts, sessions, snapshot | P-F.0.6.1, PA.6.1 |
+| Overview and Inventory | snapshot, inventory, inventory/{id} | UC.2, P-F.0.1 and P-F.0.5 |
+| Receiving, usage, count and waste | inventory/records | UC.5–UC.8, P-F.0.1 |
+| Purchasing and approval | drafts, drafts/{id}, refresh, approval, explanation, orders, dispatch, follow-up-drafts | UC.1, P-F.0.2.2 and P-F.0.3 |
+| Supplier portal | scoped orders, supplier-events | UC.9 and UC.10, P-F.0.3.4 |
+| Waste & recovery and partner portal | recoveries, partner-events, collection, cancellation | provisional UC.11 and exception UC.12, P-F.0.4 |
+| Reports | reports, waste-insights, snapshot | UC.4 and UC.2 context, P-F.0.2.4 and P-F.0.5 |
+| Demo tools and support | checkpoints/previous, storage/raw, demo/reset, health, support | P-F.0.6, PA.6 |
+
+---
+
 # Primary entry-point audit: PANTRI_App.html
 
 Adopted from the actual Drive classroom product on 2026-11-08. This table supersedes the previous primary-product designation below; historical tables are retained as reference only.

@@ -1,21 +1,21 @@
-import { createServer } from 'node:http';
-import { readFile } from 'node:fs/promises';
+import { createPantriServer } from './server/http.mjs';
 
 const port = Number(process.env.PANTRI_DEMO_PORT ?? 5173);
-const html = new URL('PANTRI_Final.html', import.meta.url);
-
-createServer(async (request, response) => {
-  if (request.method !== 'GET' || !['/', '/PANTRI_Final.html'].includes(request.url)) {
-    response.writeHead(404).end();
-    return;
-  }
+if (!Number.isInteger(port) || port < 0 || port > 65535) {
+  console.error('PANTRI_DEMO_PORT must be an integer from 0 through 65535.');
+  process.exitCode = 1;
+} else {
   try {
-    const source = await readFile(html);
-    response.writeHead(200, {
-      'Content-Type': 'text/html; charset=utf-8',
-      'Cache-Control': 'no-store',
-    }).end(source);
+    const server = createPantriServer();
+    server.once('error', error => {
+      console.error('PANTRI could not start: ' + error.code);
+      process.exitCode = 1;
+    });
+    server.listen(port, '127.0.0.1', () => {
+      console.log('PANTRI demo at http://127.0.0.1:' + server.address().port);
+    });
   } catch {
-    response.writeHead(500).end('Build PANTRI_Final.html before starting the demo.');
+    console.error('PANTRI could not open its data file. Check the configured data directory.');
+    process.exitCode = 1;
   }
-}).listen(port, '127.0.0.1', () => console.log('PANTRI demo at http://127.0.0.1:' + port));
+}

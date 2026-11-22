@@ -1,3 +1,5 @@
+import { addDays, qty } from './domain.js';
+
 function reportRange(state, period) {
   const end = state.demoDate;
   return { start: period === 'today' ? end : addDays(end, -6), end };
@@ -107,3 +109,5 @@ function paginate(items, page, size) {
     total: items.length,
   };
 }
+
+export { reportRange, selectWasteEvents, selectWastePlanning };

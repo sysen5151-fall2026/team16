@@ -17,10 +17,20 @@ function render({ capture = true } = {}) {
   const oldDialog = root.querySelector('.dialog-body');
   if (oldDialog && ui.lastOverlay) ui.lastOverlay.scrollTop = oldDialog.scrollTop;
 
-  const state = service.getSnapshot();
+  if (!ui.account) {
+    root.innerHTML = renderSignIn(ui);
+    document.body.classList.remove('dialog-open');
+    matchFocusTarget(dialogControls(root), hint)?.focus({ preventScroll: true });
+    return;
+  }
+
+  const state = ui.state;
+  const manager = ui.account.role === 'manager';
+  const navigation = workspaceNavigation(ui.account.role);
+  const [homePage, , homeLabel] = navigation[0];
   const pageChanged = ui.page !== ui.lastPage;
   const detailsOpen = !pageChanged && root.querySelector('.chart-details')?.open;
-  const chartPage = ['overview', 'reports'].includes(ui.page);
+  const chartPage = !!state && ['overview', 'reports'].includes(ui.page);
   ui.animateCharts = chartPage && !ui.chartsPlayed;
   const pages = {
     overview: renderOverviewPage,
@@ -28,23 +38,25 @@ function render({ capture = true } = {}) {
     purchasing: renderPurchasingPage,
     waste: renderWastePage,
     reports: renderReportsPage,
+    supplier: renderSupplierPage,
+    'recovery-portal': renderRecoveryPortal,
+    support: renderSupportPage,
   };
-  const navigation = [
-    ['overview', 'home', 'Overview'],
-    ['inventory', 'box', 'Inventory'],
-    ['purchasing', 'cart', 'Purchasing'],
-    ['waste', 'leaf', 'Waste & recovery'],
-    ['reports', 'chart', 'Reports'],
-  ];
-  const drafts = state.drafts.filter(draft => draft.status === 'draft').length;
-  const problem = service.getProblem();
+  const ready = !!state || ui.account.role === 'support';
+  const drafts = state?.drafts?.filter(draft => draft.status === 'draft').length ?? 0;
+  const name = manager || ui.account.role === 'staff' ? 'Demo Buffet Hot Pot' : ui.account.name;
+  const initials = /^[A-Z]{2}$/.test(ui.account.name) ? ui.account.name
+    : ui.account.name.split(/\s+/).filter(Boolean).slice(0, 2).map(word => word[0]).join('').toUpperCase();
   const navInner = (page, symbol, label, index) =>
     `${icon(symbol)}<span class="nav-text" style="--n:${index}">${label}</span>${page === 'purchasing' && drafts ? `<span class="nav-count">${drafts}</span>` : ''}`;
+  const content = ready ? pages[ui.page](state, ui)
+    : ui.workspaceError ? empty('Workspace unavailable', 'Retry to load the latest shared data.')
+    : '<p class="quiet-state" role="status">Loading workspace…</p>';
   root.innerHTML = `
     <div class="app-shell ${ui.railOpen ? 'rail-open' : ''}" ${ui.overlay ? 'inert' : ''}>
       <a class="skip-link" href="#main-content">Skip to content</a>
       <aside class="sidebar">
-        <a class="brand" href="#overview" data-action="overview" aria-label="PANTRI overview">
+        <a class="brand" href="#${homePage}" data-action="${homePage}" aria-label="PANTRI ${homeLabel}">
           <span class="brand-leaf"></span><span class="brand-word">pantri<span class="brand-period">.</span></span>
         </a>
         <nav aria-label="Main navigation">
@@ -58,26 +70,20 @@ function render({ capture = true } = {}) {
       </aside>
       <div class="workspace">
         <header class="topbar">
-          <div class="restaurant-name">${icon('leaf')}<strong>Demo Buffet Hot Pot</strong></div>
+          <div class="restaurant-name">${icon('leaf')}<strong>${esc(name)}</strong></div>
           <div class="topbar-right">
             <span class="demo-tag"><i></i>DEMO DATA</span>
-            ${button('Demo tools', 'demo', '', 'toolbar-button', 'settings')}
-            <span class="avatar" aria-label="Manager MC">MC</span>
+            ${manager && state ? button('Demo tools', 'demo', '', 'toolbar-button', 'settings') : ''}
+            <button class="role-switch-button" type="button" data-action="switch-role" aria-haspopup="dialog" title="${esc(ui.account.label + ' · ' + ui.account.name)}">
+              <span class="avatar" aria-hidden="true">${esc(initials)}</span><span>Switch role</span>${icon('chevrondown')}
+            </button>
           </div>
         </header>
-        ${problem ? `<div class="storage-banner" role="alert">
-          <div>${icon('alert')}<span>${esc(problem)}</span></div>
-          <div>
-            ${button('Download saved copy', 'export-raw', '', 'mini')}
-            ${service.getCheckpoint() ? button('Download prior checkpoint', 'export-checkpoint', '', 'mini') : ''}
-            ${button('Reload saved data', 'reload', '', 'mini')}
-            ${button('Reset', 'reset', '', 'mini')}
-          </div>
-        </div>` : ''}
-        <main id="main-content" tabindex="-1" class="page ${pageChanged ? 'page-enter' : ''}">${pages[ui.page](state, ui)}</main>
+        ${workspaceBanners(ui, manager)}
+        <main id="main-content" tabindex="-1" class="page ${pageChanged ? 'page-enter' : ''}">${content}</main>
       </div>
     </div>
-    ${renderOverlay(state, ui.overlay, ui.error, ui.discard)}
+    ${renderOverlay(state, ui.overlay, ui.error, ui.discard, ui)}
     <div id="toast-region" aria-live="polite" aria-atomic="true"></div>`;
 
   ui.lastPage = ui.page;
@@ -94,7 +100,7 @@ function render({ capture = true } = {}) {
     animateHealthRing(main);
   }
 
-  if (detailsOpen) root.querySelector('.chart-details').open = true;
+  if (detailsOpen) root.querySelector('.chart-details')?.setAttribute('open', '');
   const dialog = root.querySelector('[role="dialog"]');
   if (dialog) {
     dialog.classList.toggle('dialog-refresh', ui.overlay === previousOverlay);
@@ -109,6 +115,24 @@ function render({ capture = true } = {}) {
       target.setSelectionRange(...selection);
     }
   }
+  syncExplanation();
+}
+
+function workspaceBanners(ui, manager) {
+  const connection = ui.workspaceError ? `<div class="storage-banner" role="alert">
+    <div>${icon('alert')}<span>${esc(ui.workspaceError)}</span></div>
+    <div>${button('Retry', 'reload', '', 'mini', 'refresh')}</div>
+  </div>` : '';
+  const storage = ui.storage?.status === 'quarantined' ? `<div class="storage-banner" role="alert">
+    <div>${icon('alert')}<span>${esc(ui.storage.problem ?? 'The saved dataset needs recovery.')}</span></div>
+    <div>
+      ${manager && ui.storage.hasRaw ? button('Download saved copy', 'export-raw', '', 'mini') : ''}
+      ${manager && ui.storage.hasCheckpoint ? button('Download prior checkpoint', 'export-checkpoint', '', 'mini') : ''}
+      ${button('Reload saved data', 'reload', '', 'mini')}
+      ${manager ? button('Reset', 'reset', '', 'mini') : ''}
+    </div>
+  </div>` : '';
+  return connection + storage;
 }
 
 const prefersReducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -331,7 +355,7 @@ function movePillTo(page) {
 function setHealthRisk(risk) {
   const panel = root.querySelector('[data-inventory-health]');
   const next = panel.dataset.healthRisk === risk ? '' : risk;
-  const state = healthSummary(selectOverview(service.getSnapshot()), next);
+  const state = healthSummary(selectOverview(ui.state), next);
   ui.healthRisk = state.risk;
   panel.dataset.healthRisk = state.risk;
   for (const segment of panel.querySelectorAll('.health-segment')) {
@@ -368,6 +392,7 @@ function setCostPeriod(period) {
   ui.periodChanged = true;
   render();
   const target = root.querySelector('[data-usage-total]');
+  if (!target) return;
   const to = Number(target.dataset.usageTotal);
   if (!Number.isFinite(from) || from === to || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 

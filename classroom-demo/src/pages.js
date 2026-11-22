@@ -256,6 +256,7 @@ function renderOverviewPage(state, ui) {
 
 function ingredientDetails(state, overlay) {
   const item = getIngredientSummary(state, overlay.id);
+  if (!item) return missingTransaction('Ingredient');
   const movements = state.inventoryEvents.filter(event =>
     event.restaurantId === state.restaurantId && event.ingredientId === item.id);
   movements.sort((a, b) => b.occurredAt.localeCompare(a.occurredAt));
@@ -289,10 +290,13 @@ function ingredientDetails(state, overlay) {
         <p>Reserved <span>${amount(reservedForBatch(state, batch.id))} ${esc(item.unit)}</span></p>
       </div>`).join('') || '<p class="quiet-state">No recorded batches.</p>'}
       <h3 class="section-heading">Movement history <span>${history.total} records</span></h3>
+      ${movements.some(event => event.kind === 'count') ? '' : '<p class="quiet-state">No count adjustments recorded.</p>'}
       <div class="movement-list">${history.items.map(event => `<div class="movement">
         <span class="movement-symbol ${event.quantityDelta < 0 ? 'out' : ''}">${icon(event.quantityDelta < 0 ? 'arrow' : 'plus')}</span>
-        <div><strong>${esc(stateLabels[event.kind] ?? event.kind)}</strong><p>${esc(event.reason)} · ${fullDate(event.occurredAt)}</p>
-        <small>${esc(event.batchId)} · ${amount(event.before)} → ${amount(event.after)} ${esc(event.unit)}</small></div>
+        <div><strong>${esc(stateLabels[event.kind] ?? event.kind)}</strong><p>${esc(event.reason)} · <time datetime="${esc(event.occurredAt)}">
+          ${fullDate(event.occurredAt)}${event.kind === 'count' ? ' · ' + esc(event.occurredAt.slice(11, 19)) : ''}</time></p>
+        <small>${event.kind === 'count' ? 'Correction ' + esc(event.id) + ' · ' : ''}${esc(event.batchId)} · ${amount(event.before)} → ${amount(event.after)} ${esc(event.unit)}</small>
+        ${event.recordedBy || event.kind === 'count' ? `<small class="block">Recorded by ${esc(event.recordedBy ?? 'Unknown')}</small>` : ''}</div>
         <b>${event.quantityDelta >= 0 ? '+' : ''}${amount(event.quantityDelta)} <small>${esc(event.unit)}</small></b>
       </div>`).join('') || '<p class="quiet-state">No movements recorded.</p>'}</div>
       ${paginationControls(history, 'movement-page', 'movement')}`,
@@ -377,7 +381,7 @@ function renderPurchasingPage(state, ui) {
 function renderRecoveryRequests(state) {
   const requests = [...state.recoveries].reverse();
   if (!requests.length) return empty('No recovery requests', 'Create a pickup request for usable surplus.', button('New recovery request', 'new-recovery', '', 'primary', 'plus'));
-  return `<div class="notice">${icon('leaf')}<span>Requests reserve stock. Record collection once the partner actually picks up the food.</span></div>
+  return `<div class="notice">${icon('leaf')}<span>Requests reserve stock. The recovery partner records collection when they pick up the food.</span></div>
     <div class="recovery-grid">${requests.map(request => {
       const line = request.lines[0];
       const item = state.ingredients.find(ingredient => ingredient.id === line.ingredientId);
@@ -453,6 +457,7 @@ function renderPlanningSignals(state, range, period) {
       ${signals.length ? `<div class="planning-grid">${signals.slice(0, 3).map(card).join('')}</div>` : '<p class="quiet-state">No recorded waste in this period to support a planning suggestion.</p>'}
       ${signals.length > 3 ? `<details class="chart-details"><summary>View ${signals.length - 3} more ingredients</summary>
         <div class="planning-grid">${signals.slice(3).map(card).join('')}</div></details>` : ''}
+      ${explanationBlock(null, 'reports:' + period)}
     </div>
   </section>`;
 }

@@ -309,3 +309,19 @@ The export shows T6.R1 under T6.RISK. It does not show a direct mitigated-by rel
 - Add the formal relationship and test evidence for T6.R1 and distinguish browser baseline evidence from server fault containment. Retain the bounded P-PCR.SW.03 verification status until its full reference set is exercised.
 - Build the native integration Action Diagram from the interface verification record. The rubric requires the highest-risk interface to be exercised early and the integrated assets and interfaces to appear as mechanisms and inputs/outputs.
 - Review UC.1.9A completeness-loop coverage and UC.2 prior/revised quantity, operator, reason and time coverage before declaring behavioral or operational acceptance.
+
+## Post-integration comparison
+
+The release was compared with the November 22 native export and D.1 colors recorded above. The live site required reauthentication at the last readback, so the exported snapshot is the basis for this comparison. Suggested statuses apply to the classroom context. Team review is required before updating the shared diagram.
+
+| D.1 element | Proposed status | Release evidence |
+| --- | --- | --- |
+| PANTRI System | Partial | Integrated shared data, REST, local explanations and roles. Operational conditions and security remain outside the classroom scope. |
+| Restaurant Manager | Working | Prepared review, approval, inventory, recovery and reporting. |
+| Restaurant Staff | Working | Received approved quantities and recorded waste and inventory corrections. |
+| Ingredient Supplier | Working in the demo | Prime Foods account saw its own orders and confirmed in its workspace. |
+| Recovery Partner | Working in the demo | Community Food Recovery account accepted a request and recorded pickup. |
+| PANTRI Staff | Partial | Read-only health, checkpoint and operation diagnostics. Manual reconciliation remains the team's responsibility. |
+| Diners | Not yet built | Covers and availability remain recorded inputs from the prepared dataset. |
+
+The new allocations and behavioral discrepancies are still the ones listed in Model changes for the team to review. In particular, the demo exercise does not supply the independent UC.11 diagrams or a third-level IDEF0. [Integration verification](../../docs/integration-verification.md)

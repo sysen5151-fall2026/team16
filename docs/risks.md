@@ -27,3 +27,9 @@ The current purchase recommendation uses deterministic local rules. The entries 
 ## Control before operation
 
 The purchase developer owns the discrepancy test in each relevant review. At design review confirm each retained approval and recovery exchange has a failure oracle. On every relevant CI run require all negative cases to block the write and zero extra dispatch events. Before release verify the supported saved-data format, successful resumption after refresh and raw/checkpoint export on fault. A missed block or extra dispatch stops the release. Record a dated reassessment and evidence link in T6.R1 after each review.
+
+## Windows integration evidence
+
+The server reuses the Task 6 consistency checks when loading and committing the JSON envelope. The exercised schema-valid mismatch retained the raw record and a prior verified approval, returned 503 on the dispatch attempt and left the saved bytes intact. The startup, restart, model-unavailable and role checks are recorded in [integration verification](integration-verification.md).
+
+The local model receives a bounded set of server-derived facts and English candidates. The adapter validates shape, every field and the candidate text independently. Stub tests exercise incorrect numbers, invented ingredient names, untrusted text, invalid JSON, timeout and unavailable runtime. Fact mismatches cannot change operational records. Recent logs contain the model name, elapsed milliseconds and fallback reason. The team still owns deployment risk ratings and native model disposition.

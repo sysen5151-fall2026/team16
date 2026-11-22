@@ -1,3 +1,24 @@
+# PANTRI Windows release traceability
+
+The model identifiers and allocation names come from the [current model audit](../classroom-demo/docs/model-baseline.md). Each row records the available classroom evidence. Full model verification and operational acceptance require their separately defined reference sets and stakeholder conditions.
+
+| Need | Requirement | Function and mechanism | Release implementation | Executable evidence |
+| --- | --- | --- | --- | --- |
+| N.01, N.07, N.08, N.09, N.10 | SR.01, SR.07–SR.10, P-AFR.01–P-AFR.03 | P-F.0.1, PA.1 Event Capture, Record Reconciliation and Operational History | classroom-demo/src/domain.js, server/records/routes.mjs, Inventory | Classroom workflow and HTTP inventory, receiving, waste and count tests |
+| N.02, N.05, N.06, N.10 | SR.02, SR.05, SR.06, P-AFR.04–P-AFR.07 | P-F.0.2, PA.2 planning modules | domain.js, planning.js, server/planning/explanations.mjs | Baseline pricing, expiration, waste, missing data and paired measures tests |
+| N.02, N.10 | SR.02, SR.10, P-AFR.05, P-AFR.16 | P-F.0.2.2, P-F.0.5.2, PA.2.2 and PA.5.2 | server/model-adapter/index.mjs and the draft and waste explanation routes | model-adapter.test.cjs, HTTP fallback and read-only explanation, measured local calls |
+| N.03 | SR.03A, SR.03, P-AFR.08–P-AFR.10, P-PCR.F.01–P-PCR.F.03 | P-F.0.3.1–P-F.0.3.3, PA.3.1–PA.3.3 | server/purchasing/routes.mjs, domain.js and Purchasing | Baseline revision, stale approval and idempotence, HTTP paired edits and persisted approval before dispatch |
+| N.04, N.11 | SR.04, SR.11, P-AFR.11, P-PCR.F.04 | P-F.0.3.4, PA.3.4 | Supplier portal, supplier event route and domain.js | Role scope and receipt separation, prepared late and out-of-order event tests |
+| N.10, N.11 | SR.10, SR.11, P-AFR.12–P-AFR.14 | P-F.0.4, PA.4 | server/recovery/routes.mjs, Waste & recovery, recovery partner workspace | Request, accept, decline/exception, release and actual collection workflow. UC.11 detail is provisional. |
+| N.01, N.02, N.04, N.05, N.06 | SR.01, SR.02, SR.04–SR.06, P-AFR.15–P-AFR.17 | P-F.0.5, PA.5 | server/presentation/routes.mjs, api-client.js, views.js, pages.js and shell.js | Existing rendered page checks, role entry points, browser demo and HTTP reports |
+| N.12, N.13 | SR.12, SR.13, P-NFR.01, P-NFR.02, P-AFR.18–P-AFR.19 | P-F.0.6.1, P-F.0.6.2, PA.6.1 and PA.6.2 | server/http.mjs, continuity/access.mjs, continuity/routes.mjs and support workspace | Scoped roles, forbidden commands, status and support logs |
+| N.03, N.14 | SR.03, SR.14, SR.15, P-PCR.SW.03, P-AFR.20–P-AFR.21, P-NFR.03 | P-F.0.6.3, P-F.0.6.4, PA.6.3 and PA.6.4 | continuity/storage.mjs, domain.js, seed CLI, raw/checkpoint endpoints and Demo tools | Task 6 legacy case, server restart and contradictory saved approval quarantine |
+| N.02, N.13, N.14 | SR.02, SR.13, SR.14 | Supporting interface and build assets for P-F.0 | build.mjs, serve.mjs, contracts/pantri-api.yaml and README | Clean checkout build/start, HTTP contract exercising client, API and storage |
+
+The HTTP boundary, local explanatory model, server-file lifecycle and five demo role views need native implementation allocations and corresponding verification evidence. The existing functions above carry the present behavior. See the model change list and ADRs 0005–0008 for entity-level decisions.
+
+---
+
 # Primary product: original PANTRI_App.html
 
 2026-11-08 review/adoption: this product is the classroom UI from Drive file 1SrqhizVi4SRNGfkZ9Xod9E2k0jVsW0tc. Its UI and business code are retained; only four PMC2_MODEL JSDoc comments were added. The provenance hash and contract test enforce this. PANTRI_PMC2.html and its orders.js table below are now reference evidence, NOT the primary product.

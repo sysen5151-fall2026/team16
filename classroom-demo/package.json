@@ -1,10 +1,12 @@
 {
   "name": "pantri-classroom-demo",
   "private": true,
+  "type": "module",
   "scripts": {
     "build": "node build.mjs",
     "test": "node build.mjs && node --test tests/*.test.cjs",
-    "start": "node build.mjs && node serve.mjs"
+    "start": "node build.mjs && node serve.mjs",
+    "seed": "node server/seed.mjs"
   },
   "engines": {
     "node": ">=22"

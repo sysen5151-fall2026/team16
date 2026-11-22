@@ -1,22 +1,14 @@
-# PANTRI — current classroom product (Lab 13 progress check, Nov 18 2026)
+# PANTRI restaurant workspace
 
-**Open [`classroom-demo/PANTRI_Final.html`](classroom-demo/PANTRI_Final.html)** in Edge or Chrome. It is a standalone, offline app built from the Team 16 baseline at commit `8fa2706`, with five working pages: Overview, Inventory, Purchasing, Waste & recovery and Reports.
+Team 16's integrated classroom product lives in [classroom-demo](classroom-demo/README.md). The Windows build serves the existing glass workspace and REST API from Node, shares one seeded JSON file across demo roles, and can use a local Ollama model for grounded explanations.
 
-Run it from this repository:
+~~~powershell
+npm.cmd run seed --prefix classroom-demo
+npm.cmd start --prefix classroom-demo
+npm.cmd test --prefix classroom-demo
+~~~
 
-```bash
-cd classroom-demo
-npm test     # rebuilds PANTRI_Final.html and runs 21 workflow checks
-npm start    # serves the app at http://127.0.0.1:5173
-```
-
-Before a demo, use **Demo tools → Reset demo → Reset demo** to load the synthetic restaurant data (demo date October 21, 2026). Supplier and recovery-partner responses are simulated locally. See [classroom-demo/README.md](classroom-demo/README.md) for the five-minute walkthrough, OpsCon status annotations (working / partial / not yet built) and verification notes.
-
-| OpsCon element | Status |
-| --- | --- |
-| Restaurant Manager, Restaurant Staff | Working |
-| PANTRI System, Ingredient Supplier, Recovery Partner | Partial (local demo data, simulated partners) |
-| PANTRI Staff, Diners | Not yet built |
+Open [PANTRI](http://127.0.0.1:5173) after starting the service. See the [setup and demonstration scripts](classroom-demo/README.md), [model baseline](classroom-demo/docs/model-baseline.md), and [integration verification](docs/integration-verification.md).
 
 ---
 
