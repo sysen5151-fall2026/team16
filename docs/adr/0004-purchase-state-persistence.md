@@ -2,7 +2,7 @@
 
 **Decision date** 2026-11-21  
 **Scope** Single active writer, single restaurant, same browser origin and a simulated supplier.  
-**Status** Selected by the requesting team member for implementation. Team review of weighting, cost assumptions and risk ratings is pending.
+**Status** Selected for the classroom release and implemented in [PR #4](https://github.com/sysen5151-fall2026/team16/pull/4). The November 22 Task 6 report records Team 16’s adoption of the planning scenario and swing weights.
 
 ## Context
 
@@ -12,7 +12,7 @@ Main at 76b2c89 persisted a single browser record and provided no prior checkpoi
 
 Adopt a versioned localStorage envelope containing a current snapshot and the immediately preceding verified snapshot. Migrate on the next successful write after reading an existing state. Quarantine inconsistent approved orders, retain the exact saved bytes and offer an export of a validated prior checkpoint for reconciliation. The application blocks transaction writes in quarantine. Reconciliation is manual because replacing the current state with a prior one could hide a completed approval or supplier dispatch.
 
-The Windows Chromium 158 experiment exercised the real approval and simulated dispatch domain transitions and varied only the storage adapter. Each candidate passed 30/30 normal readback signatures. P95 of two saves and their domain transitions was 2.4 ms for A and 8.4 ms for B. Estimated 12-month labor cost is USD 400 for A and USD 760 for B at an assumed USD 40/h. These are planning estimates. The draft value model gives A 84.00 and B 65.33 on a 100-point scale. Raising the integrity weight from 44.44% to 70% retains A because the measured normal integrity outcomes were tied. Evidence from interruption scenarios could change that result. See the integrated report and raw samples in evidence/task6.
+The Windows Chromium 158 experiment exercised the real approval and simulated dispatch domain transitions and varied only the storage adapter. Each candidate passed 30/30 normal readback signatures. P95 of two saves and their domain transitions was 2.4 ms for A and 8.4 ms for B. Estimated 12-month labor cost is USD 400 for A and USD 760 for B at an assumed USD 40/h. These are planning estimates. The value model gives A 84.00 and B 65.33 on a 100-point scale. The raw weights are 80, 40 and 60 for normal readback integrity, persistence wait and incremental life-cycle cost. The 12-month planning scenario uses an $800 cap and 20 available engineering hours. Raising the integrity weight from 44.44% to 70% retains A because the measured normal integrity outcomes were tied. Candidate B was tested on normal readback only. Its recovery gate is unverified. An expanded recovery experiment could separate the two designs. With 70% weight on integrity, unchanged cost and wait values, and B holding 100 on integrity, the two designs would tie if A’s integrity score fell to 85.6. See the integrated report and raw samples in evidence/task6.
 
 ## Alternative and consequences
 

@@ -1,6 +1,6 @@
 # PANTRI product risk register
 
-These ratings are provisional engineering judgments about one release cycle from design through classroom use. Have Team 16 review and adopt or revise them. The two value-study prototypes and the classroom build use synthetic data and a simulated supplier.
+Team 16 adopted the conventional baseline ratings on November 22, 2026, for the bounded classroom release. The AI scenario ratings below are the judgments recorded in the Task 6 submission. The two value-study prototypes and the classroom build use synthetic data and a simulated supplier.
 
 | ID | Trigger and system consequence | Exposure and model trace | L / C / S / T | I / R | Treatment and evidence |
 | --- | --- | --- | --- | --- | --- |
@@ -13,16 +13,18 @@ I = round((C + S + T) / 3). R = L × I. L, cost C, schedule S and technical impa
 
 ## AI integration risks
 
-The current purchase recommendation uses deterministic local rules. The entries below assess proposed integration exposure or dependency risk. Quantitative AI production likelihood requires a defined deployment and team judgment.
+The classroom ratings apply to one release of final integration, using a local model and synthetic data. Local rules calculate purchasing quantities. The model classifies questions and supplies optional explanations. The baseline conventional risks above describe exposure before the new safeguard.
 
-| ID | Risk | Model reference | Acceptance evidence planned |
-| --- | --- | --- | --- |
-| AI-01 | Model output has the expected format but suggests an unsupported quantity. | T6.R3, P-F.0.2, SR.02 | Compare model suggestions to bounded quantities with independent expected values. Preserve manager review. |
-| AI-02 | Slow or unavailable model delays purchasing. | P-F.0.2 and PA.5 | Test provider timeout and verified local/manual path before release. |
-| AI-03 | Untrusted operational data becomes part of the proposed prompt. | P-F.0.1 to P-F.0.2 | Test that only approved modeled fields cross the interface. |
-| AI-04 | Model update changes response shape. | P-F.0.2 to P-F.0.5 | Check versioned schema and fail on invalid responses. |
-| AI-05 | Runtime or dependency is abandoned. | PA.6 and proposed model adapter | Review dependency ownership and exercise a replacement path before rollout. |
-| AI-06 | Restaurant records leave an approved boundary through a model service, export or logs. | PA.6.1, P-NFR.02 and proposed model interface | Inventory authorized destinations and review observed output at integration. |
+| ID | Risk | Model reference | L / C / S / T | I / R | Team 16 rating basis and controls |
+| --- | --- | --- | --- | --- | --- |
+| AI-01 | Unsupported quantity | T6.R3, P-F.0.2, SR.02 | 2 / 2 / 1 / 3 | 2 / 4 | Local rules calculate quantities and approval is separate. The validator rejected fabricated quantities in prepared tests. Ask PANTRI produced 40 correct raw interpretations and used fallback for 20. All 60 final interpretations were correct. |
+| AI-02 | Model latency or outage | P-F.0.2, PA.5 | 2 / 1 / 1 / 2 | 1 / 2 | Warm Ask PANTRI calls took 118 ms at the median and 150 ms at most. The foreground deadline is 8 s, with separate background warmup of at least 60 s. The classroom suite passed 81/81 with the model on and again with it off. |
+| AI-03 | Untrusted prompt input | P-F.0.1 to P-F.0.2, PA.5.1 | 3 / 1 / 1 / 2 | 1 / 3 | The server checks intent, ingredient and period and falls back to keyword handling when validation fails. The read-only route left records unchanged in tests that attempted writes. |
+| AI-04 | Response schema drift | P-F.0.2 to P-F.0.5 | 2 / 2 / 2 / 2 | 2 / 4 | The classroom configuration uses the local qwen2.5:3b tag. The adapter rejects incompatible replies and falls back. The reported estimate is up to two days for adapter work and contract tests. |
+| AI-05 | Abandoned dependency | PA.6, local model adapter | 1 / 2 / 2 / 2 | 2 / 2 | The classroom package declares no third-party npm dependencies. A fresh Windows checkout ran successfully, and the model-disabled path passed 81/81 checks. |
+| AI-06 | Unintended data egress | PA.6.1, P-NFR.02 | 2 / 1 / 1 / 2 | 1 / 2 | The model endpoint is loopback-only. The dataset is synthetic. Log and JSON export destinations had yet to be checked end to end at the time of the assessment. |
+
+[Windows integration verification](https://github.com/sysen5151-fall2026/team16/blob/a031f314dbd3bd17b9e7485935cc732d9840e71e/docs/integration-verification.md) · [Ask PANTRI evaluation](https://github.com/sysen5151-fall2026/team16/blob/a031f314dbd3bd17b9e7485935cc732d9840e71e/docs/integration-verification.md#live-interpretation-evaluation) · [Model-on and model-off checks](https://github.com/sysen5151-fall2026/team16/blob/a031f314dbd3bd17b9e7485935cc732d9840e71e/docs/integration-verification.md#final-review-verification).
 
 ## Control before operation
 
